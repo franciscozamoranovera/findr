@@ -1,0 +1,11 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { SearchApp } from "../components/searchApp/SearchApp.jsx";
+
+---
+
+<Layout title="search">
+	<SearchApp client:only="react" />
+	<!-- <Results title="Findr.it" /> --> <!-- results could not be here, and could be inside SearchApp.jsx -->
+</Layout>
+

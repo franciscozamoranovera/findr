@@ -1,0 +1,108 @@
+/* Font imports */
+@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+/* stylelint-disable-next-line at-rule-no-unknown */
+@tailwind base;
+/* stylelint-disable-next-line at-rule-no-unknown */
+@tailwind components;
+/* stylelint-disable-next-line at-rule-no-unknown */
+@tailwind utilities;
+
+/* Custom Global Styles */
+:root {
+    --font-primary: "EB Garamond", "Open Sans", sans-serif;
+    --font-secondary: "Open Sans", sans-serif;
+    --background-color: #ededed;
+}
+
+html {
+    font-family: var(--font-primary);
+    background: var(--background-color);
+    
+    /* Ocultar scrollbar del navegador pero mantener funcionalidad */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+/* Ocultar scrollbar en WebKit (Chrome, Safari, Edge) */
+html::-webkit-scrollbar {
+    display: none;
+}
+
+body,
+figure {
+    background: var(--background-color);
+    margin: 0;
+    margin-right: 10px;
+    margin-left: 10px;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    font-family: var(--font-secondary);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+::placeholder {
+    color: rgb(167, 167, 167);
+}
+
+h1 {
+    margin: 0;
+    font-family: var(--font-primary);
+    font-weight: 500;
+    font-size: 35px;
+}
+
+h2,
+h3 {
+    margin: 0;
+    font-family: var(--font-secondary);
+    font-weight: 500;
+}
+
+h4 {
+    margin: 0;
+    font-family: var(--font-secondary);
+    font-weight: 600;
+}
+
+p {
+    margin: 0;
+    font-family: var(--font-secondary);
+    font-weight: 50;
+    text-wrap: pretty;
+}
+
+button {
+    font-family: var(--font-secondary);
+    text-wrap: pretty;
+}
+
+select {
+    appearance: none;
+    font-family: var(--font-secondary);
+}
+
+input {
+    appearance: none;
+    font-family: var(--font-secondary);
+}
+

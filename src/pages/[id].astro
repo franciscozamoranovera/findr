@@ -1,0 +1,1026 @@
+---
+export const prerender = false;
+
+import Layout from "@/layouts/Layout.astro";
+import { supabase } from "@/components/api/supabase/supabase";
+import AuthReviewButton from "@/components/reviewForm/buttons/progressBar/AuthReviewButton";
+
+
+
+const { id } = Astro.params;
+
+const { data: doctor_profile, error } = await supabase
+    .from("doctor_profile")
+    .select(
+        `
+    *,
+    speciality:speciality_id (
+      speciality_name
+    )
+    ,
+    sub_speciality:sub_speciality_id (
+        sub_speciality_name
+
+    )
+  `,
+    )
+    .eq("id", id)
+    .single(); //un solo doctor, no array
+
+/* If there's no doctor id that match, this redirect to 404 */
+if (error) {
+    return Astro.redirect("/404");
+}
+
+if (!doctor_profile) {
+    return Astro.redirect("/404");
+}
+---
+
+<Layout title="Doctor Profile">
+    <body class="doc-profile">
+        <section class="summary-section">
+            <section class="doc-profile-summary">
+                <div class="doc-profile-photo">👨🏻‍⚕️</div>
+                <div class="doc-profile-name">
+                    <h1>
+                        {doctor_profile.doctor_first_name}
+                        {doctor_profile.doctor_surname}
+                        {doctor_profile.doctor_second_surname}
+                    </h1>
+                </div>
+                <div class="doc-profile-title">
+                    <p>{doctor_profile.title}</p>
+                </div>
+                <div class="dp-speciality-subspeciality">
+                    {
+                        doctor_profile.sub_speciality && (
+                            /* check if we can access to sub_speciality (ex. if null we avoid errors) */
+                            <h2>
+                                {
+                                    doctor_profile.sub_speciality
+                                        .sub_speciality_name
+                                }
+                            </h2>
+                        )
+                    }
+
+                    {
+                        doctor_profile.speciality && (
+                            <p>{doctor_profile.speciality.speciality_name}</p>
+                        )
+                    }
+                </div>
+                <container class="dp-top-20-percent">
+                    <!-- Hide for those that are out of top 20% -->
+                    <div class="dp-laurel-branches-overall-top-rated">
+                        <!-- Only for top rated drs -->
+                        <div class="left-laurel-branch">
+                            <img
+                                src="/img/doctor-profile/left-laurel-branch.png"
+                            />
+                        </div>
+                        <div class="overall-rate">
+                            <h1>4,91</h1>
+                        </div>
+                        <div class="right-laurel-branch">
+                            <img
+                                src="/img/doctor-profile/right-laurel-branch.png"
+                            />
+                        </div>
+                    </div>
+                    <div class="dp-description-top-rated-region">
+                        <!-- Only for top rated drs -->
+
+                        <p>
+                            Favorito entre Cardiólogos en la Región
+                            Metropolitana
+                        </p>
+                    </div>
+                    <div class="dp-description-top-rated-chile">
+                        <!-- Only for top rated drs -->
+                        <p>
+                            <strong
+                                >{doctor_profile.doctor_first_name}
+                                {doctor_profile.doctor_surname}</strong
+                            > está dentro del 20% de los cardiólogos mejor valorados
+                            de Chile
+                        </p>
+                    </div>
+                    <div class="top-rated-reviews-qty">
+                        <h3>(6 reseñas)</h3>
+                    </div>
+                </container>
+                <container class="dp-out-20percent-rated" hidden>
+                    <div class="dp-star-overall-rate">
+                        <!-- For the 80% mayority rated out of 20% or 0 reviews + 0 rating -->
+
+                        <div class="out-20percent-star">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="40"
+                                height="40"
+                                fill="currentColor"
+                                class="bi bi-star-fill"
+                                viewBox="0 0 16 16"
+                            >
+                                <path
+                                    d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"
+                                ></path>
+                            </svg>
+                        </div>
+                        <div class="out-20percent-overall-rate">
+                            <h1>4,0</h1>
+                        </div>
+                        <div class="out-20percent-reviews-qty">
+                            <h3>• 6 reseñas</h3>
+                        </div>
+                    </div>
+                </container>
+                <container class="tag-clasification-section">
+                    <div class="resolvio-mi-problema">
+                        <div class="icon-resolvio-mi-problema">
+                            <img
+                                src="/img/doctor-profile/calification-icons/problem-solved.png"
+                            />
+                        </div>
+                        <div class="graph-resolvio-mi-problema">
+                            <button> Resolvió mi problema </button>
+                        </div>
+                        <div class="rate-resolvio-mi-problema">
+                            <h1>4,0</h1>
+                        </div>
+                    </div>
+                    <div class="comunicacion-clara">
+                        <div class="icon-comunicacion-clara">
+                            <img
+                                src="/img/doctor-profile/calification-icons/comunication.png"
+                            />
+                        </div>
+                        <div class="graph-comunicacion-clara">
+                            <button> Comunicación Clara </button>
+                        </div>
+                        <div class="rate-comunicacion-clara"><h1>4,9</h1></div>
+                    </div>
+                    <div class="atencion-profesionalismo">
+                        <div class="icon-atencion-profesionalismo">
+                            <img
+                                src="/img/doctor-profile/calification-icons/attention-profesionalism.png"
+                            />
+                        </div>
+                        <div class="graph-atencion-profesionalismo">
+                            <button> Atención y Profesionalismo </button>
+                        </div>
+                        <div class="rate-atencion-profesionalismo">
+                            <h1>4,9</h1>
+                        </div>
+                    </div>
+                    <div class="dominio-conocimientos">
+                        <div class="icon-dominio-conocimientos">
+                            <img
+                                src="/img/doctor-profile/calification-icons/knoledge-domain.png"
+                            />
+                        </div>
+                        <div class="graph-dominio-conocimientos">
+                            <button> Dominio Conocimientos </button>
+                        </div>
+                        <div class="rate-dominio-conocimientos">
+                            <h1>4,9</h1>
+                        </div>
+                    </div>
+                    <div class="recomiendo-a-familiar">
+                        <div class="icon-recomiendo-a-familiar">
+                            <img
+                                src="/img/doctor-profile/calification-icons/recomendation.png"
+                            />
+                            <div>
+                                <div class="graph-recomiendo-a-familiar">
+                                    <button> Recomiendo a Familiar </button>
+                                </div>
+                                <div class="rate-recomiendo-a-familiar">
+                                    <h1>4,9</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </container>
+            </section>
+        </section>
+
+        <!-- ---- ABOUT SECTION ---- -->
+        <section class="about-section">
+            <section class="doc-about">
+                <container class="about">
+                    <h2 class="about-me-title">Sobre Juan Carlos Bodoque</h2>
+                    <div class="about-me-description">
+                        <p>
+                            Soy médico general con casi 40 años de experiencia
+                            en atención de pacientes tanto adultos como niños en
+                            la atención primaria pública de salud , así como en
+                            el área privada; consultas médicas , centros
+                            médicos, atención de urgencia tanto de adultos como
+                            de niños.
+                        </p>
+
+                        <p>
+                            Soy médico general con casi 40 años de experiencia
+                            en atención de pacientes tanto adultos como niños en
+                            la atención primaria pública de salud , así como en
+                            el área privada; consultas médicas , centros
+                            médicos, atención de urgencia tanto de adultos como
+                            de niños.
+                        </p>
+
+                        <p>
+                            Soy médico general con casi 40 años de experiencia
+                            en atención de pacientes tanto adultos como niños en
+                            la atención primaria pública de salud , así como en
+                            el área privada; consultas médicas , centros
+                            médicos, atención de urgencia tanto de adultos como
+                            de niños.
+                        </p>
+
+                        <p>
+                            Soy médico general con casi 40 años de experiencia
+                            en atención de pacientes tanto adultos como niños en
+                            la atención primaria pública de salud , así como en
+                            el área privada; consultas médicas , centros
+                            médicos, atención de urgencia tanto de adultos como
+                            de niños.
+                        </p>
+                    </div>
+                </container>
+
+                <container class="doc-background">
+                    <div class="education">
+                        <h2>Formación</h2>
+                        <ul>
+                            <li>
+                                - Médico Cirujano, Pontificia Universidad
+                                Católica de Chile, Chile.
+                            </li>
+                            <li>
+                                - Anestesiólogo, Pontificia Universidad Católica
+                                de Chile, Chile (2001).
+                            </li>
+                            <li>
+                                - Fellow, Regional Anesthesia & Ambulatory
+                                Surgery, Duke University Medical Center, USA
+                                (2006).
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="research-projects">
+                        <h2>Investigación y Proyectos</h2>
+                        <ul>
+                            <li>
+                                - 2010-2012: Director (PI), Proyecto FONIS
+                                Regular SA09I20035:“Evaluación del uso de
+                                analgesia de Plexo Lumbar Continuo en la
+                                incidencia de eventos cardiovasculares en
+                                perioperatorio de pacientes adultos mayores con
+                                riesgo coronario con fractura de cadera”. Fuente
+                                de Financiamiento: CONICYT.
+                            </li>
+                            <li>
+                                - 2011- 2012: Investigador Principal, Proyecto
+                                Investigación Sociedad de Anestesiología de
+                                Chile: “Comparación de los niveles plasmáticos
+                                de levobupivacaína con y sin vasoconstrictor
+                                administrada en un bloqueo de plano transverso
+                                abdominal (TAP Block) guiado por
+                                ultrasonografía”. Fuente de Financiamiento:
+                                Fondo de Fomento a la Investigación, Sociedad de
+                                Anestesiología de Chile.
+                            </li>
+                            <li>
+                                - 2011- 2012: Investigador Principal, Proyecto
+                                Investigación Sociedad de Anestesiología de
+                                Chile: “Comparación de los niveles plasmáticos
+                                de levobupivacaína con y sin vasoconstrictor
+                                administrada en un bloqueo de plano transverso
+                                abdominal (TAP Block) guiado por
+                                ultrasonografía”. Fuente de Financiamiento:
+                                Fondo de Fomento a la Investigación, Sociedad de
+                                Anestesiología de Chile.
+                            </li>
+                            <li>
+                                - 2011- 2012: Investigador Principal, Proyecto
+                                Investigación Sociedad de Anestesiología de
+                                Chile: “Comparación de los niveles plasmáticos
+                                de levobupivacaína con y sin vasoconstrictor
+                                administrada en un bloqueo de plano transverso
+                                abdominal (TAP Block) guiado por
+                                ultrasonografía”. Fuente de Financiamiento:
+                                Fondo de Fomento a la Investigación, Sociedad de
+                                Anestesiología de Chile.
+                            </li>
+                        </ul>
+                    </div>
+                </container>
+                <container class="placeofcare-prevision">
+                    <div class="placeofcare">
+                        <h2>Lugar de Atención</h2>
+                        <ul>
+                            <h4>Telemedicina</h4>
+                            <li>
+                                - Particular: “Av Ricardo Lyon 1450,
+                                Providencia.
+                            </li>
+                        </ul>
+                        <ul>
+                            <h4>Presencial</h4>
+                            <li>
+                                - Particular: “Av Ricardo Lyon 1450,
+                                Providencia.
+                            </li>
+                            <li>- Clinica Indisa</li>
+                            <li>- Clinica Alemana</li>
+                            <li>- Clinica Las Condes</li>
+                        </ul>
+                    </div>
+                    <div class="prevision">
+                        <h2>Prevision</h2>
+                        <ul>
+                            <li>- Fonasa</li>
+                            <li>- Colmena</li>
+                            <li>- Mas Vida</li>
+                        </ul>
+                    </div>
+                </container>
+                <container class="treated-deseases-list">
+                    <h2>Enfermedades que trata</h2>
+                    <ul>
+                        <li>Arrítmias</li>
+                        <button>Buscar reviews</button>
+                    </ul>
+                    <ul>
+                        <li>Taquicardias</li>
+                        <button>Buscar reviews</button>
+                    </ul>
+                    <ul>
+                        <li>Otras</li>
+                        <button>Buscar reviews</button>
+                    </ul>
+                    <ul>
+                        <li>Arrítmias</li>
+                        <button>Buscar reviews</button>
+                    </ul>
+                    <ul>
+                        <li>Taquicardias</li>
+                        <button>Buscar reviews</button>
+                    </ul>
+                    <ul>
+                        <li>Otras</li>
+                        <button>Buscar reviews</button>
+                    </ul>
+                    <ul>
+                        <li>Arrítmias</li>
+                        <button>Buscar reviews</button>
+                    </ul>
+                    <ul>
+                        <li>Taquicardias</li>
+                        <button>Buscar reviews</button>
+                    </ul>
+                    <ul>
+                        <li>Otras</li>
+                        <button>Buscar reviews</button>
+                    </ul>
+                    <ul>
+                        <li>Arrítmias</li>
+                        <button>Buscar reviews</button>
+                    </ul>
+                    <ul>
+                        <li>Taquicardias</li>
+                        <button>Buscar reviews</button>
+                    </ul>
+                    <ul>
+                        <li>Otras</li>
+                        <button>Buscar reviews</button>
+                    </ul>
+                </container>
+            </section>
+
+            <!-- ---- DOC REVIEWS ---- -->
+
+            <section class="doc-reviews">
+                <div class="button-review-container">
+                    <AuthReviewButton
+                        client:load
+                        drId={id}
+                        doctorName={doctor_profile.doctor_first_name}
+                    />
+                </div>
+                <container class="patient-comments">
+                    <div class="review-box">
+                        <div class="profile-review-header">
+                            <div class="gender-icon">👨🏻‍⚕️</div>
+                            <div class="patient-name">
+                                <h4>Francisco Z.</h4>
+                            </div>
+                            <div class="patient-verification">✅</div>
+                        </div>
+                        <div class="stars-review-timestamp">
+                            <div class="review-stars">⭐️⭐️⭐️⭐️⭐️⭐️</div>
+                            <div class="review-timestamp">
+                                <p>• Hace 2 semanas</p>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p>
+                                "El Dr. explicó mi condición de manera muy clara
+                                y fácil de entender." Siempre muy amable y
+                                paciente con mis preguntas. Se nota su empatía.
+                                Su diagnóstico fue muy acertado, me siento mucho
+                                mejor después del tratamiento que me recetó. A
+                                veces las citas se retrasan un poco, pero la
+                                atención es excelente.
+                            </p>
+                        </div>
+                        <div class="appointments-number">
+                            <p>Primera cita</p>
+                        </div>
+                        <div class="treated-deseases">
+                            <ul>
+                                <li>Arritmias</li>
+                                <li>Taquicardias</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="review-box">
+                        <div class="profile-review-header">
+                            <div class="gender-icon">👨🏻‍⚕️</div>
+                            <div class="patient-name">
+                                <h4>Cristian Z.</h4>
+                            </div>
+                            <div class="patient-verification">✅</div>
+                        </div>
+                        <div class="stars-review-timestamp">
+                            <div class="review-stars">⭐️⭐️⭐️⭐️⭐️⭐️</div>
+                            <div class="review-timestamp">
+                                <p>• Hace 2 semanas</p>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p>
+                                "El Dr. explicó mi condición de manera muy clara
+                                y fácil de entender
+                            </p>
+                        </div>
+                        <div class="appointments-number">
+                            <p>Segunda cita</p>
+                        </div>
+                        <div class="treated-deseases">
+                            <ul>
+                                <li>Taquicardias</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="review-box">
+                        <div class="profile-review-header">
+                            <div class="gender-icon">👨🏻‍⚕️</div>
+                            <div class="patient-name">
+                                <h4>Cristian Z.</h4>
+                            </div>
+                            <div class="patient-verification">✅</div>
+                        </div>
+                        <div class="stars-review-timestamp">
+                            <div class="review-stars">⭐️⭐️⭐️⭐️⭐️⭐️</div>
+                            <div class="review-timestamp">
+                                <p>Hace 2 semanas</p>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p>
+                                "El Dr. explicó mi condición de manera muy clara
+                                y fácil de entender." Siempre muy amable y
+                                paciente con mis preguntas. Se nota su empatía.
+                                Su diagnóstico fue muy acertado, me siento mucho
+                                mejor después del tratamiento que me recetó. A
+                                veces las citas se retrasan un poco, pero la
+                                atención es excelente.
+                            </p>
+                        </div>
+                        <div class="appointments-number">
+                            <p>Primera cita</p>
+                        </div>
+                        <div class="treated-deseases">
+                            <ul>
+                                <li>Taquicardias</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="review-box">
+                        <div class="profile-review-header">
+                            <div class="gender-icon">👨🏻‍⚕️</div>
+                            <div class="patient-name">
+                                <h4>Pancho Z.</h4>
+                            </div>
+                            <div class="patient-verification">✅</div>
+                        </div>
+                        <div class="stars-review-timestamp">
+                            <div class="review-stars">⭐️⭐️⭐️⭐️⭐️⭐️</div>
+                            <div class="review-timestamp">
+                                <p>• Hace 2 semanas</p>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p>
+                                "El Dr. explicó mi condición de manera muy clara
+                                y fácil de entender
+                            </p>
+                        </div>
+                        <div class="appointments-number">
+                            <p>Segunda cita</p>
+                        </div>
+                        <div class="treated-deseases">
+                            <ul>
+                                <li>Taquicardias</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="review-box">
+                        <div class="profile-review-header">
+                            <div class="gender-icon">👨🏻‍⚕️</div>
+                            <div class="patient-name">
+                                <h4>Cristian Z.</h4>
+                            </div>
+                            <div class="patient-verification">✅</div>
+                        </div>
+                        <div class="stars-review-timestamp">
+                            <div class="review-stars">⭐️⭐️⭐️⭐️⭐️⭐️</div>
+                            <div class="review-timestamp">
+                                <p>• Hace 1 semanas</p>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p>
+                                "El Dr. explicó mi condición de manera muy clara
+                                y fácil de entender." Siempre muy amable y
+                                paciente con mis preguntas. Se nota su empatía.
+                                Su diagnóstico fue muy acertado, me siento mucho
+                                mejor después del tratamiento que me recetó. A
+                                veces las citas se retrasan un poco, pero la
+                                atención es excelente.
+                            </p>
+                        </div>
+                        <div class="appointments-number">
+                            <p>Primera cita</p>
+                        </div>
+                        <div class="treated-deseases">
+                            <ul>
+                                <li>Taquicardias</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="review-box">
+                        <div class="profile-review-header">
+                            <div class="gender-icon">👨🏻‍⚕️</div>
+                            <div class="patient-name">
+                                <h4>Cristian Z.</h4>
+                            </div>
+                            <div class="patient-verification">✅</div>
+                        </div>
+                        <div class="stars-review-timestamp">
+                            <div class="review-stars">⭐️⭐️⭐️⭐️⭐️⭐️</div>
+                            <div class="review-timestamp">
+                                <p>• Hace 1 semanas</p>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p>
+                                "El Dr. explicó mi condición de manera muy clara
+                                y fácil de entender." Siempre muy amable y
+                                paciente con mis preguntas. Se nota su empatía.
+                                Su diagnóstico fue muy acertado, me siento mucho
+                                mejor después del tratamiento que me recetó. A
+                                veces las citas se retrasan un poco, pero la
+                                atención es excelente.
+                            </p>
+                        </div>
+                        <div class="appointments-number">
+                            <p>Primera cita</p>
+                        </div>
+                        <div class="treated-deseases">
+                            <ul>
+                                <li>Taquicardias</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="review-box">
+                        <div class="profile-review-header">
+                            <div class="gender-icon">👨🏻‍⚕️</div>
+                            <div class="patient-name">
+                                <h4>Vero V.</h4>
+                            </div>
+                            <div class="patient-verification">✅</div>
+                        </div>
+                        <div class="stars-review-timestamp">
+                            <div class="review-stars">⭐️⭐️⭐️⭐️⭐️⭐️</div>
+                            <div class="review-timestamp">
+                                <p>• Hace 1 semanas</p>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p>
+                                "El Dr. explicó mi condición de manera muy clara
+                                y fácil de entender." Siempre muy amable y
+                                paciente con mis preguntas.
+                            </p>
+                        </div>
+                        <div class="appointments-number">
+                            <p>Primera cita</p>
+                        </div>
+                        <div class="treated-deseases">
+                            <ul>
+                                <li>Taquicardias</li>
+                            </ul>
+                        </div>
+                    </div>
+                </container>
+            </section>
+        </section>
+    </body>
+
+    <style>
+        /* .doc-profile {
+            background-color: #e9e9e9;
+        } */
+        .doc-profile-summary {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .doc-profile-photo {
+            font-size: xxx-large;
+        }
+
+        .doc-profile-title {
+            margin-bottom: 5px;
+        }
+        .dp-speciality-subspeciality {
+            margin-bottom: 5px;
+        }
+        .dp-speciality-subspeciality > h2 {
+            margin-bottom: 5px;
+        }
+
+        /* BRANCHES TOP 20% RATING */
+        .dp-laurel-branches-overall-top-rated {
+            display: grid;
+            grid-template-columns: 1fr 100px 1fr;
+            margin-bottom: 25px;
+            margin-top: 25px;
+        }
+
+        .overall-rate {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .overall-rate > h1 {
+            font-size: 60px;
+        }
+
+        .left-laurel-branch {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .right-laurel-branch {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .left-laurel-branch > img {
+            height: 250px;
+        }
+
+        .right-laurel-branch > img {
+            height: 250px;
+        }
+
+        /* --------------------------- */
+
+        /* TOP 20% RATED DESCRIPTION */
+        .dp-description-top-rated-region {
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+        .dp-description-top-rated-chile {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .top-rated-reviews-qty {
+            color: #555;
+        }
+        /* --------------------------- */
+
+        /* OUT OF 20% RATED STAR */
+        .dp-star-overall-rate {
+            display: grid;
+            grid-template-columns: 1fr 100px 1fr;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .out-20percent-star {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .out-20percent-overall-rate {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .out-20percent-overall-rate > h1 {
+            font-size: 60px;
+        }
+
+        .out-20percent-reviews-qty {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .out-20percent-reviews-qty > h3 {
+            font-size: 20px;
+            color: #555;
+        }
+
+        /* --------------------------- */
+
+        /* TAGS CLASIFICATION */
+        /* Layout */
+        .tag-clasification-section {
+            display: flex;
+            justify-content: center;
+
+            margin-top: 60px;
+            margin-bottom: 50px;
+        }
+
+        .tag-clasification-section > div > div > img {
+            height: 25px;
+            margin: 5px;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .tag-clasification-section > div {
+            padding: 20px;
+            border-left: 2px solid black;
+        }
+
+        .tag-clasification-section > div:first-child {
+            border-left: none;
+            /* delete the border for the first child */
+        }
+
+        /* TAGS */
+
+        /* TESTING GRAPHS */
+        .graph-resolvio-mi-problema > button {
+            position: relative;
+            padding: 6px;
+            border-radius: 5px;
+            border: 2px solid black;
+            width: 200px;
+            height: 30px;
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            overflow: hidden;
+        }
+
+        .graph-resolvio-mi-problema > button::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgb(89, 89, 89); /* Or any color you prefer */
+            width: 50%; /* Dynamic percentage can be set via inline style or JavaScript */
+            z-index: 1;
+            opacity: 0.5; /* Adjust transparency as needed */
+        }
+
+        .graph-resolvio-mi-problema > button span {
+            position: absolute;
+            z-index: 0;
+            /* Span: Superpone el texto entre el fondo negro y la barra gris (gráfico) */
+        }
+
+        /* ----------------- */
+
+        .graph-comunicacion-clara > button {
+            padding: 6px;
+            border-radius: 5px;
+            border: 2px solid black;
+
+            width: 200px;
+            height: 30px;
+
+            background-color: black;
+            color: white;
+        }
+        .graph-atencion-profesionalismo > button {
+            padding: 6px;
+            border-radius: 5px;
+            border: 2px solid black;
+
+            width: 200px;
+            height: 30px;
+
+            background-color: black;
+            color: white;
+        }
+        .graph-dominio-conocimientos > button {
+            padding: 6px;
+            border-radius: 5px;
+            border: 2px solid black;
+
+            width: 200px;
+            height: 30px;
+
+            background-color: black;
+            color: white;
+        }
+        .graph-recomiendo-a-familiar > button {
+            padding: 6px;
+            border-radius: 5px;
+            border: 2px solid black;
+
+            width: 200px;
+            height: 30px;
+
+            background-color: black;
+            color: white;
+        }
+
+        /* --------------------------- */
+
+        .about-section {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+        }
+
+        .doc-about {
+            padding: 15px;
+            margin: 10px;
+        }
+
+        .doc-about > container {
+            margin-top: 20px;
+        }
+
+        .doc-background {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        .placeofcare-prevision {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        .treated-deseases-list > ul {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background-color: rgb(227, 227, 227);
+            margin: 3px;
+            padding: 3px;
+        }
+
+        /* ------- COMMENTS SECTION ------- */
+        /* Overall Layout */
+        .doc-reviews {
+            position: sticky;
+            height: fit-content;
+            top: 25px;
+            /* filter: drop-shadow( 0 0 10px rgb(0, 0, 0, .1)); */
+        }
+
+        .button-review-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .write-a-review {
+            font-size: 15px;
+            padding: 30px;
+            background-color: black;
+            color: white;
+            border-radius: 5px;
+            border-style: unset;
+            width: 300px;
+            cursor: pointer;
+            filter: drop-shadow(0 0 10px rgb(0, 0, 0, 0.4));
+        }
+
+        .patient-comments {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
+            /*  display: flex;
+            flex-direction: column;
+            align-items: center;
+            */
+            margin-bottom: 1rem;
+            height: 40rem;
+        }
+
+        /* SCROLL BAR */
+
+        .patient-comments {
+            overflow-y: auto;
+            /* Enable vertical scrolling if needed */
+        }
+        /* For WebKit browsers (Chrome, Safari) */
+        .patient-comments::-webkit-scrollbar {
+            width: 8px;
+            /* Width of the scrollbar */
+        }
+
+        .patient-comments::-webkit-scrollbar-track {
+            background: transparent;
+            /* No background for the track */
+        }
+
+        .patient-comments::-webkit-scrollbar-thumb {
+            background: #888;
+            /* Color of the scrollbar thumb */
+            border-radius: 4px;
+            /* Rounded corners for the thumb */
+        }
+
+        .patient-comments::-webkit-scrollbar-thumb:hover {
+            background: #555;
+            /* Darker color on hover */
+        }
+
+        /* For Firefox */
+        .patient-comments {
+            scrollbar-width: thin;
+            /* Use a thin scrollbar */
+            scrollbar-color: #888 transparent;
+            /* Thumb color and track color */
+        }
+
+        /* Review Cards */
+
+        .review-box {
+            border-radius: 5px;
+            border-style: unset;
+            background-color: white;
+
+            padding: 12px;
+            margin: 10px;
+        }
+
+        .profile-review-header {
+            display: grid;
+            grid-template-columns: 1fr 3fr 1fr;
+            justify-items: start;
+        }
+
+        .stars-review-timestamp {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            justify-items: center;
+            margin: 5px;
+        }
+
+        .review-timestamp {
+            font-size: 10px;
+            align-content: center;
+        }
+
+        .appointments-number {
+            background-color: #316930;
+            color: white;
+            width: fit-content;
+            padding: 3px;
+            margin: 2px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .treated-deseases > ul {
+            display: flex;
+        }
+
+        .treated-deseases > ul > li {
+            background-color: #858585;
+            color: white;
+            width: fit-content;
+            padding: 3px;
+            margin: 2px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+    </style>
+</Layout>

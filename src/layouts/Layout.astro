@@ -1,50 +1,551 @@
 ---
+import "../styles/global.css";
+import { AuthWrapper } from "../components/api/supabase/AuthWrapper.jsx";
+
 interface Props {
-	title: string;
+    title: string;
 }
 
 const { title } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/img/fav-findr.svg" />
+        <title>{title}</title>
+        <!-- title: finder.it viene del index se le pasa por props -->
+    </head>
+    <body>
+        <AuthWrapper client:load>
+            <slot />
+            <!-- Acá van las pages renderizadas-->
+        </AuthWrapper>
+    </body>
 </html>
+
 <style is:global>
-	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background: #13151a;
-	}
-	code {
-		font-family:
-			Menlo,
-			Monaco,
-			Lucida Console,
-			Liberation Mono,
-			DejaVu Sans Mono,
-			Bitstream Vera Sans Mono,
-			Courier New,
-			monospace;
-	}
+    html {
+        /* IMPORTS */
+        /* EB Garamond Font for titles */
+        @import url("https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap");
+
+        /* Open Sans Font for paragraphts */
+        @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+
+        /* Inter Font for  */
+        @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+        font-family: "EB Garamond", "Open Sans", sans-serif;
+        background: #ededed;
+    }
+
+    /* Custom Global Styles */
+   
+    
+
+    a {
+        text-decoration: none;
+    }
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        font-family: "Open Sans", sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box;
+    }
+
+    ::placeholder {
+        color: rgb(167, 167, 167);
+    }
+
+    h1 {
+        margin: 0;
+        font-family: "EB Garamond", sans-serif;
+        font-weight: 500;
+        font-size: 35px;
+    }
+
+    h2,
+    h3 {
+        margin: 0;
+        font-family: "Open Sans", sans-serif;
+        font-weight: 500;
+    }
+
+    h4 {
+        margin: 0;
+        font-family: "Open Sans", sans-serif;
+        font-weight: 600;
+    }
+
+    p {
+        margin: 0;
+        font-family: "Open Sans", sans-serif;
+        font-weight: 50;
+        text-wrap: pretty;
+    }
+
+    button {
+        font-family: "Open Sans", sans-serif;
+        text-wrap: pretty;
+    }
+
+    /* ---- SEARCH BAR FORM COMPONENT ------*/
+    .region-comuna-speciality {
+        /* dejar este componente como padre, agregar un componente hijo que contenga estos estilos */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-direction: row;
+
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        justify-content: center;
+        overflow: visible; /*  */
+        top: 30px;
+    }
+
+    .finder {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .finder-inputs {
+        display: inline-block;
+        flex-wrap: wrap;
+        padding: 10px;
+        justify-content: center;
+        position: sticky;
+        top: 0;
+        background-color: #ededed;
+    }
+
+    /* ------------------------------------ */
+
+    /* ---- REGION INPUT-----*/
+    .header-title {
+        text-align: center;
+    }
+
+    /* REGION & COMUNA DROPDOWN LIST */
+    
+    /* .region-dropdown {
+        display: inline-block;
+        position: relative;
+    }
+
+    .region-dropdown-list {
+        cursor: pointer;
+        border: unset;
+        border-radius: 5px 0 0 5px;
+        background-color: rgba(41, 41, 41, 0.95);
+        color: white;
+        padding: 0.3rem;
+        width: 300px;
+    }
+
+    .region-dropdown-list:disabled {
+        color: red;
+    }
+
+    .region-dropdown select:focus {
+        outline: none;
+    } */
+
+    .comuna-dropdown {
+        display: inline-block;
+        position: relative;
+    }
+    .comuna-dropdown-list {
+        /* -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none; */
+        cursor: pointer;
+        border: unset;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+        border-bottom-left-radius: 0px;
+        background-color: rgba(41, 41, 41, 0.95);
+        color: white;
+        padding: 0.3rem;
+        width: 160px;
+    }
+
+    .comuna-dropdown select:focus {
+        outline: none;
+    }
+
+    /* ------------------------------------ */
+
+    .region-input {
+        border: unset;
+        background-color: #dddddd;
+        padding: 0.3rem;
+    }
+
+    .region-input:focus {
+        outline: none;
+        box-shadow: inset 0 0 20px 5px hsla(0, 0%, 80%, 0.8);
+        transition: box-shadow 0.3s ease;
+    }
+
+    .autocomplete-region-wrapper {
+        display: inline-block;
+        position: relative;
+    }
+
+    .autocomplete-region-list {
+        margin: unset;
+        padding: unset;
+        position: absolute;
+    }
+
+    .autocomplete-region-list li {
+        border: 1px solid #9e9e9e;
+        background: #ffffff;
+        border-top: unset;
+    }
+
+    .autocomplete-region-list li:hover {
+        background: #f0f0f0;
+    }
+
+    .autocomplete-region-list button {
+        border: unset;
+        background: unset;
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 0.5rem;
+    }
+
+    /* ------ COMUNA INPUT ----- */
+
+    .comuna-input {
+        border: unset;
+        background-color: #dddddd;
+        padding: 0.3rem;
+    }
+
+    .comuna-input:focus {
+        outline: none;
+        box-shadow: inset 0 0 20px 5px hsla(0, 0%, 80%, 0.8);
+        transition: box-shadow 0.3s ease;
+    }
+
+    .comuna-input:disabled {
+        cursor: not-allowed;
+        color: #c6c6c6;
+    }
+
+    .autocomplete-comuna-wrapper {
+        display: inline-block;
+        position: relative;
+    }
+
+    .autocomplete-comuna-list {
+        list-style: none;
+        margin: unset;
+        padding: unset;
+        position: absolute;
+        width: 100%;
+    }
+
+    .autocomplete-comuna-list li {
+        border: 1px solid #9e9e9e;
+        background: #ffffff;
+        border-top: unset;
+    }
+
+    .autocomplete-comuna-list li:hover {
+        background: #f0f0f0;
+    }
+
+    .autocomplete-comuna-list button {
+        border: unset;
+        background: unset;
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 0.5rem;
+    }
+
+    /* ------------------------- */
+
+    /* ------ ESPECIALIST, DISEASE, DRNAME INPUT ----- */
+
+    .speciality-input {
+        border: unset;
+        background-color: rgba(41, 41, 41, 0.95);
+        color: white;
+        line-height: 17px; /* alinea select con input */
+        padding: 0.3rem;
+        width: auto;
+        min-width: 250px; /* Adjust this value as needed */
+        padding-right: 1.8rem; /* Evita que el texto toque botón  "X" */
+    }
+
+    .span-button {
+        background-color: rgba(41, 41, 41, 0);
+
+        border: unset;
+        cursor: pointer;
+
+        display: flex;
+
+        position: absolute;
+        right: 0px;
+        top: 50%; /* Lo mueve hacia arriba */
+        transform: translateY(
+            -50%
+        ); /* Lo ajusta para que quede centrado sobre el input */
+        z-index: 10; /* Asegura que esté por encima */
+
+        text-align: center;
+        justify-content: center;
+
+        padding: 0.3rem;
+        line-height: 17px;
+    }
+
+    .input-span {
+        color: white;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        font-family: "Arial";
+        font-size: 17px;
+        width: 18px;
+    }
+
+    .input-span:hover {
+        background-color: #9e9e9e;
+        border-radius: 5px;
+    }
+
+    .speciality-input::placeholder {
+        color: white;
+    }
+    .speciality-input:focus {
+        outline: none;
+        /* box-shadow: inset 0 0 20px 5px hsla(0, 0%, 80%, 0.8);
+        transition: box-shadow 0.3s ease; */
+    }
+
+    .autocomplete-speciality-wrapper {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        width: auto;
+    }
+
+    .autocomplete-speciality-list {
+        list-style: none;
+        margin: unset;
+        padding: unset;
+        position: absolute;
+        width: 100%;
+        margin-top: 8px;
+        top: 100%;
+    }
+
+    .autocomplete-speciality-list li {
+        border-bottom: 1px solid #434343c5;
+        background: rgba(41, 41, 41, 0.95);
+        border-top: unset;
+    }
+    .autocomplete-speciality-list li:first-child {
+        border-radius: 6px 6px 0px 0px;
+    }
+    .autocomplete-speciality-list li:last-child {
+        border-radius: 0px 0px 6px 6px;
+        border-bottom: unset;
+    }
+
+    .autocomplete-speciality-list li:hover {
+        background: rgba(41, 41, 41, 0.791);
+    }
+
+    .autocomplete-speciality-list button {
+        cursor: pointer;
+        border: unset;
+        background: unset;
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 0.5rem;
+        color: white;
+    }
+
+    /* ---------------BTN FIINDR-----------------*/
+
+    .submit-finder-btn {
+        border: unset;
+        border-radius: 0 5px 5px 0;
+        background-color: #000000;
+        padding: 0.3rem;
+        line-height: 17px;
+        color: white;
+        width: 90px;
+        height: auto;
+    }
+
+    .submit-finder-btn:hover {
+        background-color: rgba(0, 102, 255, 1);
+        transition: background-color 0.2s ease;
+        cursor: pointer;
+    }
+
+    /* ----- DESEASE BUTTON CONTAINER ---- */
+
+    .diseaseButtons {
+        border: unset;
+        padding: 0.5rem;
+        border: 2px solid #ffffff;
+    }
+
+    .diseaseButtons.selected {
+        background-color: rgba(0, 102, 255, 1);
+        color: white;
+    }
+
+    .diseaseButtons:hover {
+        background-color: #000000;
+        border: 2px solid #000000;
+        color: white;
+    }
+
+    .desease-filter-title h2 {
+        text-align: center;
+    }
+
+    .desease-filter-select {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
+        align-items: center;
+        height: 30rem;
+    }
+
+    .desease-filter-select select {
+        margin: 5px;
+    }
+
+    /* ------------ PROFILE CARDS ------------*/
+
+    .profile-card {
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        background: #e5e5e5;
+        margin: 5px;
+        padding: 5px;
+        align-items: center;
+        border-radius: 30px;
+    }
+
+    .profile-card:hover {
+        outline: 3px solid black;
+        background-color: #f3f3f3;
+    }
+
+    .profile-photo {
+        /* probably "results" style is making this tedious */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* TITLES & PARAGRAPHS */
+    .doctor-name h2 {
+        margin: 2px;
+    }
+
+    .doctor-title p {
+        margin: 2px;
+    }
+
+    .doctor-specialtity-sub-speciality p {
+        margin: 2px;
+    }
+
+    .doctor-health-facility p {
+        margin: 2px;
+    }
+
+    /* -------------------- */
+
+    .doctor-overall-rating {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Calification Type Buttons */
+
+    .doctor-tag-rating {
+        margin-bottom: 8px;
+
+        display: grid;
+        /*  grid-template-columns: repeat(minmax(50px, 1fr)); */
+        grid-template-columns: 1fr 1fr;
+        width: auto;
+
+        /* 
+    TO ORDER THE LIST.
+
+
+    display: grid;
+    gap: 0.1rem;
+    margin-bottom: 6px;
+    */
+    }
+
+    .calification-type {
+        border: 2px solid black;
+        border-radius: 25px;
+        color: white;
+        margin: 1px;
+
+        background: rgb(158, 158, 158);
+        /*  display: block; */
+        width: auto;
+        padding: 0.5rem;
+
+        /*     text-align: center;
+ */
+    }
+
+    .deseases-type-buttons {
+        margin: 1px;
+        background: #dadada;
+        padding: 0.5rem;
+        border: unset;
+        border-radius: 25px;
+    }
+
+    .empty-space {
+        height: 20px;
+    }
+    /* -------------------------------------- */
 </style>
