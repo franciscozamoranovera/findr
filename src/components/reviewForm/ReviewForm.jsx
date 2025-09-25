@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../api/supabase/AuthProvider";
+import { supabase } from "../api/supabase/supabase";
 
 import { DiseasesMultiSelect } from "./components/DiseasesMultiSelect"
 import { HealthcareCenterSelect } from "./components/HealthcareCenterSelect";
@@ -12,10 +13,12 @@ import { Thanks } from "./components/Thanks";
 
 
 
+
 export const ReviewForm = ({ doctorId, doctorHC, doctorFName, doctorDiseases }) => {
 
     const [step, setStep] = useState(1);
     const { user, loading, isAuthenticated } = useAuth();
+    const [userFname, setUserFname] = useState()
 
     // Protección híbrida cliente-side (Opción B)
     useEffect(() => {
@@ -25,6 +28,21 @@ export const ReviewForm = ({ doctorId, doctorHC, doctorFName, doctorDiseases }) 
             window.location.href = `/login?redirect=${encodeURIComponent(currentUrl)}`;
         }
     }, [loading, isAuthenticated]);
+
+    //USERNAME
+    useEffect(() => {
+        const fetchUserName = async () => {
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
+
+            const name = session?.user?.user_metadata?.full_name;
+            setUserFname(name);
+        };
+
+        fetchUserName();
+
+    }, [])
 
 
     const [formData, setFormData] = useState({
@@ -39,7 +57,8 @@ export const ReviewForm = ({ doctorId, doctorHC, doctorFName, doctorDiseases }) 
         recommendationToFamily: "",
         continueOrNot: "",
         diseases: [],
-        writtenReview: ""
+        writtenReview: "",
+        isAnonymous: false
     })
 
 
@@ -160,11 +179,13 @@ export const ReviewForm = ({ doctorId, doctorHC, doctorFName, doctorDiseases }) 
                         onNext={handleNext}
 
                         formData={formData}
+
+                        userFname={userFname}
                     />
                 )}
                 {step === 7 && (
                     <Thanks
-                    doctorFName={doctorFName}
+                        doctorFName={doctorFName}
 
                     />
                 )}

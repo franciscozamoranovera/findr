@@ -49,7 +49,7 @@ export const RatingByKnoledge = ({ onScrollToNext, knowledgeDomainSelected, onCh
                     <div>
                         <h1 className="text-2xl text-center"
                         >
-                            ¿Dominaba los conocimientos necesarios?
+                            ¿Cómo percibiste el dominio de conocimientos?
                         </h1>
 
                     </div>

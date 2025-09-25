@@ -27,7 +27,7 @@ export const EvaluationSelection = ({ appointmentReasonSelected, evaluationTypeS
     /* IF RESOLVIÓ MI PROBLEMA */
     const [problemSolvedOption, setProblemSolvedOption] = useState("");
 
-    const [addClass, setAddClass] = useState()
+    const [addClass, setAddClass] = useState();
 
     /* REF CONTROL ON CLICK (SELECT)*/
     const child0Ref = useRef(null);
@@ -36,7 +36,7 @@ export const EvaluationSelection = ({ appointmentReasonSelected, evaluationTypeS
     const child3Ref = useRef(null);
     const child4Ref = useRef(null);
 
-    const onScrollToNext = () => scrollToChild1()
+    const onScrollToNext = () => scrollToChild1();
 
     const scrollToChild0 = () => {
         child0Ref.current?.scrollIntoView({ behavior: "smooth" });

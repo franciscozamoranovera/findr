@@ -9,20 +9,23 @@ import { useState, useEffect } from "react";
 */
 
 
-export const Consent = ({ checked, setChecked, setBtnNextBlocked }) => {
+export const Consent = ({ setIsAnonymous, isAnonymous, checked, setChecked, setBtnNextBlocked }) => {
 
 
     const [openModal, setOpenModal] = useState(false);
 
-    const handleOnClick = (e) => {
+    const handleOnClickConsent = (e) => {
         e.preventDefault();
-        const value = e.target.value;
         /* !checked */
         setChecked(!checked); /* !checked, alterna valor booleano */
 
         setBtnNextBlocked(true);
     };
 
+    const handleOnClickAnonymus = (e) => {
+        e.preventDefault();
+        setIsAnonymous(!isAnonymous)
+    }
 
 
     return (
@@ -32,16 +35,16 @@ export const Consent = ({ checked, setChecked, setBtnNextBlocked }) => {
                 <div className="flex flex-col items-center justify-center p-2">
                     <div className="flex flex-col-2 gap-1">
                         <button
-                            className=" text-[#2D2D2D] bg-[#ffffff] text-sm border border-[#2D2D2D] rounded-full px-4 py-2 transition-colors"
-                            /* className={`${checked === true ? " text-white bg-[#2D2D2D]" : " text-[#2D2D2D] bg-[#ffffff]"} text-sm border border-[#2D2D2D] rounded-full px-4 py-2 transition-colors`}
-                            onClick={handleOnClick}
-                            value={checked} */
+                            /* className=" text-[#2D2D2D] bg-[#ffffff] text-sm border border-[#2D2D2D] rounded-full px-4 py-2 transition-colors" */
+                            className={`${isAnonymous === true ? " text-white bg-[#2D2D2D]" : " text-[#2D2D2D] bg-[#ffffff]"} text-sm border border-[#2D2D2D] rounded-full px-4 py-2 transition-colors`}
+                            value={isAnonymous} 
+                            onClick={handleOnClickAnonymus}
                         >
                             Anónimo
                         </button>
                         <button
                             className={`${checked === true ? " text-white bg-[#2D2D2D]" : " text-[#2D2D2D] bg-[#ffffff]"} border border-[#2D2D2D] rounded-full px-4 py-2 transition-colors`}
-                            onClick={handleOnClick}
+                            onClick={handleOnClickConsent}
                             value={checked}
                         >
                             Acepto Consentimiento

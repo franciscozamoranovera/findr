@@ -4,7 +4,8 @@ import Layout from "../layouts/Layout.astro";
 import { supabase } from "@/components/api/supabase/supabase";
 import { ReviewForm } from "@/components/reviewForm/ReviewForm";
 import ReviewAuthGuard from "@/components/reviewForm/ReviewAuthGuard";
-
+// Al inicio del script
+console.log("🔍 review.astro se está renderizando");
 const url = new URL(Astro.request.url);
 const id = url.searchParams.get("id");
 
@@ -12,7 +13,6 @@ const id = url.searchParams.get("id");
 if (!id) {
     return Astro.redirect("/404");
 }
-
 const { data: doctor_search_view_flat, error } = await supabase
     .from("doctor_search_view_flat")
     .select("*")
@@ -23,6 +23,7 @@ const { data: doctor_search_view_flat, error } = await supabase
 if (error || !doctor_search_view_flat) {
     return Astro.redirect("/404");
 }
+
 
 const doctorFName = doctor_search_view_flat.doctor_first_name;
 const doctorHC = doctor_search_view_flat.healthcare_centers;
@@ -52,4 +53,3 @@ const doctorDiseases = doctor_search_view_flat.diseases;
         </ReviewAuthGuard>
     </body>
 </Layout>
-

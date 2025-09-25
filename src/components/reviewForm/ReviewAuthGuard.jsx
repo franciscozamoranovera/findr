@@ -2,6 +2,7 @@ import { useAuth } from "@/components/api/supabase/AuthProvider";
 import { useEffect, useState } from "react";
 import { supabase } from "@/components/api/supabase/supabase";
 
+//ReviewAuthGuard: Permite que se valide la sesión al abrir una pestaña nueva.
 const ReviewAuthGuard = ({ children, fallbackUrl = '/login' }) => {
     const { user, loading } = useAuth()
     const [forceRender, setForceRender] = useState(0)
@@ -9,10 +10,12 @@ const ReviewAuthGuard = ({ children, fallbackUrl = '/login' }) => {
 
     // VERIFICACIÓN DIRECTA como fallback
     useEffect(() => {
+
         const directCheck = async () => {
             try {
                 const { data: { session }, error } = await supabase.auth.getSession()
                 console.log('🔍 ReviewAuthGuard - Verificación directa:', session?.user?.email || 'no session')
+                console.log('USER_USER', session?.user?.user_metadata?.full_name)
                 setDirectAuth({
                     user: session?.user || null,
                     loading: false
@@ -54,7 +57,7 @@ const ReviewAuthGuard = ({ children, fallbackUrl = '/login' }) => {
         console.log('🔍 ReviewAuthGuard - Estado actualizado:', {
             contextUser: user?.email || 'no context user',
             directUser: directAuth.user?.email || 'no direct user',
-            finalUser: finalUser?.email || 'no final user'
+            finalUser: finalUser?.email || 'no final user',
         })
         setForceRender(prev => prev + 1)
     }, [user, loading, directAuth, finalUser, finalLoading])

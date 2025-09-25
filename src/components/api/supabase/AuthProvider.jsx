@@ -28,7 +28,8 @@ export const AuthProvider = ({ children }) => {
         user: user?.email || 'no user',
         loading,
         hasSession: !!session,
-        initialized
+        initialized,
+        name: user?.user_metadata?.full_name
     })
 
     // Limpiar flag cuando user está autenticado
@@ -241,7 +242,8 @@ export const AuthProvider = ({ children }) => {
     console.log('AuthProvider Context:', {
         user: user?.email || 'no user',
         loading,
-        isAuthenticated: !!(user || session?.user)
+        isAuthenticated: !!(user || session?.user),
+        name: user?.user_metadata?.full_name
 
     })
 

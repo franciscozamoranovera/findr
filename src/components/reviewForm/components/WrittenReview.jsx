@@ -3,7 +3,8 @@ import { Consent } from "./Consent";
 import { SubmitFormReview } from "./SubmitFormReview";
 
 
-export const WrittenReview = ({ writtenReviewText, onChange, onBack, onNext, formData }) => {
+
+export const WrittenReview = ({ writtenReviewText, onChange, onBack, onNext, formData, userFname }) => {
 
 
     const [writtenReviewInput, setWrittenReviewInput] = useState(writtenReviewText); /* to recover data onBack: useState(writtenReviewText) */
@@ -13,10 +14,15 @@ export const WrittenReview = ({ writtenReviewText, onChange, onBack, onNext, for
 
     const [btnNextBlocked, setBtnNextBlocked] = useState(true);
 
+    const [userName, setUserName] = useState("");
 
+    const [userNameExist, setUserNameExist] = useState(false);
+
+    const [isAnonymous, setIsAnonymous] = useState(formData.isAnonymous);
 
     const handleInputText = (e) => {
         e.preventDefault();
+
         const value = e.target.value;
 
         setWrittenReviewInput(value);
@@ -24,16 +30,35 @@ export const WrittenReview = ({ writtenReviewText, onChange, onBack, onNext, for
         setBtnNextBlocked(true);
     }
 
+    const handleInputName = (e) => {
+        e.preventDefault();
+        const value = e.target.value;
+        setUserName(value)
+
+    }
+
+
+    useEffect(() => {
+
+        if (userFname) {
+            setUserName(userFname)
+            setUserNameExist(true)
+        }
+
+    }, [])
+
+
     useEffect(() => {
 
         onChange("writtenReview", writtenReviewInput);
+        onChange("isAnonymous", isAnonymous)
 
         if (writtenReviewInput.length < 0 && !checked) setBtnNextBlocked(true);
         if (writtenReviewInput.length > 0 && checked) setBtnNextBlocked(false);
 
 
 
-    }, [writtenReviewInput, setBtnNextBlocked, checked])
+    }, [isAnonymous, writtenReviewInput, setBtnNextBlocked, checked])
 
 
     /* RECOVER DATA WHEN ON BACK */
@@ -41,7 +66,8 @@ export const WrittenReview = ({ writtenReviewText, onChange, onBack, onNext, for
 
         if (writtenReviewText.length > 0) setWrittenReviewInput(writtenReviewText);
         if (writtenReviewText.length > 0 && checked) setBtnNextBlocked(false);
-
+        //if (formData.isAnonymous) setIsAnonymous(true);
+        //console.log('formData.isAnonymous', formData.isAnonymous)
 
     }, [])
 
@@ -56,11 +82,27 @@ export const WrittenReview = ({ writtenReviewText, onChange, onBack, onNext, for
                         Escribe una reseña
                     </h1>
                 </div>
-                <div>
+                <div className="w-[20rem]">
                     <p className="text-gray-400 text-center p-2"
                     >
                         Escribe algo que ayude a otros. ¿Qué te habría gustado saber?
                     </p>
+                </div>
+                <div className="pb-3 w-[20rem] flex flex-col items-center">
+
+                    {userNameExist ? (
+                        <span className="text-xl text-black">Escribiendo como {userFname}</span>
+                    ) : (
+
+                        <input
+                            className="bg-[#555555] text-white rounded-full px-4 py-2 focus:outline-none focus:border-transparent h-[50px] w-full placeholder:italic focus:bg-[#666666] cursor-pointer transition-colors duration-700 ease-in-out border border-transparent hover:border-black focus:border-black"
+                            type="text"
+                            name="name"
+                            placeholder="Tu primer nombre"
+                            onChange={handleInputName}
+                        />
+                    )}
+
                 </div>
 
                 <div className="flex flex-col items-center justify-center">
@@ -71,7 +113,7 @@ export const WrittenReview = ({ writtenReviewText, onChange, onBack, onNext, for
                             onChange={handleInputText}
                             value={writtenReviewInput}
                             placeholder="Escribe algo que sea realmente constructivo..."
-                            className="text-xl w-full h-full bg-white border border-gray-200 px-6 py-5 focus:outline-none focus:ring-2 focus:ring-gray-400  text-gray-600 align-top rounded-[3rem] resize-none overflow-y-scroll
+                            className="text-xl w-full h-full bg-white border border-gray-200 px-6 py-5 focus:outline-none focus:ring-2 focus:ring-gray-400  text-gray-600 align-top rounded-[3rem] resize-none overflow-y-scroll whitespace-pre-wrap
                         
                                         /* WebKit */
                                         [&::-webkit-scrollbar]:w-2
@@ -93,6 +135,8 @@ export const WrittenReview = ({ writtenReviewText, onChange, onBack, onNext, for
                     <Consent
                         checked={checked}
                         setChecked={setChecked}
+                        setIsAnonymous={setIsAnonymous}
+                        isAnonymous={isAnonymous}
                         setBtnNextBlocked={setBtnNextBlocked}
                     />
                 </div>
@@ -116,6 +160,8 @@ export const WrittenReview = ({ writtenReviewText, onChange, onBack, onNext, for
                             btnNextBlocked={btnNextBlocked}
 
                             formData={formData}
+
+                            userName={userName}
                         />
 
                     </div>

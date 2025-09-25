@@ -3,8 +3,9 @@ import { supabase } from "../api/supabase/supabase";
 
 export const LoginForm = () => {
 
-  const [email, setEmail] = useState("")
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   // Verificar si el usuario ya está logueado al cargar el componente
   useEffect(() => {
