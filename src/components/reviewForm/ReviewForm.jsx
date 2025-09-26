@@ -14,11 +14,11 @@ import { Thanks } from "./components/Thanks";
 
 
 
-export const ReviewForm = ({ doctorId, doctorHC, doctorFName, doctorDiseases }) => {
+export const ReviewForm = ({ doctorId, doctorHC, doctorFName, doctorFullName ,doctorDiseases }) => {
 
     const [step, setStep] = useState(1);
-    const { user, loading, isAuthenticated } = useAuth();
     const [userFname, setUserFname] = useState()
+    const { user, loading, isAuthenticated } = useAuth();
 
     // Protección híbrida cliente-side (Opción B)
     useEffect(() => {
@@ -180,7 +180,10 @@ export const ReviewForm = ({ doctorId, doctorHC, doctorFName, doctorDiseases }) 
 
                         formData={formData}
 
+                        doctorId={doctorId}
                         userFname={userFname}
+                        doctorFName={doctorFName}
+                        doctorFullName={doctorFullName}
                     />
                 )}
                 {step === 7 && (

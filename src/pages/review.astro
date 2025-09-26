@@ -26,6 +26,7 @@ if (error || !doctor_search_view_flat) {
 
 
 const doctorFName = doctor_search_view_flat.doctor_first_name;
+const doctorFullName = doctor_search_view_flat.full_name;
 const doctorHC = doctor_search_view_flat.healthcare_centers;
 const doctorDiseases = doctor_search_view_flat.diseases;
 ---
@@ -36,7 +37,7 @@ const doctorDiseases = doctor_search_view_flat.diseases;
             <div class="flex flex-col items-center">
                 <div class="flex flex-col items-center pt-2 pb-3">
                     <h1 class="p-2 text-lg">
-                        {doctor_search_view_flat.full_name}
+                        {doctorFullName}
                     </h1>
                     <h3 class="text-xs">
                         {doctor_search_view_flat.sub_speciality_name}
@@ -47,6 +48,7 @@ const doctorDiseases = doctor_search_view_flat.diseases;
                     doctorHC={doctorHC}
                     doctorDiseases={doctorDiseases}
                     doctorFName={doctorFName}
+                    doctorFullName={doctorFullName}
                     client:load
                 />
             </div>

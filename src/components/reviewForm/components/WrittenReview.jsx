@@ -4,7 +4,7 @@ import { SubmitFormReview } from "./SubmitFormReview";
 
 
 
-export const WrittenReview = ({ writtenReviewText, onChange, onBack, onNext, formData, userFname }) => {
+export const WrittenReview = ({ writtenReviewText, onChange, onBack, onNext, formData, userFname, doctorId, doctorFName, doctorFullName }) => {
 
 
     const [writtenReviewInput, setWrittenReviewInput] = useState(writtenReviewText); /* to recover data onBack: useState(writtenReviewText) */
@@ -66,8 +66,6 @@ export const WrittenReview = ({ writtenReviewText, onChange, onBack, onNext, for
 
         if (writtenReviewText.length > 0) setWrittenReviewInput(writtenReviewText);
         if (writtenReviewText.length > 0 && checked) setBtnNextBlocked(false);
-        //if (formData.isAnonymous) setIsAnonymous(true);
-        //console.log('formData.isAnonymous', formData.isAnonymous)
 
     }, [])
 
@@ -161,7 +159,10 @@ export const WrittenReview = ({ writtenReviewText, onChange, onBack, onNext, for
 
                             formData={formData}
 
+                            doctorId={doctorId}
                             userName={userName}
+                            doctorFName={doctorFName}
+                            doctorFullName={doctorFullName}
                         />
 
                     </div>
