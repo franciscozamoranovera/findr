@@ -98,8 +98,11 @@ export const RatingByCommunication = ({ onScrollToNext, communicationSelected, o
                     width="22"
                     height="22"
                     viewBox="0 0 16 16"
-                    className="ml-6"
-                    onClick={() => setInfo(true)}
+                    className="ml-6 cursor-pointer"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setInfo(true);
+                    }}
                 >
                     <path fill="currentColor" d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412l-1 4.705c-.07.34.029.533.304.533c.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598c-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081l.082-.381l2.29-.287zM8 5.5a1 1 0 1 1 0-2a1 1 0 0 1 0 2z" />
                 </svg>
@@ -165,7 +168,7 @@ export const RatingByCommunication = ({ onScrollToNext, communicationSelected, o
                         <svg
                             key={i}
                             xmlns="http://www.w3.org/2000/svg"
-                            className={`${i !== 0 ? "-ml-2" : ""}`}
+                            className={`${i !== 0 ? "-ml-2" : ""} select-none`}
                             width="22"
                             height="22"
                             viewBox="0 0 576 512"
@@ -193,8 +196,12 @@ export const RatingByCommunication = ({ onScrollToNext, communicationSelected, o
                     width="22"
                     height="22"
                     viewBox="0 0 16 16"
-                    className="ml-4"
-                /* onClick = abrir MODAL */
+                    className="ml-4 select-none cursor-pointer"
+                    onClick={(e) => {
+                        e.stopPropagation(); // Evita que se propague al button
+                        // Aquí abrir MODAL
+                        console.log('SVG clickeado - abrir modal');
+                    }}
                 >
                     <path fill="currentColor" d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412l-1 4.705c-.07.34.029.533.304.533c.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598c-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081l.082-.381l2.29-.287zM8 5.5a1 1 0 1 1 0-2a1 1 0 0 1 0 2z" />
                 </svg>
@@ -239,8 +246,11 @@ export const RatingByCommunication = ({ onScrollToNext, communicationSelected, o
                     width="22"
                     height="22"
                     viewBox="0 0 16 16"
-                    className="ml-4"
-                /* onClick = abrir MODAL */
+                    className="ml-4 cursor-pointer"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        console.log('SVG clickeado - abrir modal');
+                    }}
                 >
                     <path fill="currentColor" d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412l-1 4.705c-.07.34.029.533.304.533c.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598c-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081l.082-.381l2.29-.287zM8 5.5a1 1 0 1 1 0-2a1 1 0 0 1 0 2z" />
                 </svg>
@@ -284,8 +294,11 @@ export const RatingByCommunication = ({ onScrollToNext, communicationSelected, o
                     width="22"
                     height="22"
                     viewBox="0 0 16 16"
-                    className="ml-4"
-                /* onClick = abrir MODAL */
+                    className="ml-4 cursor-pointer"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        console.log('SVG clickeado - abrir modal');
+                    }}
                 >
                     <path fill="currentColor" d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412l-1 4.705c-.07.34.029.533.304.533c.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598c-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081l.082-.381l2.29-.287zM8 5.5a1 1 0 1 1 0-2a1 1 0 0 1 0 2z" />
                 </svg>
@@ -328,8 +341,11 @@ export const RatingByCommunication = ({ onScrollToNext, communicationSelected, o
                     width="22"
                     height="22"
                     viewBox="0 0 16 16"
-                    className="ml-4"
-                /* onClick = abrir MODAL */
+                    className="ml-4 cursor-pointer"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        console.log('SVG clickeado - abrir modal');
+                    }}
                 >
                     <path fill="currentColor" d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412l-1 4.705c-.07.34.029.533.304.533c.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598c-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081l.082-.381l2.29-.287zM8 5.5a1 1 0 1 1 0-2a1 1 0 0 1 0 2z" />
                 </svg>

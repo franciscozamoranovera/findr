@@ -49,8 +49,10 @@ export const LoginForm = () => {
 
       // Simplificar redirectTo - siempre redirigir al home
       // y dejar que AuthProvider maneje la redirección final
+      // Para desarrollo con --host, detectar si es red local
+      const isLocalNetwork = window.location.hostname.startsWith('192.168')
       const baseUrl = import.meta.env.DEV ?
-        window.location.origin :
+        (isLocalNetwork ? `http://192.168.0.30:4321` : window.location.origin) :
         (import.meta.env.PUBLIC_SITE_URL || window.location.origin)
 
       const redirectTo = baseUrl // Siempre al home, sin query params
