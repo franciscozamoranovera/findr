@@ -12,8 +12,6 @@ import { WrittenReview } from "./components/WrittenReview";
 import { Thanks } from "./components/Thanks";
 
 
-
-
 export const ReviewForm = ({ doctorId, doctorHC, doctorFName, doctorFullName ,doctorDiseases }) => {
 
     const [step, setStep] = useState(1);

@@ -8,20 +8,10 @@ import { DrReviews } from "@/components/doctorReviews/DrReviews";
 
 const { id } = Astro.params;
 
-const { data: doctor_profile, error } = await supabase
-    .from("doctor_profile")
+const { data, error } = await supabase
+    .from("doctor_search_view_flat")
     .select(
-        `
-    *,
-    speciality:speciality_id (
-      speciality_name
-    )
-    ,
-    sub_speciality:sub_speciality_id (
-        sub_speciality_name
-
-    )
-  `,
+        "doctor_first_name, full_name, speciality_name, sub_speciality_name, diseases, total_reviews, promedio_general",
     )
     .eq("id", id)
     .single(); //un solo doctor, no array
@@ -31,9 +21,24 @@ if (error) {
     return Astro.redirect("/404");
 }
 
-if (!doctor_profile) {
+if (!data) {
     return Astro.redirect("/404");
 }
+
+/* UTILS */
+
+//Add "." to rating numbers
+const toString = (num: number) => {
+    const count = num.toString();
+
+    if (count === "0") return 0;
+
+    if (!count.includes(".")) {
+        return count + ".0";
+    } else return data.promedio_general;
+};
+
+const doctorRating = toString(data.promedio_general);
 ---
 
 <Layout title="Doctor Profile">
@@ -43,30 +48,23 @@ if (!doctor_profile) {
                 <div class="doc-profile-photo">👨🏻‍⚕️</div>
                 <div class="doc-profile-name">
                     <h1>
-                        {doctor_profile.doctor_first_name}
-                        {doctor_profile.doctor_surname}
-                        {doctor_profile.doctor_second_surname}
+                        {data.full_name}
                     </h1>
                 </div>
                 <div class="doc-profile-title">
-                    <p>{doctor_profile.title}</p>
+                    <p><!-- {data.title} -->title</p>
                 </div>
                 <div class="dp-speciality-subspeciality">
                     {
-                        doctor_profile.sub_speciality && (
+                        data.speciality_name && (
                             /* check if we can access to sub_speciality (ex. if null we avoid errors) */
-                            <h2>
-                                {
-                                    doctor_profile.sub_speciality
-                                        .sub_speciality_name
-                                }
-                            </h2>
+                            <h2>{data.speciality_name}</h2>
                         )
                     }
 
                     {
-                        doctor_profile.speciality && (
-                            <p>{doctor_profile.speciality.speciality_name}</p>
+                        data.sub_speciality_name && (
+                            <p>{data.sub_speciality_name}</p>
                         )
                     }
                 </div>
@@ -76,15 +74,15 @@ if (!doctor_profile) {
                         <!-- Only for top rated drs -->
                         <div class="left-laurel-branch">
                             <img
-                                src="/img/doctor-profile/left-laurel-branch.png"
+                                src="/img/doctor-profile/left-laurel-findr-it-rating.png"
                             />
                         </div>
                         <div class="overall-rate">
-                            <h1>4,91</h1>
+                            <h1>{doctorRating}</h1>
                         </div>
                         <div class="right-laurel-branch">
                             <img
-                                src="/img/doctor-profile/right-laurel-branch.png"
+                                src="/img/doctor-profile/right-laurel-findr-it-rating.png"
                             />
                         </div>
                     </div>
@@ -99,17 +97,24 @@ if (!doctor_profile) {
                     <div class="dp-description-top-rated-chile">
                         <!-- Only for top rated drs -->
                         <p>
-                            <strong
-                                >{doctor_profile.doctor_first_name}
-                                {doctor_profile.doctor_surname}</strong
-                            > está dentro del 20% de los cardiólogos mejor valorados
-                            de Chile
+                            <strong>{data.full_name}</strong> está dentro del 20%
+                            de los cardiólogos mejor valorados de Chile
                         </p>
                     </div>
                     <div class="top-rated-reviews-qty">
-                        <h3>(6 reseñas)</h3>
+                        <h3>{data.total_reviews} reseñas</h3>
                     </div>
                 </container>
+
+                <script define:vars={{ doctorRating }}>
+                    
+                    //hide overall rating.
+                    if(doctorRating === 0) {
+                        return document.querySelector('.dp-top-20-percent'). style.display = 'none';
+                    }
+
+                </script>
+
                 <container class="dp-out-20percent-rated" hidden>
                     <div class="dp-star-overall-rate">
                         <!-- For the 80% mayority rated out of 20% or 0 reviews + 0 rating -->
@@ -407,13 +412,11 @@ if (!doctor_profile) {
                     <AuthReviewButton
                         client:load
                         drId={id}
-                        doctorName={doctor_profile.doctor_first_name}
+                        doctorName={data.doctor_first_name}
                     />
                 </div>
                 <container class="patient-comments">
-                    
                     <DrReviews client:load doctorId={id} />
-
                 </container>
             </section>
         </section>
@@ -457,12 +460,13 @@ if (!doctor_profile) {
         }
 
         .overall-rate > h1 {
-            font-size: 60px;
+            font-size: 90px;
         }
 
         .left-laurel-branch {
             display: flex;
             justify-content: flex-end;
+
         }
         .right-laurel-branch {
             display: flex;
@@ -470,11 +474,11 @@ if (!doctor_profile) {
         }
 
         .left-laurel-branch > img {
-            height: 250px;
+            height: 150px;
         }
 
         .right-laurel-branch > img {
-            height: 250px;
+            height: 150px;
         }
 
         /* --------------------------- */

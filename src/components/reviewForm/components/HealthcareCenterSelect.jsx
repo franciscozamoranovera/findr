@@ -13,33 +13,32 @@ export const HealthcareCenterSelect = ({ doctorHC, onNext, onChange, healthcareC
         e.preventDefault();
         const value = e.target.value;
 
-        
         setHealthcareCenterList(healthcareCenterList === value ? "" : value);
-        
+
+
         setBtnNextBlocked(false);
     }
-    
-    
-    
+
+
+
     /* Capture and send the value to the form (father) */
     useEffect(() => {
         onChange("healthcareCenterAppointment", healthcareCenterList);
 
-        if(healthcareCenterList === "") setBtnNextBlocked(true);
-        
-        
+        if (healthcareCenterList === "") setBtnNextBlocked(true);
+
+
     }, [healthcareCenterList, setBtnNextBlocked]);
-    
-    
+
+
     /* Keep selection when go back */
     useEffect(() => {
-        
+
         if (healthcareCenterSelected !== "") setHealthcareCenterList(healthcareCenterSelected);
         if (healthcareCenterSelected) setBtnNextBlocked(false);
-        
+
 
     }, [setHealthcareCenterList, healthcareCenterSelected]);
-
 
 
 
@@ -53,15 +52,15 @@ export const HealthcareCenterSelect = ({ doctorHC, onNext, onChange, healthcareC
 
                 <div className="p-3">
 
-                    {
-                        doctorHC.map((hCenter) => (
+                      {
+                        doctorHC.map((hCenter, i) => (
 
                             <button
                                 className={` ${hCenter === healthcareCenterList ? " text-white bg-[#2D2D2D]" : "bg-white"} px-6 py-3 rounded-full transition-colors m-2`}
                                 onClick={handleOnClick}
                                 type="button"
                                 value={hCenter}
-                                key={hCenter}
+                                key={i}
 
 
                             >
@@ -69,7 +68,8 @@ export const HealthcareCenterSelect = ({ doctorHC, onNext, onChange, healthcareC
                             </button>
 
                         ))
-                    }
+                    } 
+
                     <div className="fixed bottom-0 left-0 w-full z-10 bg-white/1 backdrop-blur flex items-center justify-center py-1 gap-20">
 
                         <button
@@ -94,7 +94,7 @@ export const HealthcareCenterSelect = ({ doctorHC, onNext, onChange, healthcareC
                         </button>
 
                         <button
-                            className={` ${healthcareCenterList !== "" ?  "bg-[#2D2D2D] text-white" : "bg-[#EFEFEF] text-[#D9D9D9]" } rounded-full w-[100px] h-[50px]`}
+                            className={` ${healthcareCenterList !== "" ? "bg-[#2D2D2D] text-white" : "bg-[#EFEFEF] text-[#D9D9D9]"} rounded-full w-[100px] h-[50px]`}
                             type="button"
                             onClick={onNext}
                             disabled={btnNextBlocked}

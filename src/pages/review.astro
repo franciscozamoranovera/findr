@@ -27,8 +27,11 @@ if (error || !doctor_search_view_flat) {
 
 const doctorFName = doctor_search_view_flat.doctor_first_name;
 const doctorFullName = doctor_search_view_flat.full_name;
-const doctorHC = doctor_search_view_flat.healthcare_centers;
+const doctorPrivatePractice = doctor_search_view_flat.private_practice_addresses;
+const doctorHealthCareCenter = doctor_search_view_flat.healthcare_centers;
+const doctorHC = [...doctorHealthCareCenter, ...doctorPrivatePractice]
 const doctorDiseases = doctor_search_view_flat.diseases;
+
 ---
 
 <Layout title="Review Form Page">
@@ -44,12 +47,13 @@ const doctorDiseases = doctor_search_view_flat.diseases;
                     </h3>
                 </div>
                 <ReviewForm
-                    doctorId={id}
-                    doctorHC={doctorHC}
-                    doctorDiseases={doctorDiseases}
-                    doctorFName={doctorFName}
-                    doctorFullName={doctorFullName}
-                    client:load
+                doctorId={id}
+                doctorHC={doctorHC}
+                doctorDiseases={doctorDiseases}
+                doctorFName={doctorFName}
+                doctorFullName={doctorFullName}
+                client:load
+
                 />
             </div>
         </ReviewAuthGuard>

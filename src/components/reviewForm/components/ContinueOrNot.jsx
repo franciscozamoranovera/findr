@@ -58,20 +58,28 @@ export const ContinueOrNot = ({ continueOrNotSelected, doctorFName, onChange, on
 
                 <div className="flex flex-col items-center justify-center p-3">
                     <button
-                        className={` ${continueWith === "true" ? " text-white bg-[#2D2D2D]" : "bg-white"}  px-6 py-3 rounded-full  transition-colors m-2`}
+                        className={` ${continueWith === "Sí, continuaré atendiendome" ? " text-white bg-[#2D2D2D]" : "bg-white"}  px-6 py-3 rounded-full  transition-colors m-2`}
                         type="button"
-                        value="true"
+                        value="Sí, continuaré atendiendome"
                         onClick={handleOnClick}
                     >
                         Sí, continuaré atendiendome
                     </button>
                     <button
-                        className={` ${continueWith === "false" ? " text-white bg-[#2D2D2D]" : "bg-white"}  px-6 py-3 rounded-full  transition-colors m-2`}
+                        className={` ${continueWith === "No, buscaré otra opción" ? " text-white bg-[#2D2D2D]" : "bg-white"}  px-6 py-3 rounded-full  transition-colors m-2`}
                         type="button"
-                        value="false"
+                        value="No, buscaré otra opción"
                         onClick={handleOnClick}
                     >
                         No, buscaré otra opción
+                    </button>
+                    <button
+                        className={` ${continueWith === "No estoy seguro/a" ? " text-white bg-[#2D2D2D]" : "bg-white"}  px-6 py-3 rounded-full  transition-colors m-2`}
+                        type="button"
+                        value="No estoy seguro/a"
+                        onClick={handleOnClick}
+                    >
+                        No estoy seguro/a
                     </button>
                 </div>
 
