@@ -11,7 +11,7 @@ const { id } = Astro.params;
 const { data, error } = await supabase
     .from("doctor_search_view_flat")
     .select(
-        "doctor_first_name, full_name, speciality_name, sub_speciality_name, diseases, total_reviews, promedio_general",
+        "doctor_first_name, full_name, speciality_name, sub_speciality_name, diseases, total_reviews, promedio_general, promedio_atencion, promedio_comunicacion, promedio_continuidad, promedio_conocimiento, promedio_recomendacion",
     )
     .eq("id", id)
     .single(); //un solo doctor, no array
@@ -35,10 +35,32 @@ const toString = (num: number) => {
 
     if (!count.includes(".")) {
         return count + ".0";
-    } else return data.promedio_general;
+    } else return count; //está retornando el prom para todos 
 };
 
 const doctorRating = toString(data.promedio_general);
+
+const continuationRating = toString(data.promedio_continuidad);
+const comunicationRating = toString(data.promedio_comunicacion);
+const knowledgeDomainRating = toString(data.promedio_conocimiento);
+const attentionRating = toString(data.promedio_atencion);
+const recomendationRating = toString(data.promedio_recomendacion);
+
+//Convert rating to % for bars
+const toPercentaje = (num: number) => {
+    const conversion = num*20+'%'
+    return conversion;
+};
+
+const continueOrNotBar = toPercentaje(data.promedio_continuidad);
+const comunicationBar = toPercentaje(data.promedio_comunicacion);
+const knowledgeDomainBar = toPercentaje(data.promedio_conocimiento);
+const attentionBar = toPercentaje(data.promedio_atencion);
+const recomendationBar = toPercentaje(data.promedio_recomendacion);
+
+
+
+
 ---
 
 <Layout title="Doctor Profile">
@@ -102,16 +124,25 @@ const doctorRating = toString(data.promedio_general);
                         </p>
                     </div>
                     <div class="top-rated-reviews-qty">
-                        <h3>{data.total_reviews} reseñas</h3>
+                        <h3>({data.total_reviews} reseñas)</h3>
                     </div>
                 </container>
 
-                <script define:vars={{ doctorRating }}>
-                    
+                <script define:vars={{ doctorRating, continueOrNotBar, comunicationBar, knowledgeDomainBar, attentionBar, recomendationBar }}>
                     //hide overall rating.
-                    if(doctorRating === 0) {
-                        return document.querySelector('.dp-top-20-percent'). style.display = 'none';
+                    if (doctorRating === 0) {
+                        return (document.querySelector(
+                            ".dp-top-20-percent",
+                        ).style.display = "none");
                     }
+                    
+                    //add % to width for rating bars
+                    document.documentElement.style.setProperty('--width-bar-continueOrNotBar', continueOrNotBar)
+                    document.documentElement.style.setProperty('--width-bar-comunicationBar', comunicationBar)
+                    document.documentElement.style.setProperty('--width-bar-knowledgeDomainBar', knowledgeDomainBar)
+                    document.documentElement.style.setProperty('--width-bar-attentionBar', attentionBar)
+                    document.documentElement.style.setProperty('--width-bar-recomendationBar', recomendationBar)
+
 
                 </script>
 
@@ -149,10 +180,10 @@ const doctorRating = toString(data.promedio_general);
                             />
                         </div>
                         <div class="graph-resolvio-mi-problema">
-                            <button> Resolvió mi problema </button>
+                            <button class="pointer-events-none" tabindex="-1"> ¿Continúa o no? </button>
                         </div>
                         <div class="rate-resolvio-mi-problema">
-                            <h1>4,0</h1>
+                            <h1>{continuationRating}</h1>
                         </div>
                     </div>
                     <div class="comunicacion-clara">
@@ -162,9 +193,11 @@ const doctorRating = toString(data.promedio_general);
                             />
                         </div>
                         <div class="graph-comunicacion-clara">
-                            <button> Comunicación Clara </button>
+                            <button class="pointer-events-none" tabindex="-1"> Comunicación Clara </button>
                         </div>
-                        <div class="rate-comunicacion-clara"><h1>4,9</h1></div>
+                        <div class="rate-comunicacion-clara">
+                            <h1>{comunicationRating}</h1>
+                        </div>
                     </div>
                     <div class="atencion-profesionalismo">
                         <div class="icon-atencion-profesionalismo">
@@ -173,10 +206,10 @@ const doctorRating = toString(data.promedio_general);
                             />
                         </div>
                         <div class="graph-atencion-profesionalismo">
-                            <button> Atención y Profesionalismo </button>
+                            <button class="pointer-events-none" tabindex="-1"> Atención y Profesionalismo </button>
                         </div>
                         <div class="rate-atencion-profesionalismo">
-                            <h1>4,9</h1>
+                            <h1>{attentionRating}</h1>
                         </div>
                     </div>
                     <div class="dominio-conocimientos">
@@ -186,10 +219,10 @@ const doctorRating = toString(data.promedio_general);
                             />
                         </div>
                         <div class="graph-dominio-conocimientos">
-                            <button> Dominio Conocimientos </button>
+                            <button class="pointer-events-none" tabindex="-1"> Dominio Conocimientos </button>
                         </div>
                         <div class="rate-dominio-conocimientos">
-                            <h1>4,9</h1>
+                            <h1>{knowledgeDomainRating}</h1>
                         </div>
                     </div>
                     <div class="recomiendo-a-familiar">
@@ -199,10 +232,10 @@ const doctorRating = toString(data.promedio_general);
                             />
                             <div>
                                 <div class="graph-recomiendo-a-familiar">
-                                    <button> Recomiendo a Familiar </button>
+                                    <button class="pointer-events-none" tabindex="-1"> Recomiendo a Familiar </button>
                                 </div>
                                 <div class="rate-recomiendo-a-familiar">
-                                    <h1>4,9</h1>
+                                    <h1>{recomendationRating}</h1>
                                 </div>
                             </div>
                         </div>
@@ -448,7 +481,7 @@ const doctorRating = toString(data.promedio_general);
         /* BRANCHES TOP 20% RATING */
         .dp-laurel-branches-overall-top-rated {
             display: grid;
-            grid-template-columns: 1fr 100px 1fr;
+            grid-template-columns: 1fr 130px 1fr;
             margin-bottom: 25px;
             margin-top: 25px;
         }
@@ -457,6 +490,7 @@ const doctorRating = toString(data.promedio_general);
             display: flex;
             justify-content: center;
             align-items: center;
+            
         }
 
         .overall-rate > h1 {
@@ -466,7 +500,6 @@ const doctorRating = toString(data.promedio_general);
         .left-laurel-branch {
             display: flex;
             justify-content: flex-end;
-
         }
         .right-laurel-branch {
             display: flex;
@@ -564,7 +597,8 @@ const doctorRating = toString(data.promedio_general);
 
         /* TAGS */
 
-        /* TESTING GRAPHS */
+        /*-------------- GRAPHS ----------------*/
+
         .graph-resolvio-mi-problema > button {
             position: relative;
             padding: 6px;
@@ -584,7 +618,7 @@ const doctorRating = toString(data.promedio_general);
             top: 0;
             bottom: 0;
             background-color: rgb(89, 89, 89); /* Or any color you prefer */
-            width: 50%; /* Dynamic percentage can be set via inline style or JavaScript */
+            width: var(--width-bar-continueOrNotBar); /* Dynamic percentage can be set via inline style or JavaScript */
             z-index: 1;
             opacity: 0.5; /* Adjust transparency as needed */
         }
@@ -598,48 +632,129 @@ const doctorRating = toString(data.promedio_general);
         /* ----------------- */
 
         .graph-comunicacion-clara > button {
+            position: relative;
             padding: 6px;
             border-radius: 5px;
             border: 2px solid black;
-
             width: 200px;
             height: 30px;
-
-            background-color: black;
-            color: white;
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            overflow: hidden;
         }
-        .graph-atencion-profesionalismo > button {
+
+        .graph-comunicacion-clara > button::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgb(89, 89, 89); /* Or any color you prefer */
+            width: var(--width-bar-comunicationBar); /* Dynamic percentage can be set via inline style or JavaScript */
+            z-index: 1;
+            opacity: 0.5; /* Adjust transparency as needed */
+        }
+
+        .graph-comunicacion-clara > button span {
+            position: absolute;
+            z-index: 0;
+            /* Span: Superpone el texto entre el fondo negro y la barra gris (gráfico) */
+        }
+
+        /* -------------------- */
+
+        .graph-atencion-profesionalismo  > button {
+            position: relative;
             padding: 6px;
             border-radius: 5px;
             border: 2px solid black;
-
             width: 200px;
             height: 30px;
-
-            background-color: black;
-            color: white;
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            overflow: hidden;
         }
+
+         .graph-atencion-profesionalismo  > button::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgb(89, 89, 89); /* Or any color you prefer */
+            width: var(--width-bar-attentionBar); /* Dynamic percentage can be set via inline style or JavaScript */
+            z-index: 1;
+            opacity: 0.5; /* Adjust transparency as needed */
+        }
+
+        .graph-atencion-profesionalismo > button span {
+            position: absolute;
+            z-index: 0;
+            /* Span: Superpone el texto entre el fondo negro y la barra gris (gráfico) */
+        }
+        
+        
+        /* -------------------- */
+
         .graph-dominio-conocimientos > button {
+            position: relative;
             padding: 6px;
             border-radius: 5px;
             border: 2px solid black;
-
             width: 200px;
             height: 30px;
-
-            background-color: black;
-            color: white;
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            overflow: hidden;
         }
+
+         .graph-dominio-conocimientos > button::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgb(89, 89, 89); /* Or any color you prefer */
+            width: var(--width-bar-knowledgeDomainBar); /* Dynamic percentage can be set via inline style or JavaScript */
+            z-index: 1;
+            opacity: 0.5; /* Adjust transparency as needed */
+        }
+
+        .graph-dominio-conocimientos > button span {
+            position: absolute;
+            z-index: 0;
+            /* Span: Superpone el texto entre el fondo negro y la barra gris (gráfico) */
+        }
+        
+        /* ------------------ */
         .graph-recomiendo-a-familiar > button {
+            position: relative;
             padding: 6px;
             border-radius: 5px;
             border: 2px solid black;
-
             width: 200px;
             height: 30px;
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            overflow: hidden;
+        }
 
-            background-color: black;
-            color: white;
+          .graph-recomiendo-a-familiar > button::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgb(89, 89, 89); /* Or any color you prefer */
+            width: var(--width-bar-recomendationBar); /* Dynamic percentage can be set via inline style or JavaScript */
+            z-index: 1;
+            opacity: 0.5; /* Adjust transparency as needed */
+        }
+
+        .graph-recomiendo-a-familiar > button span {
+            position: absolute;
+            z-index: 0;
+            /* Span: Superpone el texto entre el fondo negro y la barra gris (gráfico) */
         }
 
         /* --------------------------- */
