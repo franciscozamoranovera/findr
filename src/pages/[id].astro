@@ -11,7 +11,7 @@ const { id } = Astro.params;
 const { data, error } = await supabase
     .from("doctor_search_view_flat")
     .select(
-        "doctor_first_name, full_name, speciality_name, sub_speciality_name, diseases, total_reviews, promedio_general, promedio_atencion, promedio_comunicacion, promedio_continuidad, promedio_conocimiento, promedio_recomendacion",
+        "doctor_first_name, full_name, speciality_name, sub_speciality_name, diseases, total_reviews, promedio_general, promedio_atencion, promedio_comunicacion, promedio_continuidad, promedio_conocimiento, promedio_recomendacion, healthcare_centers",
     )
     .eq("id", id)
     .single(); //un solo doctor, no array
@@ -35,7 +35,7 @@ const toString = (num: number) => {
 
     if (!count.includes(".")) {
         return count + ".0";
-    } else return count; //está retornando el prom para todos 
+    } else return count; //está retornando el prom para todos
 };
 
 const doctorRating = toString(data.promedio_general);
@@ -48,7 +48,7 @@ const recomendationRating = toString(data.promedio_recomendacion);
 
 //Convert rating to % for bars
 const toPercentaje = (num: number) => {
-    const conversion = num*20+'%'
+    const conversion = num * 20 + "%";
     return conversion;
 };
 
@@ -57,10 +57,6 @@ const comunicationBar = toPercentaje(data.promedio_comunicacion);
 const knowledgeDomainBar = toPercentaje(data.promedio_conocimiento);
 const attentionBar = toPercentaje(data.promedio_atencion);
 const recomendationBar = toPercentaje(data.promedio_recomendacion);
-
-
-
-
 ---
 
 <Layout title="Doctor Profile">
@@ -68,13 +64,13 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
         <section class="summary-section">
             <section class="doc-profile-summary">
                 <div class="doc-profile-photo">👨🏻‍⚕️</div>
-                <div class="doc-profile-name">
+                <div class="pb-3">
                     <h1>
                         {data.full_name}
                     </h1>
                 </div>
-                <div class="doc-profile-title">
-                    <p><!-- {data.title} -->title</p>
+                <div class="pb-2">
+                    <p>{data.healthcare_centers}</p>
                 </div>
                 <div class="dp-speciality-subspeciality">
                     {
@@ -86,7 +82,7 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
 
                     {
                         data.sub_speciality_name && (
-                            <p>{data.sub_speciality_name}</p>
+                            <p class="text-xl">{data.sub_speciality_name}</p>
                         )
                     }
                 </div>
@@ -128,24 +124,47 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
                     </div>
                 </container>
 
-                <script define:vars={{ doctorRating, continueOrNotBar, comunicationBar, knowledgeDomainBar, attentionBar, recomendationBar }}>
+                <script
+                    define:vars={{
+                        doctorRating,
+                        continueOrNotBar,
+                        comunicationBar,
+                        knowledgeDomainBar,
+                        attentionBar,
+                        recomendationBar,
+                    }}
+                >
                     //hide overall rating.
                     if (doctorRating === 0) {
                         return (document.querySelector(
                             ".dp-top-20-percent",
                         ).style.display = "none");
                     }
-                    
+
                     //add % to width for rating bars
-                    document.documentElement.style.setProperty('--width-bar-continueOrNotBar', continueOrNotBar)
-                    document.documentElement.style.setProperty('--width-bar-comunicationBar', comunicationBar)
-                    document.documentElement.style.setProperty('--width-bar-knowledgeDomainBar', knowledgeDomainBar)
-                    document.documentElement.style.setProperty('--width-bar-attentionBar', attentionBar)
-                    document.documentElement.style.setProperty('--width-bar-recomendationBar', recomendationBar)
-
-
+                    document.documentElement.style.setProperty(
+                        "--width-bar-continueOrNotBar",
+                        continueOrNotBar,
+                    );
+                    document.documentElement.style.setProperty(
+                        "--width-bar-comunicationBar",
+                        comunicationBar,
+                    );
+                    document.documentElement.style.setProperty(
+                        "--width-bar-knowledgeDomainBar",
+                        knowledgeDomainBar,
+                    );
+                    document.documentElement.style.setProperty(
+                        "--width-bar-attentionBar",
+                        attentionBar,
+                    );
+                    document.documentElement.style.setProperty(
+                        "--width-bar-recomendationBar",
+                        recomendationBar,
+                    );
                 </script>
 
+                <!-- hidden -->
                 <container class="dp-out-20percent-rated" hidden>
                     <div class="dp-star-overall-rate">
                         <!-- For the 80% mayority rated out of 20% or 0 reviews + 0 rating -->
@@ -172,15 +191,23 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
                         </div>
                     </div>
                 </container>
-                <container class="tag-clasification-section">
+                <!-- hidden -->
+
+                <container
+                    class="tag-clasification-section gap-5 flex flex-row flex-wrap justify-center items-center mt-16 mb-12"
+                >
                     <div class="resolvio-mi-problema">
                         <div class="icon-resolvio-mi-problema">
                             <img
                                 src="/img/doctor-profile/calification-icons/problem-solved.png"
                             />
                         </div>
+                        <div>
+                            <p>Continuaría Atendiendose</p>
+                        </div>
                         <div class="graph-resolvio-mi-problema">
-                            <button class="pointer-events-none" tabindex="-1"> ¿Continúa o no? </button>
+                            <button class="pointer-events-none" tabindex="-1"
+                            ></button>
                         </div>
                         <div class="rate-resolvio-mi-problema">
                             <h1>{continuationRating}</h1>
@@ -192,8 +219,12 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
                                 src="/img/doctor-profile/calification-icons/comunication.png"
                             />
                         </div>
+                        <div>
+                            <p>Comunicación Clara</p>
+                        </div>
                         <div class="graph-comunicacion-clara">
-                            <button class="pointer-events-none" tabindex="-1"> Comunicación Clara </button>
+                            <button class="pointer-events-none" tabindex="-1"
+                            ></button>
                         </div>
                         <div class="rate-comunicacion-clara">
                             <h1>{comunicationRating}</h1>
@@ -205,8 +236,12 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
                                 src="/img/doctor-profile/calification-icons/attention-profesionalism.png"
                             />
                         </div>
+                        <div>
+                            <p>Atención y Profesionalismo</p>
+                        </div>
                         <div class="graph-atencion-profesionalismo">
-                            <button class="pointer-events-none" tabindex="-1"> Atención y Profesionalismo </button>
+                            <button class="pointer-events-none" tabindex="-1"
+                            ></button>
                         </div>
                         <div class="rate-atencion-profesionalismo">
                             <h1>{attentionRating}</h1>
@@ -218,8 +253,12 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
                                 src="/img/doctor-profile/calification-icons/knoledge-domain.png"
                             />
                         </div>
+                        <div>
+                            <p>Dominio Conocimientos</p>
+                        </div>
                         <div class="graph-dominio-conocimientos">
-                            <button class="pointer-events-none" tabindex="-1"> Dominio Conocimientos </button>
+                            <button class="pointer-events-none" tabindex="-1"
+                            ></button>
                         </div>
                         <div class="rate-dominio-conocimientos">
                             <h1>{knowledgeDomainRating}</h1>
@@ -231,8 +270,11 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
                                 src="/img/doctor-profile/calification-icons/recomendation.png"
                             />
                             <div>
+                                <div>
+                                    <p>Recomendaría a Familiar</p>
+                                </div>
                                 <div class="graph-recomiendo-a-familiar">
-                                    <button class="pointer-events-none" tabindex="-1"> Recomiendo a Familiar </button>
+                                    <button class="pointer-events-none" tabindex="-1"></button>
                                 </div>
                                 <div class="rate-recomiendo-a-familiar">
                                     <h1>{recomendationRating}</h1>
@@ -244,11 +286,13 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             </section>
         </section>
 
-        <!-- ---- ABOUT SECTION ---- -->
+        <!-- REVIEWS AND ABOUT SECTION -->
         <section class="about-section">
+
+            <!-- ---- ABOUT SECTION ---- -->
             <section class="doc-about">
                 <container class="about">
-                    <h2 class="about-me-title">Sobre Juan Carlos Bodoque</h2>
+                    <h1 class="about-me-title">Sobre {data.full_name}</h1>
                     <div class="about-me-description">
                         <p>
                             Soy médico general con casi 40 años de experiencia
@@ -441,7 +485,8 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             <!-- ---- DOC REVIEWS ---- -->
 
             <section class="doc-reviews">
-                <div class="button-review-container">
+                <!-- <div class="button-review-container"> -->
+                <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
                     <AuthReviewButton
                         client:load
                         drId={id}
@@ -468,9 +513,7 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             font-size: xxx-large;
         }
 
-        .doc-profile-title {
-            margin-bottom: 5px;
-        }
+       
         .dp-speciality-subspeciality {
             margin-bottom: 5px;
         }
@@ -490,7 +533,6 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             display: flex;
             justify-content: center;
             align-items: center;
-            
         }
 
         .overall-rate > h1 {
@@ -570,24 +612,20 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
 
         /* TAGS CLASIFICATION */
         /* Layout */
-        .tag-clasification-section {
+        /*  .tag-clasification-section {
             display: flex;
+
             justify-content: center;
 
             margin-top: 60px;
             margin-bottom: 50px;
-        }
+        } */
 
         .tag-clasification-section > div > div > img {
             height: 25px;
             margin: 5px;
             display: flex;
             justify-content: flex-start;
-        }
-
-        .tag-clasification-section > div {
-            padding: 20px;
-            border-left: 2px solid black;
         }
 
         .tag-clasification-section > div:first-child {
@@ -601,11 +639,11 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
 
         .graph-resolvio-mi-problema > button {
             position: relative;
-            padding: 6px;
+
             border-radius: 5px;
             border: 2px solid black;
             width: 200px;
-            height: 30px;
+            height: 9px;
             background-color: rgb(255, 255, 255);
             color: rgb(0, 0, 0);
             overflow: hidden;
@@ -617,10 +655,11 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             left: 0;
             top: 0;
             bottom: 0;
-            background-color: rgb(89, 89, 89); /* Or any color you prefer */
-            width: var(--width-bar-continueOrNotBar); /* Dynamic percentage can be set via inline style or JavaScript */
+            background-color: rgb(0, 0, 0); /* Or any color you prefer */
+            width: var(
+                --width-bar-continueOrNotBar
+            ); /* Dynamic percentage can be set via inline style or JavaScript */
             z-index: 1;
-            opacity: 0.5; /* Adjust transparency as needed */
         }
 
         .graph-resolvio-mi-problema > button span {
@@ -633,11 +672,10 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
 
         .graph-comunicacion-clara > button {
             position: relative;
-            padding: 6px;
             border-radius: 5px;
             border: 2px solid black;
             width: 200px;
-            height: 30px;
+            height: 9px;
             background-color: rgb(255, 255, 255);
             color: rgb(0, 0, 0);
             overflow: hidden;
@@ -649,10 +687,11 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             left: 0;
             top: 0;
             bottom: 0;
-            background-color: rgb(89, 89, 89); /* Or any color you prefer */
-            width: var(--width-bar-comunicationBar); /* Dynamic percentage can be set via inline style or JavaScript */
+            background-color: rgb(0, 0, 0); /* Or any color you prefer */
+            width: var(
+                --width-bar-comunicationBar
+            ); /* Dynamic percentage can be set via inline style or JavaScript */
             z-index: 1;
-            opacity: 0.5; /* Adjust transparency as needed */
         }
 
         .graph-comunicacion-clara > button span {
@@ -663,28 +702,28 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
 
         /* -------------------- */
 
-        .graph-atencion-profesionalismo  > button {
+        .graph-atencion-profesionalismo > button {
             position: relative;
-            padding: 6px;
             border-radius: 5px;
             border: 2px solid black;
             width: 200px;
-            height: 30px;
+            height: 9px;
             background-color: rgb(255, 255, 255);
             color: rgb(0, 0, 0);
             overflow: hidden;
         }
 
-         .graph-atencion-profesionalismo  > button::before {
+        .graph-atencion-profesionalismo > button::before {
             content: "";
             position: absolute;
             left: 0;
             top: 0;
             bottom: 0;
-            background-color: rgb(89, 89, 89); /* Or any color you prefer */
-            width: var(--width-bar-attentionBar); /* Dynamic percentage can be set via inline style or JavaScript */
+            background-color: rgb(0, 0, 0); /* Or any color you prefer */
+            width: var(
+                --width-bar-attentionBar
+            ); /* Dynamic percentage can be set via inline style or JavaScript */
             z-index: 1;
-            opacity: 0.5; /* Adjust transparency as needed */
         }
 
         .graph-atencion-profesionalismo > button span {
@@ -692,32 +731,31 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             z-index: 0;
             /* Span: Superpone el texto entre el fondo negro y la barra gris (gráfico) */
         }
-        
-        
+
         /* -------------------- */
 
         .graph-dominio-conocimientos > button {
             position: relative;
-            padding: 6px;
             border-radius: 5px;
             border: 2px solid black;
             width: 200px;
-            height: 30px;
+            height: 9px;
             background-color: rgb(255, 255, 255);
             color: rgb(0, 0, 0);
             overflow: hidden;
         }
 
-         .graph-dominio-conocimientos > button::before {
+        .graph-dominio-conocimientos > button::before {
             content: "";
             position: absolute;
             left: 0;
             top: 0;
             bottom: 0;
-            background-color: rgb(89, 89, 89); /* Or any color you prefer */
-            width: var(--width-bar-knowledgeDomainBar); /* Dynamic percentage can be set via inline style or JavaScript */
+            background-color: rgb(0, 0, 0); /* Or any color you prefer */
+            width: var(
+                --width-bar-knowledgeDomainBar
+            ); /* Dynamic percentage can be set via inline style or JavaScript */
             z-index: 1;
-            opacity: 0.5; /* Adjust transparency as needed */
         }
 
         .graph-dominio-conocimientos > button span {
@@ -725,30 +763,30 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             z-index: 0;
             /* Span: Superpone el texto entre el fondo negro y la barra gris (gráfico) */
         }
-        
+
         /* ------------------ */
         .graph-recomiendo-a-familiar > button {
             position: relative;
-            padding: 6px;
             border-radius: 5px;
             border: 2px solid black;
             width: 200px;
-            height: 30px;
+            height: 9px;
             background-color: rgb(255, 255, 255);
             color: rgb(0, 0, 0);
             overflow: hidden;
         }
 
-          .graph-recomiendo-a-familiar > button::before {
+        .graph-recomiendo-a-familiar > button::before {
             content: "";
             position: absolute;
             left: 0;
             top: 0;
             bottom: 0;
-            background-color: rgb(89, 89, 89); /* Or any color you prefer */
-            width: var(--width-bar-recomendationBar); /* Dynamic percentage can be set via inline style or JavaScript */
+            background-color: rgb(0, 0, 0); /* Or any color you prefer */
+            width: var(
+                --width-bar-recomendationBar
+            ); /* Dynamic percentage can be set via inline style or JavaScript */
             z-index: 1;
-            opacity: 0.5; /* Adjust transparency as needed */
         }
 
         .graph-recomiendo-a-familiar > button span {

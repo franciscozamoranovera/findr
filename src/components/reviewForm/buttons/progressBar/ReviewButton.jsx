@@ -64,24 +64,45 @@ const ReviewButton = ({
 
         return (
 
-            <button
-                className="rounded-full bg-[#2D2D2D] text-white py-6 px-14"
-                onClick={handleLoginRedirect}
-                disabled={isProcessing}
+            <div className="flex items-center gap-2">
+                <button
+                    className="rounded-full bg-[#2D2D2D] text-white py-6 px-14"
+                    onClick={handleLoginRedirect}
+                    disabled={isProcessing}
 
-            >
-                {isProcessing ? (
-                    <>
-                        <span>Redirigiendo...</span>
-                    </>
-                ) : (
-                    <>
-                        <span>Iniciar sesión para evaluar...</span>
-                    </>
-                )}
-            </button>
+                >
+                    {isProcessing ? (
+                        <>
+                            <span>Redirigiendo...</span>
+                        </>
+                    ) : (
+                        <>
+                            <span>Escribe una reseña...</span>
+                        </>
+                    )}
+                </button>
+                <button
+                    className="rounded-full bg-[#2D2D2D] text-white p-5"
+                    onClick={() => {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const fromPage = urlParams.get('from');
+
+                        if (fromPage && fromPage.includes('/search?')) {
+                            window.location.href = fromPage;
+                        } else {
+                            window.location.href = '/search';
+                        }
+                    }}
+                >
+                    <span>
+                        <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#ffffff" d="M416 208c0 45.9-14.9 88.3-40 122.7l126.6 126.7c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.1-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0s208 93.1 208 208M208 352a144 144 0 1 0 0-288a144 144 0 1 0 0 288" />
+                        </svg>
+
+                    </span>
+                </button>
+            </div>
         )
-    } 
+    }
 
     //STATE 3: USER IS AUTHENTICATED
     const handleStartReview = () => {
@@ -105,19 +126,42 @@ const ReviewButton = ({
     }
 
     return (
-        <button
-            className="rounded-full bg-[#2D2D2D] text-white py-6 px-14"
-            onClick={handleStartReview}
-            disabled={isProcessing}
-            aria-label={`Dejar review a ${doctorName} como ${user.email}`}
-        >
-            {isProcessing ? (
-                <span>Preparando...</span>
-            ) : (
-                <span>Dejar Review como {user.email}</span>
-            )}
+        <div className="flex items-center gap-2">
+            <button
+                className="rounded-full bg-[#2D2D2D] text-white py-6 px-14"
+                onClick={handleStartReview}
+                disabled={isProcessing}
+                aria-label={`Dejar review a ${doctorName} como ${user.email}`}
+            >
+                {isProcessing ? (
+                    <span>Preparando...</span>
+                ) : (
+                    <span className="truncate max-w-[50px]">Dejar review
+                        como {user.email.substring(0,
+                            Math.floor(user.email.length *
+                                0.3))}...</span>
+                )}
 
-        </button>
+            </button>
+            <button
+                className="rounded-full bg-[#2D2D2D] text-white p-6"
+                onClick={() => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const fromPage = urlParams.get('from');
+
+                    if (fromPage && fromPage.includes('/search?')) {
+                        window.location.href = fromPage;
+                    } else {
+                        window.location.href = '/search';
+                    }
+                }}
+            >
+                <span>
+                    <svg width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="#ffffff" d="M416 208c0 45.9-14.9 88.3-40 122.7l126.6 126.7c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.1-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0s208 93.1 208 208M208 352a144 144 0 1 0 0-288a144 144 0 1 0 0 288" />
+                    </svg>
+                </span>
+            </button>
+        </div>
     )
 }
 

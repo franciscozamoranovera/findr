@@ -31,6 +31,8 @@ export const SearchResults = () => {
   const healthcareCenter = searchParams.get("healthcareCenter")?.split(',') || [];
   const diseaseSelection = searchParams.get("diseaseSelection")?.split(',') || [];
 
+  const currentSearchUrl = window.location.href;
+
 
 
 
@@ -142,7 +144,7 @@ export const SearchResults = () => {
               className="mb-4 break-inside-avoid"
             >
               <a
-                href={`/${r.id}`}
+                href={`/${r.id}?from=${encodeURIComponent(currentSearchUrl)}`}
                 target="_blank"
                 rel="noopener"
                 className="block bg-[#262626] rounded-2xl p-4 transition-all duration-200 border-4 border-transparent hover:border-blue-600 shadow-lg w-full"
