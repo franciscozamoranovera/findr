@@ -152,7 +152,7 @@ export const SearchBar = () => {
                             setDiseaseList={setDiseaseList}
                         />
                     )}
-                    <button onClick={() => setIsOpen(true)} className="bg-[#454545] w-full min-w-[250px] max-w-[350px] h-[60px]  px-3 py-3 rounded-3xl flex flex-col items-center justify-center m-1 shadow-[0_0_10px_rgba(0,0,0,0.2)]">
+                    <button onClick={() => setIsOpen(true)} className="bg-[#a2a2a2] w-full min-w-[250px] max-w-[350px] h-[60px]  px-3 py-3 rounded-full flex flex-col items-center justify-center m-1 shadow-[0_0_10px_rgba(0,0,0,0.2)]">
 
                         {(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
 
@@ -162,14 +162,14 @@ export const SearchBar = () => {
                                     {
                                         inputValue && (
                                             <div className="max-w-[350px] truncate">
-                                                <p className="text-[#626ef9] text-sm font-bold truncate">
+                                                <p className="text-[#2e3ffc] text-sm font-semibold truncate">
                                                     {inputValue}
                                                 </p>
                                             </div>
                                         )}
                                     {
                                         !inputValue && (
-                                            <p className="text-[#b3b3b3] text-sm font-bold truncate">
+                                            <p className="text-[#505050] text-sm font-semibold truncate">
                                                 Elige médico, especialidad o patología
                                             </p>
                                         )
@@ -182,33 +182,33 @@ export const SearchBar = () => {
                                     <div className="truncate max-w-[150px]">
                                         {
                                             selectedRegion && (
-                                                <p className="text-[#626ef9] text-xs font-bold truncate">
+                                                <p className="text-[#2e3ffc] text-xs font-semibold truncate">
                                                     {selectedRegion}
                                                 </p>
                                             )}
                                         {
                                             !selectedRegion && (
-                                                <p className="text-[#aaaaaa] text-xs font-bold truncate">
+                                                <p className="text-[#505050] text-xs font-semibold truncate">
                                                     Elige tu región
                                                 </p>
                                             )
                                         }
                                     </div>
 
-                                    <div className="text-[#7d7d7d] text-xs font-bold">
+                                    <div className="text-[#505050] text-xs font-bold">
                                         •
                                     </div>
 
                                     <div className="truncate max-w-[150px]">
                                         {
                                             selectedComuna && (
-                                                <p className="text-[#626ef9] text-xs font-bold truncate">
+                                                <p className="text-[#2e3ffc] text-xs font-semibold truncate">
                                                     {selectedComuna}
                                                 </p>
                                             )}
                                         {
                                             !selectedComuna && (
-                                                <p className="text-[#aaaaaa] text-xs font-bold">
+                                                <p className="text-[#505050] text-xs font-semibold">
                                                     Elige tu comuna
                                                 </p>
                                             )
@@ -246,7 +246,7 @@ export const SearchBar = () => {
 
                             {isSecFilterOpen && (
 
-                                <div className="fixed inset-0 bg-black/50 backdrop-blur-lg z-50">
+                                <div className="fixed inset-0 bg-black/50 backdrop-blur-lg z-[100]">
                                     <div className="flex justify-end m-4">
                                         <button
                                             className="bg-black text-white px-4 py-2 rounded-full cursor-pointer text-m hover:text-black hover:bg-[#fafafa] transition-colors duration-200 ease-in-out"

@@ -3,23 +3,38 @@ import { useState, useEffect } from "react";
 import { supabase } from "../api/supabase/supabase"
 
 
+/* NOTA:
+
+- PASAR EL ID DEL DOCT PARA QUE CAPTE LAS REVIEWS... POR ESO NO SE VEN
+- CON EL BTN DE REVIEWBUTTON PASA LO MISMO, NO CAPTURA SI HAY O NO SESSION
+
+*/
+
 export const DrReviews = ({ doctorId }) => {
     const [reviews, setReviews] = useState([])
+
+
 
     useEffect(() => {
         const fetchDrReviews = async () => {
 
             const { data: reviews, error } = await supabase
-                .from("reviews")
-                .select("diseases, written_review, created_at, is_anonymous, user_email, appointment_reason")
+                .from("reviews_overall_rating")
+                .select("diseases, written_review, created_at, is_anonymous, user_email, appointment_reason, promedio_general")
                 .eq("doctor_id", doctorId)
 
             if (error) {
                 console.error('Error fetching reviews:', error)
                 return
             }
-
+            
+          /*   const prueba = Object.values(reviews.promedio_general)
+            
+            console.log(prueba) */
+            
+                
             setReviews(reviews)
+
             console.log('Reviews del doctor:', reviews)
         }
 
@@ -68,55 +83,77 @@ export const DrReviews = ({ doctorId }) => {
         */
     }
 
-    //TODO:
-    /* 
-        1. ordenar desde el más reciente
-        3. traspasar a una view para poder tener un rating (tener ojo con no llamar tantas API, conectar tablas/views)
-    */
+    /* Helper */
+    const toString = (num) => {
+        const count = num.toString();
 
-    /* NOTES:
-    1. style={{whiteSpace: 'pre-line'}}  : maneja los saltos de línea o puntos a parte
-    2. 
-*/
+        if (count === "0.0") return 0;
+
+        if (!count.includes(".")) {
+            return count + ".0";
+        } else return count;
+    };
+
+
+
     return (
         <>
-            {reviews.map((data, i) => (
+            {reviews.length > 0 ? (
 
-                <div className="bg-white p-4 m-2 rounded-3xl" key={i}>
-                    <div className="flex items-center p-1">
-                        <div className="pr-3">👨🏻‍⚕️</div>
-                        <div className="">
-                            {data.is_anonymous ? (
-                                <h4 className="text-sm">Anonimo</h4>
-                            ) : (
-                                <h4 className="text-sm">{maskEmailName(data.user_email)}</h4>
-                            )}
-                        </div>
-                        {/* <div className="">✅</div> */}
-                    </div>
-                    <div className="flex items-center justify-between p-1">
-                        <div className="">⭐️⭐️⭐️⭐️⭐️</div>
-                        <div className="text-xs">
-                            <p>• {getRelativeTime(data.created_at)}</p>
-                        </div>
-                    </div>
-                    <div className="p-2" style={{ whiteSpace: 'pre-line' }}>
-                        <p>
-                            {data.written_review}
-                        </p>
-                    </div>
-                    <div className="p-1 mb-1 border-black border rounded-xl w-fit">
-                        <p className="text-xs">{data.appointment_reason}</p>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-1">
-                        {data.diseases.map((diseases, i) => (
-                            <ul className="bg-gray-400 p-2 rounded-xl w-fit" key={i}>
-                                <li className="text-sm">{diseases}</li>
-                            </ul>
-                        ))}
-                    </div>
-                </div >
-            ))}
+                reviews
+                    .sort((a, b) =>
+                        new Date(b.created_at) - new Date(a.created_at))
+                    .map((data, i) => (
+
+                        <div className="bg-white p-4 rounded-3xl w-full break-inside-avoid " key={i}>
+
+                            <div className="flex items-center p-1">
+                                <div className="pr-3">🙋🏻‍♂️</div>
+                                <div className="">
+                                    {data.is_anonymous ? (
+                                        <h4 className="text-sm">Anonimo</h4>
+                                    ) : (
+                                        <h4 className="text-sm">{maskEmailName(data.user_email)}</h4>
+                                    )}
+                                </div>
+                                {/* <div className="verified">✅</div> */}
+                            </div>
+
+                            <div className="flex items-center p-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path fill="#000000" d="M17.562 21.56a1.003 1.003 0 0 1-.465-.115L12 18.765l-5.097 2.68a1 1 0 0 1-1.451-1.054l.973-5.676l-4.123-4.02a1 1 0 0 1 .554-1.705l5.699-.828l2.548-5.164a1.042 1.042 0 0 1 1.794 0l2.548 5.164l5.699.828a1 1 0 0 1 .554 1.706l-4.123 4.019l.973 5.676a1 1 0 0 1-.986 1.169Z" /></svg>
+                                <div className="pr-1 pl-0.5">{toString(data.promedio_general)}</div>
+                                <div className="text-xs">
+                                    <p className="font-normal"> • {getRelativeTime(data.created_at)}</p>
+                                </div>
+                            </div>
+
+                            <div className="p-2" style={{ whiteSpace: 'pre-line' }}>
+                                <p>
+                                    {data.written_review}
+                                </p>
+                            </div>
+
+                            <div className="p-1 mb-1 border-black border rounded-xl w-fit">
+                                <p className="text-xs">{data.appointment_reason}</p>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-1">
+                                {data.diseases.map((diseases, i) => (
+                                    <ul className="bg-gray-400 p-2 rounded-xl w-fit" key={i}>
+                                        <li className="text-sm">{diseases}</li>
+                                    </ul>
+                                ))}
+                            </div>
+
+                        </div >
+
+                    ))
+            ) : (
+                <div className="absolute inset-0 flex items-center justify-center z-20 backdrop-blur-sm">
+                    <p className="text-center text-gray-600 font-medium">Todavía no tiene reseñas</p>
+                </div>
+
+            )}
         </>
     )
 }

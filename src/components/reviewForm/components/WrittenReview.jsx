@@ -156,6 +156,7 @@ export const WrittenReview = ({ writtenReviewText, onChange, onBack, onNext, for
 
                             onNext={onNext}
                             btnNextBlocked={btnNextBlocked}
+                            setBtnNextBlocked={setBtnNextBlocked}
 
                             formData={formData}
 

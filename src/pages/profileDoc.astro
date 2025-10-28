@@ -6,6 +6,7 @@ import { supabase } from "@/components/api/supabase/supabase";
 import AuthReviewButton from "@/components/reviewForm/buttons/progressBar/AuthReviewButton";
 import { DrReviews } from "@/components/doctorReviews/DrReviews";
 
+
 const { id } = Astro.params;
 
 const { data, error } = await supabase
@@ -59,7 +60,7 @@ const attentionBar = toPercentaje(data.promedio_atencion);
 const recomendationBar = toPercentaje(data.promedio_recomendacion);
 ---
 
-<Layout title="Doctor Profile">
+<Layout title={data.full_name}>
     <body class="doc-profile">
         <section class="summary-section">
             <section class="doc-profile-summary">
@@ -274,7 +275,9 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
                                     <p>Recomendaría a Familiar</p>
                                 </div>
                                 <div class="graph-recomiendo-a-familiar">
-                                    <button class="pointer-events-none" tabindex="-1"></button>
+                                    <button
+                                        class="pointer-events-none"
+                                        tabindex="-1"></button>
                                 </div>
                                 <div class="rate-recomiendo-a-familiar">
                                     <h1>{recomendationRating}</h1>
@@ -287,40 +290,12 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
         </section>
 
         <!-- REVIEWS AND ABOUT SECTION -->
-        <section class="about-section">
-
+        <section class="flex flex-col gap-2 items-center">
             <!-- ---- ABOUT SECTION ---- -->
-            <section class="doc-about">
+            <section class="sm:w-3/5 pl-3 pr-3">
                 <container class="about">
-                    <h1 class="about-me-title">Sobre {data.full_name}</h1>
-                    <div class="about-me-description">
-                        <p>
-                            Soy médico general con casi 40 años de experiencia
-                            en atención de pacientes tanto adultos como niños en
-                            la atención primaria pública de salud , así como en
-                            el área privada; consultas médicas , centros
-                            médicos, atención de urgencia tanto de adultos como
-                            de niños.
-                        </p>
-
-                        <p>
-                            Soy médico general con casi 40 años de experiencia
-                            en atención de pacientes tanto adultos como niños en
-                            la atención primaria pública de salud , así como en
-                            el área privada; consultas médicas , centros
-                            médicos, atención de urgencia tanto de adultos como
-                            de niños.
-                        </p>
-
-                        <p>
-                            Soy médico general con casi 40 años de experiencia
-                            en atención de pacientes tanto adultos como niños en
-                            la atención primaria pública de salud , así como en
-                            el área privada; consultas médicas , centros
-                            médicos, atención de urgencia tanto de adultos como
-                            de niños.
-                        </p>
-
+                    <h1 class="pb-4 pt-4">Sobre {data.doctor_first_name}</h1>
+                    <div class="gap-2 pb-4">
                         <p>
                             Soy médico general con casi 40 años de experiencia
                             en atención de pacientes tanto adultos como niños en
@@ -332,78 +307,155 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
                     </div>
                 </container>
 
-                <container class="doc-background">
+                <container class="flex flex-col gap-1">
                     <div class="education">
-                        <h2>Formación</h2>
+                        <div class="flex items-center gap-1">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="30"
+                                height="30"
+                                viewBox="0 0 24 24"
+                                ><g fill="none"
+                                    ><path
+                                        fill="#000000"
+                                        fill-rule="evenodd"
+                                        d="M6.5 16H16c1.886 0 2.828 0 3.414-.586C20 14.828 20 13.886 20 12V7c0-1.886 0-2.828-.586-3.414C18.828 3 17.886 3 16 3H8c-1.886 0-2.828 0-3.414.586C4 4.172 4 5.114 4 7v11.5A2.5 2.5 0 0 1 6.5 16M9 6a2 2 0 1 0 0 4h6a2 2 0 1 0 0-4z"
+                                        clip-rule="evenodd"></path><path
+                                        fill="#000000"
+                                        d="m19.414 15.414l-.707-.707zm0-11.828l-.707.707zM9 6V5zm0 4V9zm6 0v1zm0-4V5zm1 9H6.5v2H16zm2.707-.293c-.076.076-.212.17-.646.229c-.462.062-1.09.064-2.061.064v2c.915 0 1.701.002 2.328-.082c.655-.088 1.284-.287 1.793-.797zM19 12c0 .971-.002 1.599-.064 2.061c-.059.434-.153.57-.229.646l1.414 1.414c.51-.51.709-1.138.797-1.793C21.002 13.7 21 12.915 21 12zm0-5v5h2V7zm-.293-2.707c.076.076.17.212.229.646C18.998 5.4 19 6.029 19 7h2c0-.915.002-1.701-.082-2.328c-.088-.655-.287-1.284-.797-1.793zM16 4c.971 0 1.599.002 2.061.064c.434.059.57.153.646.229l1.414-1.414c-.51-.51-1.138-.709-1.793-.797C17.7 1.998 16.915 2 16 2zM8 4h8V2H8zm-2.707.293c.076-.076.212-.17.646-.229C6.4 4.002 7.029 4 8 4V2c-.915 0-1.701-.002-2.328.082c-.655.088-1.284.287-1.793.797zM5 7c0-.971.002-1.599.064-2.061c.059-.434.153-.57.229-.646L3.879 2.879c-.51.51-.709 1.138-.797 1.793C2.998 5.3 3 6.085 3 7zm0 11.5V7H3v11.5zM6.5 15A3.5 3.5 0 0 0 3 18.5h2A1.5 1.5 0 0 1 6.5 17zM8 8a1 1 0 0 1 1-1V5a3 3 0 0 0-3 3zm1 1a1 1 0 0 1-1-1H6a3 3 0 0 0 3 3zm6 0H9v2h6zm1-1a1 1 0 0 1-1 1v2a3 3 0 0 0 3-3zm-1-1a1 1 0 0 1 1 1h2a3 3 0 0 0-3-3zM9 7h6V5H9zm2 13H6.5v2H11zm-8-1.5A3.5 3.5 0 0 0 6.5 22v-2A1.5 1.5 0 0 1 5 18.5z"
+                                    ></path><path
+                                        stroke="#000000"
+                                        stroke-linecap="round"
+                                        stroke-width="2"
+                                        d="M20 21H10"></path></g
+                                ></svg
+                            >
+                            <h3 class="text-xl">Formación</h3>
+                        </div>
                         <ul>
                             <li>
-                                - Médico Cirujano, Pontificia Universidad
-                                Católica de Chile, Chile.
+                                <p>
+                                    - Médico Cirujano, Pontificia Universidad
+                                    Católica de Chile, Chile.
+                                </p>
                             </li>
                             <li>
-                                - Anestesiólogo, Pontificia Universidad Católica
-                                de Chile, Chile (2001).
+                                <p>
+                                    - Anestesiólogo, Pontificia Universidad
+                                    Católica de Chile, Chile (2001).
+                                </p>
                             </li>
                             <li>
-                                - Fellow, Regional Anesthesia & Ambulatory
-                                Surgery, Duke University Medical Center, USA
-                                (2006).
+                                <p>
+                                    - Fellow, Regional Anesthesia & Ambulatory
+                                    Surgery, Duke University Medical Center, USA
+                                    (2006).
+                                </p>
                             </li>
                         </ul>
                     </div>
                     <div class="research-projects">
-                        <h2>Investigación y Proyectos</h2>
+                        <div class="flex items-center gap-1 clear-start">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="30"
+                                height="30"
+                                viewBox="0 0 20 20"
+                                ><path
+                                    fill="#000000"
+                                    fill-rule="evenodd"
+                                    d="M1 2.75A.75.75 0 0 1 1.75 2h16.5a.75.75 0 0 1 0 1.5H18v8.75A2.75 2.75 0 0 1 15.25 15h-1.072l.798 3.06a.75.75 0 0 1-1.452.38L13.41 18H6.59l-.114.44a.75.75 0 0 1-1.452-.38L5.823 15H4.75A2.75 2.75 0 0 1 2 12.25V3.5h-.25A.75.75 0 0 1 1 2.75ZM7.373 15l-.391 1.5h6.037l-.392-1.5H7.373Zm7.49-8.931a.75.75 0 0 1-.175 1.046a19.326 19.326 0 0 0-3.398 3.098a.75.75 0 0 1-1.097.04L8.5 8.561l-2.22 2.22A.75.75 0 1 1 5.22 9.72l2.75-2.75a.75.75 0 0 1 1.06 0l1.664 1.663a20.786 20.786 0 0 1 3.122-2.74a.75.75 0 0 1 1.046.176Z"
+                                    clip-rule="evenodd"></path></svg
+                            >
+                            <h3 class="text-xl">Investigación y Proyectos</h3>
+                        </div>
                         <ul>
                             <li>
-                                - 2010-2012: Director (PI), Proyecto FONIS
-                                Regular SA09I20035:“Evaluación del uso de
-                                analgesia de Plexo Lumbar Continuo en la
-                                incidencia de eventos cardiovasculares en
-                                perioperatorio de pacientes adultos mayores con
-                                riesgo coronario con fractura de cadera”. Fuente
-                                de Financiamiento: CONICYT.
+                                <p>
+                                    - 2010-2012: Director (PI), Proyecto FONIS
+                                    Regular SA09I20035:“Evaluación del uso de
+                                    analgesia de Plexo Lumbar Continuo en la
+                                    incidencia de eventos cardiovasculares en
+                                    perioperatorio de pacientes adultos mayores
+                                    con riesgo coronario con fractura de
+                                    cadera”. Fuente de Financiamiento: CONICYT.
+                                </p>
                             </li>
                             <li>
-                                - 2011- 2012: Investigador Principal, Proyecto
-                                Investigación Sociedad de Anestesiología de
-                                Chile: “Comparación de los niveles plasmáticos
-                                de levobupivacaína con y sin vasoconstrictor
-                                administrada en un bloqueo de plano transverso
-                                abdominal (TAP Block) guiado por
-                                ultrasonografía”. Fuente de Financiamiento:
-                                Fondo de Fomento a la Investigación, Sociedad de
-                                Anestesiología de Chile.
+                                <p>
+                                    - 2011- 2012: Investigador Principal,
+                                    Proyecto Investigación Sociedad de
+                                    Anestesiología de Chile: “Comparación de los
+                                    niveles plasmáticos de levobupivacaína con y
+                                    sin vasoconstrictor administrada en un
+                                    bloqueo de plano transverso abdominal (TAP
+                                    Block) guiado por ultrasonografía”. Fuente
+                                    de Financiamiento: Fondo de Fomento a la
+                                    Investigación, Sociedad de Anestesiología de
+                                    Chile.
+                                </p>
                             </li>
                             <li>
-                                - 2011- 2012: Investigador Principal, Proyecto
-                                Investigación Sociedad de Anestesiología de
-                                Chile: “Comparación de los niveles plasmáticos
-                                de levobupivacaína con y sin vasoconstrictor
-                                administrada en un bloqueo de plano transverso
-                                abdominal (TAP Block) guiado por
-                                ultrasonografía”. Fuente de Financiamiento:
-                                Fondo de Fomento a la Investigación, Sociedad de
-                                Anestesiología de Chile.
+                                <p>
+                                    - 2011- 2012: Investigador Principal,
+                                    Proyecto Investigación Sociedad de
+                                    Anestesiología de Chile: “Comparación de los
+                                    niveles plasmáticos de levobupivacaína con y
+                                    sin vasoconstrictor administrada en un
+                                    bloqueo de plano transverso abdominal (TAP
+                                    Block) guiado por ultrasonografía”. Fuente
+                                    de Financiamiento: Fondo de Fomento a la
+                                    Investigación, Sociedad de Anestesiología de
+                                    Chile.
+                                </p>
                             </li>
                             <li>
-                                - 2011- 2012: Investigador Principal, Proyecto
-                                Investigación Sociedad de Anestesiología de
-                                Chile: “Comparación de los niveles plasmáticos
-                                de levobupivacaína con y sin vasoconstrictor
-                                administrada en un bloqueo de plano transverso
-                                abdominal (TAP Block) guiado por
-                                ultrasonografía”. Fuente de Financiamiento:
-                                Fondo de Fomento a la Investigación, Sociedad de
-                                Anestesiología de Chile.
+                                <p>
+                                    - 2011- 2012: Investigador Principal,
+                                    Proyecto Investigación Sociedad de
+                                    Anestesiología de Chile: “Comparación de los
+                                    niveles plasmáticos de levobupivacaína con y
+                                    sin vasoconstrictor administrada en un
+                                    bloqueo de plano transverso abdominal (TAP
+                                    Block) guiado por ultrasonografía”. Fuente
+                                    de Financiamiento: Fondo de Fomento a la
+                                    Investigación, Sociedad de Anestesiología de
+                                    Chile.
+                                </p>
                             </li>
                         </ul>
                     </div>
                 </container>
                 <container class="placeofcare-prevision">
                     <div class="placeofcare">
-                        <h2>Lugar de Atención</h2>
+                        <div class="flex items-center gap-1">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="30"
+                                height="30"
+                                viewBox="0 0 56 56"
+                                ><path
+                                    fill="#000000"
+                                    d="M28 4c9.389 0 17 7 17 19c0 9.13-9.841 22.313-14.548 28.096c-1.354 1.604-3.627 1.54-4.903 0C20.843 45.316 11 32.132 11 23c0-12 7.611-19 17-19m0 11a6 6 0 1 0 0 12a6 6 0 0 0 0-12"
+                                ></path></svg
+                            >
+                            <h1 class="text-2xl">Lugar de Atención</h1>
+                        </div>
                         <ul>
-                            <h4>Telemedicina</h4>
+                            <div class="flex items-center gap-1">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 14 14"
+                                    ><path
+                                        fill="#000000"
+                                        fill-rule="evenodd"
+                                        d="M8.879.593c0-.272.22-.493.492-.493h1.602c.272 0 .493.22.493.493V2.47h1.94c.272 0 .492.221.492.493v1.602c0 .272-.22.492-.492.492h-1.94v1.94a.493.493 0 0 1-.493.493H9.37A.493.493 0 0 1 8.88 7V5.06H7a.493.493 0 0 1-.493-.493V2.964c0-.272.22-.493.493-.493h1.879zm-.185 13.292a2.66 2.66 0 0 1-1.723-.409A23.878 23.878 0 0 1 .506 7.011a2.66 2.66 0 0 1 .404-3.32l.375-.375a.897.897 0 0 1 1.261 0l1.518 1.577a.887.887 0 0 1 0 1.251a.897.897 0 0 0 0 1.262l2.513 2.513a.897.897 0 0 0 1.261 0a.887.887 0 0 1 1.252 0l1.577 1.567a.897.897 0 0 1 0 1.261l-.375.374a2.66 2.66 0 0 1-1.598.764"
+                                        clip-rule="evenodd"></path></svg
+                                >
+                                <h4>Telemedicina</h4>
+                            </div>
                             <li>
                                 - Particular: “Av Ricardo Lyon 1450,
                                 Providencia.
@@ -431,54 +483,13 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
                 </container>
                 <container class="treated-deseases-list">
                     <h2>Enfermedades que trata</h2>
-                    <ul>
-                        <li>Arrítmias</li>
-                        <button>Buscar reviews</button>
-                    </ul>
-                    <ul>
-                        <li>Taquicardias</li>
-                        <button>Buscar reviews</button>
-                    </ul>
-                    <ul>
-                        <li>Otras</li>
-                        <button>Buscar reviews</button>
-                    </ul>
-                    <ul>
-                        <li>Arrítmias</li>
-                        <button>Buscar reviews</button>
-                    </ul>
-                    <ul>
-                        <li>Taquicardias</li>
-                        <button>Buscar reviews</button>
-                    </ul>
-                    <ul>
-                        <li>Otras</li>
-                        <button>Buscar reviews</button>
-                    </ul>
-                    <ul>
-                        <li>Arrítmias</li>
-                        <button>Buscar reviews</button>
-                    </ul>
-                    <ul>
-                        <li>Taquicardias</li>
-                        <button>Buscar reviews</button>
-                    </ul>
-                    <ul>
-                        <li>Otras</li>
-                        <button>Buscar reviews</button>
-                    </ul>
-                    <ul>
-                        <li>Arrítmias</li>
-                        <button>Buscar reviews</button>
-                    </ul>
-                    <ul>
-                        <li>Taquicardias</li>
-                        <button>Buscar reviews</button>
-                    </ul>
-                    <ul>
-                        <li>Otras</li>
-                        <button>Buscar reviews</button>
-                    </ul>
+                    <div class="flex flex-wrap gap-2">
+                        {
+                            data.diseases.map((disease: string) => (
+                                <button class="p-2 rounded-full bg-[#2D2D2D] text-white">{disease}</button>
+                            ))
+                        }
+                    </div>
                 </container>
             </section>
 
@@ -486,16 +497,38 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
 
             <section class="doc-reviews">
                 <!-- <div class="button-review-container"> -->
-                <div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
+                <div class="text-center">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="mx-auto"
+                        width="30"
+                        height="30"
+                        viewBox="0 0 24 24"
+                        ><path
+                            fill="#000000"
+                            d="m6 18l-3.15 3.15q-.25.25-.55.125T2 20.8V4q0-.825.588-1.413T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.588 1.413T20 18H6Zm6-5.525l1.9 1.15q.275.175.55-.013t.2-.512l-.5-2.175l1.7-1.475q.25-.225.15-.537t-.45-.338L13.325 8.4l-.875-2.05q-.125-.3-.45-.3t-.45.3l-.875 2.05l-2.225.175Q8.1 8.6 8 8.913t.15.537l1.7 1.475l-.5 2.175q-.075.325.2.513t.55.012l1.9-1.15Z"
+                        ></path></svg
+                    >
+                    <h1 class="text-xxl pb-2">
+                        ¿Qué se opina sobre {data.doctor_first_name}?
+                    </h1>
+                    <h3 class="p-2">({data.total_reviews} reseñas)</h3>
+                </div>
+                <div
+                    class="fixed bottom-1 sm:bottom-20 left-15 right-15 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 z-1 sm:w-auto"
+                >
                     <AuthReviewButton
                         client:load
                         drId={id}
                         doctorName={data.doctor_first_name}
                     />
                 </div>
-                <container class="patient-comments">
-                    <DrReviews client:load doctorId={id} />
-                </container>
+                <div class="patient-comments relative">
+                    <!-- relative: make the absolute works in DrReviews to show: "Todavía no hay reseñas" -->
+                    <div class="patient-comments-desktop">
+                        <DrReviews client:load doctorId={id} />
+                    </div>
+                </div>
             </section>
         </section>
     </body>
@@ -513,7 +546,6 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             font-size: xxx-large;
         }
 
-       
         .dp-speciality-subspeciality {
             margin-bottom: 5px;
         }
@@ -659,7 +691,6 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             width: var(
                 --width-bar-continueOrNotBar
             ); /* Dynamic percentage can be set via inline style or JavaScript */
-            z-index: 1;
         }
 
         .graph-resolvio-mi-problema > button span {
@@ -691,7 +722,6 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             width: var(
                 --width-bar-comunicationBar
             ); /* Dynamic percentage can be set via inline style or JavaScript */
-            z-index: 1;
         }
 
         .graph-comunicacion-clara > button span {
@@ -723,7 +753,6 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             width: var(
                 --width-bar-attentionBar
             ); /* Dynamic percentage can be set via inline style or JavaScript */
-            z-index: 1;
         }
 
         .graph-atencion-profesionalismo > button span {
@@ -755,7 +784,6 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             width: var(
                 --width-bar-knowledgeDomainBar
             ); /* Dynamic percentage can be set via inline style or JavaScript */
-            z-index: 1;
         }
 
         .graph-dominio-conocimientos > button span {
@@ -786,7 +814,6 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             width: var(
                 --width-bar-recomendationBar
             ); /* Dynamic percentage can be set via inline style or JavaScript */
-            z-index: 1;
         }
 
         .graph-recomiendo-a-familiar > button span {
@@ -797,24 +824,11 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
 
         /* --------------------------- */
 
-        .about-section {
+        /*  .about-section {
             display: grid;
             grid-template-columns: 1.3fr 1fr;
-        }
+        } */
 
-        .doc-about {
-            padding: 15px;
-            margin: 10px;
-        }
-
-        .doc-about > container {
-            margin-top: 20px;
-        }
-
-        .doc-background {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-        }
         .placeofcare-prevision {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -827,52 +841,37 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             padding: 3px;
         }
 
+        /* Padding for research projects paragraphs */
+        .research-projects p {
+            padding: 8px 0;
+        }
+
         /* ------- COMMENTS SECTION ------- */
         /* Overall Layout */
         .doc-reviews {
             position: sticky;
             height: fit-content;
-            top: 25px;
-            /* filter: drop-shadow( 0 0 10px rgb(0, 0, 0, .1)); */
-        }
-
-        .button-review-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 30px 0;
-        }
-
-        .write-a-review {
-            font-size: 15px;
-            padding: 30px;
-            background-color: black;
-            color: white;
-            border-radius: 5px;
-            border-style: unset;
-            width: 300px;
-            cursor: pointer;
-            filter: drop-shadow(0 0 10px rgb(0, 0, 0, 0.4));
+            top: 6px;
+            padding: 10px;
         }
 
         .patient-comments {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-
-            /*  display: flex;
-            flex-direction: column;
-            align-items: center;
-            */
-            margin-bottom: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            overflow-y: auto;
+            gap: 2;
             height: 40rem;
         }
 
+        /* Desktop: masonry real */
+        @media (min-width: 800px) {
+            .patient-comments-desktop {
+                columns: 3;
+                padding: 10px;
+            }
+        }
         /* SCROLL BAR */
 
-        .patient-comments {
-            overflow-y: auto;
-            /* Enable vertical scrolling if needed */
-        }
         /* For WebKit browsers (Chrome, Safari) */
         .patient-comments::-webkit-scrollbar {
             width: 8px;
@@ -906,16 +905,16 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
 
         /* Review Cards */
 
-        .review-box {
+        /* .review-box {
             border-radius: 5px;
             border-style: unset;
             background-color: white;
 
             padding: 12px;
             margin: 10px;
-        }
+        } */
 
-        .profile-review-header {
+        /*  .profile-review-header {
             display: grid;
             grid-template-columns: 1fr 3fr 1fr;
             justify-items: start;
@@ -955,6 +954,6 @@ const recomendationBar = toPercentaje(data.promedio_recomendacion);
             margin: 2px;
             border-radius: 5px;
             font-size: 12px;
-        }
+        } */
     </style>
 </Layout>

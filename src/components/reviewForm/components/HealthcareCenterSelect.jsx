@@ -52,7 +52,7 @@ export const HealthcareCenterSelect = ({ doctorHC, onNext, onChange, healthcareC
 
                 <div className="p-3">
 
-                      {
+                    {
                         doctorHC.map((hCenter, i) => (
 
                             <button
@@ -68,7 +68,7 @@ export const HealthcareCenterSelect = ({ doctorHC, onNext, onChange, healthcareC
                             </button>
 
                         ))
-                    } 
+                    }
 
                     <div className="fixed bottom-0 left-0 w-full z-10 bg-white/1 backdrop-blur flex items-center justify-center py-1 gap-20">
 
@@ -78,16 +78,10 @@ export const HealthcareCenterSelect = ({ doctorHC, onNext, onChange, healthcareC
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
-                                // Obtener el parámetro 'from' de la URL
-                                const url = new URL(window.location);
-                                const fromPage = url.searchParams.get('from');
 
-                                if (fromPage) {
-                                    window.location.href = fromPage;
-                                } else {
-                                    // Fallback si no hay parámetro 'from'
-                                    window.location.href = '/';
-                                }
+                                //Go back to doc profile
+                                window.history.back();
+
                             }}
                         >
                             Salir

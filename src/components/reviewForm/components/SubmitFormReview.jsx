@@ -2,8 +2,9 @@ import { useState } from "react";
 import { supabase } from "@/components/api/supabase/supabase";
 
 
-export const SubmitFormReview = ({ userName, doctorId, formData, writtenReviewInput, checked, onNext, btnNextBlocked, doctorFName, doctorFullName }) => {
+export const SubmitFormReview = ({ userName, doctorId, formData, writtenReviewInput, checked, onNext, btnNextBlocked, setBtnNextBlocked, doctorFullName }) => {
     const [isLoading, setIsLoading] = useState(false);
+
 
     // **PASO 2: Funciones para enviar emails**
     // Función para enviar email de confirmación cuando la reseña se envía exitosamente
@@ -90,6 +91,7 @@ export const SubmitFormReview = ({ userName, doctorId, formData, writtenReviewIn
 
     const handleSubmit = async () => {
 
+        setBtnNextBlocked(true)
         setIsLoading(true)
 
         // Actualizar nombre si existe
@@ -191,9 +193,11 @@ export const SubmitFormReview = ({ userName, doctorId, formData, writtenReviewIn
                 disabled={btnNextBlocked}
             >
                 {isLoading ? (
+
                     <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#ffffff" d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12" /></path></svg>
                     </div>
+
                 ) : (
                     <span>Enviar</span>
                 )}

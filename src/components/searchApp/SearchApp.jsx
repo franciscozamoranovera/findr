@@ -6,6 +6,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { SearchBar } from "../searchBar/SearchBar";
 import { SearchResults } from "../searchResults/SearchResults";
+import { DoctorProfile } from '../doctorProfile/DoctorProfile';
 
 
 
@@ -19,6 +20,7 @@ export const SearchApp = () => {
             <SearchBar client:load />
             <Routes>
                 <Route path="/search" element={<SearchResults/>} />
+                <Route path="/doctor/:id" element={<DoctorProfile/>} />
             </Routes>
         </BrowserRouter>
     )

@@ -8,7 +8,7 @@
 
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { supabase } from "@/components/api/supabase/supabase";
 
 
@@ -112,6 +112,7 @@ export const SearchResults = () => {
     diseaseSelection.join(',')]);
 
 
+    /* ?from=${encodeURIComponent(currentSearchUrl)} */
   return (
     <div>
       {/* Pinterest-style Masonry Grid */}
@@ -143,17 +144,16 @@ export const SearchResults = () => {
               key={r.id}
               className="mb-4 break-inside-avoid"
             >
-              <a
-                href={`/${r.id}?from=${encodeURIComponent(currentSearchUrl)}`}
-                target="_blank"
-                rel="noopener"
+              <Link
+                to={`/doctor/${r.id}?from=${encodeURIComponent(currentSearchUrl)}`}
+               
                 className="block bg-[#262626] rounded-2xl p-4 transition-all duration-200 border-4 border-transparent hover:border-blue-600 shadow-lg w-full"
                 style={{ color: "#fff", minHeight: "320px" }}
               >
                 <div className="font-bold text-lg mb-2">{r.full_name}</div>
                 <div className="text-blue-300">{r.speciality_name}</div>
                 {/* Puedes agregar más info aquí para que las tarjetas tengan alturas variables */}
-              </a>
+              </Link>
             </div>
           ))}
         </div>
