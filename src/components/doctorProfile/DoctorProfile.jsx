@@ -15,6 +15,8 @@ export const DoctorProfile = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+
+
     /* States to handle ratings */
     const [ratings, setRatings] = useState({
 
@@ -217,12 +219,169 @@ export const DoctorProfile = () => {
                 </div>
 
 
-                <div>
+                {/* Calification by Category */}
+
+                {/* CONTINUE OR NOT RATING */}
+                <div className="tag-clasification-section gap-5 flex flex-row flex-wrap justify-center items-center mt-16 mb-12">
+                    <div className='continue-or-not'>
+                        <div className='w-10'>
+                            <img
+                                className="w-8 h-8 object-contain"
+                                src="/img/doctor-profile/calification-icons/problem-solved.png"
+                            />
+                        </div>
+                        <div className='pt-2'>
+                            <p>Continuaría Atendiendose</p>
+                        </div>
+                        <div className=''>
+                            <button className="pointer-events-none relative rounded border-2 border-black w-[200px] h-[9px] bg-white text-black overflow-hidden" tabindex="-1"
+                                style={{
+                                    '--width-bar-continueOrNotBar':
+                                        toPercentage.continuationRating
+                                }}
+                            >
+                                <div
+                                    className="absolute left-0 top-0 bottom-0 bg-black"
+                                    style={{
+                                        width:
+                                            'var(--width-bar-continueOrNotBar)'
+                                    }}
+                                />
+                            </button>
+                        </div>
+                        <div className=''>
+                            <h1 className='text-center'>{ratings.continuationRating}</h1>
+                        </div>
+
+                    </div>
+                    {/* COMUNICATION RATING */}
+                    <div className='comunication'>
+                        <div className='w-10'>
+                            <img
+                                className="w-8 h-8 object-contain"
+                                src="/img/doctor-profile/calification-icons/comunication.png"
+                            />
+                        </div>
+                        <div className='pt-2'>
+                            <p>Comunicación Clara</p>
+                        </div>
+                        <div className=''>
+                            <button className="pointer-events-none relative rounded border-2 border-black w-[200px] h-[9px] bg-white text-black overflow-hidden" tabindex="-1"
+                                style={{
+                                    '--width-bar-comunicationBar':
+                                        toPercentage.comunicationRating
+                                }}
+                            >
+                                <div
+                                    className="absolute left-0 top-0 bottom-0 bg-black"
+                                    style={{
+                                        width:
+                                            'var(--width-bar-comunicationBar)'
+                                    }}
+                                />
+                            </button>
+                        </div>
+                        <div className=''>
+                            <h1 className='text-center'>{ratings.comunicationRating}</h1>
+                        </div>
+                    </div>
+                    {/* ATTENTION & PROFESSIONAILISM */}
+                    <div className='attention-and-professionalism'>
+                        <div className='w-10'>
+                            <img
+                                className="w-8 h-8 object-contain"
+                                src="/img/doctor-profile/calification-icons/attention-profesionalism.png"
+                            />
+                        </div>
+                        <div className='pt-2'>
+                            <p>Atención y Ptofesionalismo</p>
+                        </div>
+                        <div className=''>
+                            <button className="pointer-events-none relative rounded border-2 border-black w-[200px] h-[9px] bg-white text-black overflow-hidden" tabindex="-1"
+                                style={{
+                                    '--width-bar-attention-and-professionalism':
+                                        toPercentage.attentionRating
+                                }}
+                            >
+                                <div
+                                    className="absolute left-0 top-0 bottom-0 bg-black"
+                                    style={{
+                                        width:
+                                            'var(--width-bar-attention-and-professionalism)'
+                                    }}
+                                />
+                            </button>
+                        </div>
+                        <div className=''>
+                            <h1 className='text-center'>{ratings.attentionRating}</h1>
+                        </div>
+                    </div>
+                    {/* KNOWLEDGE DOMAIN */}
+                    <div className='knowledge-domain'>
+                        <div className='w-10'>
+                            <img
+                                className="w-8 h-8 object-contain"
+                                src="/img/doctor-profile/calification-icons/knoledge-domain.png"
+                            />
+                        </div>
+                        <div className='pt-2'>
+                            <p>Dominio Conocimientos</p>
+                        </div>
+                        <div className=''>
+                            <button className="pointer-events-none relative rounded border-2 border-black w-[200px] h-[9px] bg-white text-black overflow-hidden" tabindex="-1"
+                                style={{
+                                    '--width-bar-knowledge-domain':
+                                        toPercentage.knowledgeDomainRating
+                                }}
+                            >
+                                <div
+                                    className="absolute left-0 top-0 bottom-0 bg-black"
+                                    style={{
+                                        width:
+                                            'var(--width-bar-knowledge-domain)'
+                                    }}
+                                />
+                            </button>
+                        </div>
+                        <div className=''>
+                            <h1 className='text-center'>{ratings.knowledgeDomainRating}</h1>
+                        </div>
+                    </div>
+                    {/* RECOMENDATION TO FAMILY */}
+                    <div className='recomendaria-a-familiar'>
+                        <div className='w-10'>
+                            <img
+                                className="w-8 h-8 object-contain"
+                                src="/img/doctor-profile/calification-icons/recomendation.png"
+                            />
+                        </div>
+                        <div className='pt-2'>
+                            <p>Recomendaría a Familiar</p>
+                        </div>
+                        <div className=''>
+                            <button className="pointer-events-none relative rounded border-2 border-black w-[200px] h-[9px] bg-white text-black overflow-hidden" tabindex="-1"
+                                style={{
+                                    '--width-bar-recomendation':
+                                        toPercentage.recomendationRating
+                                }}
+                            >
+                                <div
+                                    className="absolute left-0 top-0 bottom-0 bg-black"
+                                    style={{
+                                        width:
+                                            'var(--width-bar-recomendation)'
+                                    }}
+                                />
+                            </button>
+                        </div>
+                        <div className=''>
+                            <h1 className='text-center'>{ratings.recomendationRating}</h1>
+                        </div>
+                    </div>
 
                 </div>
 
-                
-                <div class="fixed bottom-1 sm:bottom-20 left-auto right-auto sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 z-30 sm:w-auto">
+                <div class="fixed bottom-1  sm:bottom-20 left-1/2 w-auto right-auto -translate-x-1/2  sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 z-30 sm:w-auto">
                     <AuthReviewButton
                         client:load
                         drId={id}

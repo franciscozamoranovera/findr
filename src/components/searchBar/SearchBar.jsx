@@ -135,7 +135,7 @@ export const SearchBar = () => {
 
             {!isOpen && (
 
-                <div className="flex items-center justify-center w-full gap-1 sm:gap-2 md:gap-3 lg:gap-4">
+                <div className="flex items-center justify-center w-full gap-1 sm:gap-2 md:gap-3 lg:gap-4 pt-6">
 
                     {(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
                         <ClearButton
@@ -152,11 +152,11 @@ export const SearchBar = () => {
                             setDiseaseList={setDiseaseList}
                         />
                     )}
-                    <button onClick={() => setIsOpen(true)} className="bg-[#a2a2a2] w-full min-w-[250px] max-w-[350px] h-[60px]  px-3 py-3 rounded-full flex flex-col items-center justify-center m-1 shadow-[0_0_10px_rgba(0,0,0,0.2)]">
+                    <button onClick={() => setIsOpen(true)} className="bg-[#ffffff] w-full min-w-[250px] max-w-[350px] h-[60px]  px-3 py-3 rounded-full border border-[#b9b9b9] flex flex-col items-center justify-center m-1 shadow-[0_0_10px_rgba(0,0,0,0.2)]">
 
                         {(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
 
-                            <div className="min-w-[200px] w-full">
+                            <div className="min-w-[250px] w-full">
 
                                 <div className="flex justify-center w-full" >
                                     {
@@ -220,9 +220,18 @@ export const SearchBar = () => {
                         )}
 
                         {!(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
-                            <div>
-                                <p className="text-white ">
-                                    Busca un médico, enfermedad o especialidad
+                            <div className="flex flex-row items-center justify-start relative w-full">
+                                <svg
+                                    className="absolute left-3"
+                                    width="20"
+                                    height="20"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 512 512"
+                                    >
+                                    <path fill="#2d2d2d" d="M416 208c0 45.9-14.9 88.3-40 122.7l126.6 126.7c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.1-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0s208 93.1 208 208M208 352a144 144 0 1 0 0-288a144 144 0 1 0 0 288" />
+                                </svg>
+                                <p className="text-black text-sm text-center w-full">
+                                    Médico, enfermedad o especialidad
                                 </p>
                             </div>
                         )}
@@ -233,13 +242,13 @@ export const SearchBar = () => {
 
                             {/* filter button */}
                             <button
-                                className="flex justify-center items-center cursor-pointer transition-colors duration-300 ease-in-out rounded-3xl sm:p-4 hover:underline hover:text-blue-700"
+                                className="flex justify-center items-center cursor-pointer transition-colors duration-300 ease-in-out rounded-3xl sm:w-20 hover:underline hover:text-blue-700"
                                 onClick={() => setIsSecFiltersOpen(true)}
                             >
 
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M9 5a1 1 0 1 0 0 2a1 1 0 0 0 0-2zM6.17 5a3.001 3.001 0 0 1 5.66 0H19a1 1 0 1 1 0 2h-7.17a3.001 3.001 0 0 1-5.66 0H5a1 1 0 0 1 0-2h1.17zM15 11a1 1 0 1 0 0 2a1 1 0 0 0 0-2zm-2.83 0a3.001 3.001 0 0 1 5.66 0H19a1 1 0 1 1 0 2h-1.17a3.001 3.001 0 0 1-5.66 0H5a1 1 0 1 1 0-2h7.17zM9 17a1 1 0 1 0 0 2a1 1 0 0 0 0-2zm-2.83 0a3.001 3.001 0 0 1 5.66 0H19a1 1 0 1 1 0 2h-7.17a3.001 3.001 0 0 1-5.66 0H5a1 1 0 1 1 0-2h1.17z" /></svg>
 
-                                <p className="hidden  md:block font-medium ml-2">
+                                <p className="hidden  md:block font-medium ml-1">
                                     Filtros
                                 </p>
                             </button>
