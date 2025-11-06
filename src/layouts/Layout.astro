@@ -17,6 +17,7 @@ const { title } = Astro.props;
             name="viewport"
             content="width=device-width, initial-scale=1.0, maximum-scale=1.0 viewport-fit=cover"
         />
+
         <link rel="icon" type="image/svg+xml" href="/img/fav-findr.svg" />
         <title>{title}</title>
         <!-- title: finder.it viene del index se le pasa por props -->
@@ -553,19 +554,48 @@ const { title } = Astro.props;
     @media (min-width: 768px) {
         .hide-scrollbar-desktop::-webkit-scrollbar {
             width: 0px;
+            height: 0px;
             background: transparent;
         }
         .hide-scrollbar-desktop::-webkit-scrollbar-thumb {
             background: transparent;
         }
+        .hide-scrollbar-desktop::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .hide-scrollbar-desktop::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+    }
+
+    /* Para Safari específicamente */
+    .hide-scrollbar-desktop {
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+    }
+
+    .hide-scrollbar-desktop::-webkit-scrollbar {
+        display: none; /* Safari y Chrome */
+        width: 0;
+        height: 0;
+    }
+
+    /* Fix para Safari scroll horizontal - solo aplicar cuando sea necesario */
+    @supports (-webkit-appearance: none) {
+        .hide-scrollbar-desktop.horizontal-scroll {
+            overflow-x: scroll;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
     }
 
     /* Safari config for review cards  */
-     @supports (-webkit-appearance: none) {
-      .safari-columns {
-          column-fill: balance;
-          column-gap: 1rem;
-          display: block;
+    @supports (-webkit-appearance: none) {
+        .safari-columns {
+            column-fill: balance;
+            column-gap: 1rem;
+            display: block;
         }
 
         .safari-columns > * {
@@ -576,7 +606,6 @@ const { title } = Astro.props;
 
             width: 100%;
             vertical-align: top;
-      }
-  }
-    
+        }
+    }
 </style>

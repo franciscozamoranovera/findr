@@ -123,6 +123,7 @@ export const SearchBar = () => {
     useEffect(() => {
         if (isOpen || isSecFilterOpen) {
             document.body.style.overflow = 'hidden';
+            
         } else {
             document.body.style.overflow = 'auto';
         }
@@ -337,7 +338,7 @@ export const SearchBar = () => {
                 // MODAL PRIMARY FILTER
 
                 /* main background */
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-2xl z-50 " >
+                <div className="fixed inset-0 bg-black/55 backdrop-blur-2xl z-50" >
                     <div className="flex justify-end m-4">
                         <button
                             className="bg-black text-white px-4 py-2 rounded-full cursor-pointer text-m hover:text-black hover:bg-[#fafafa] transition-colors duration-200 ease-in-out"

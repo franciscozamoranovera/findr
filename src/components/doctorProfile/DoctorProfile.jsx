@@ -77,7 +77,7 @@ export const DoctorProfile = () => {
         const fetchDoctorData = async () => {
             const { data: doctorData, error } = await supabase
                 .from("doctor_search_view_flat")
-                .select("doctor_first_name, full_name, speciality_name, sub_speciality_name, diseases, total_reviews, promedio_general, promedio_atencion, promedio_comunicacion, promedio_continuidad, promedio_conocimiento, promedio_recomendacion, healthcare_centers")
+                .select("doctor_first_name,full_name, speciality_name, sub_speciality_name, diseases, previsiones, about, background,total_reviews, promedio_general, promedio_atencion, promedio_comunicacion, promedio_continuidad, promedio_conocimiento, promedio_recomendacion, healthcare_centers, private_practice_addresses, healthcare_center_url")
                 .eq('id', id)
                 .single();
 
@@ -378,19 +378,223 @@ export const DoctorProfile = () => {
                             <h1 className='text-center'>{ratings.recomendationRating}</h1>
                         </div>
                     </div>
-
                 </div>
 
-                <div class="fixed bottom-1  sm:bottom-20 left-1/2 w-auto right-auto -translate-x-1/2  sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 z-30 sm:w-auto">
+                {/* DR PROFILE */}
+                <div>
+                    {/* ABOUT */}
+                    <div className='w-full pt-12 flex flex-col items-center justify-center'>
+                        <div className='w-full sm:w-3/5 md:w-3/5 xl:w-2/5 pb-5 '>
+                            <h1 className='text-3xl sm:text-4xl pb-2'>Sobre {data.full_name}</h1>
+                            {data.about && data.about.length > 0 ?
+                                (
+                                    <p className=''>
+                                        {data.about}
+                                    </p>
+
+                                ) : (
+                                    <p className=''>Pronto más información</p>
+                                )
+
+                            }
+                        </div>
+                        {/* DISEASES */}
+                        <div className='w-full sm:w-3/5 md:w-3/5 xl:w-2/5 pb-5'>
+                            <h1 className='text-3xl sm:text-4xl text-start pb-2'>Patologías que trata</h1>
+                            <div className='flex justify-start items-center gap-3'>
+                                {data.diseases && data.diseases.length > 0 ? (
+                                    data.diseases.map((d, index) => (
+                                        <button key={index} className='rounded-full p-3 bg-[#2D2D2D] text-white pointer-events-none'>
+                                            <p>
+                                                {d}
+                                            </p>
+                                        </button>
+                                    ))
+                                ) : (
+                                    <p>Pronto más información</p>
+                                )}
+                            </div>
+                        </div>
+                        {/* PREVISION */}
+                        <div className='w-full sm:w-3/5 md:w-3/5 xl:w-2/5 pb-5'>
+                            <h1 className='text-3xl sm:text-4xl text-start pb-2'>Previsión</h1>
+                            <div className='flex justify-start items-center gap-3'>
+                                {data.previsiones && data.previsiones.length > 0 ? (
+                                    data.previsiones.map((d, index) => (
+                                        <button key={index} className='rounded-full p-3 bg-[#2D2D2D] text-white pointer-events-none'>
+                                            <p>
+                                                {d}
+                                            </p>
+                                        </button>
+                                    ))
+                                ) : (
+                                    <p>Pronto más información</p>
+                                )}
+                            </div>
+                        </div>
+                        {/* HEALTHCARE CENTER */}
+                        <div className='w-full sm:w-3/5 md:w-3/5 xl:w-2/5 pb-5'>
+                            <h1 className='text-3xl sm:text-4xl text-start pb-2'>Centros de atención</h1>
+                            <div className='flex justify-start items-center gap-3'>
+                                {(data.healthcare_centers && data.healthcare_centers.length > 0) || (data.private_practice_addresses && data.private_practice_addresses.length > 0) ? (
+                                    <>
+                                        {/* Healthcare centers */}
+                                        {data.healthcare_centers && data.healthcare_centers.map((d, index) => (
+                                            <a
+                                                href={data.healthcare_center_url && data.healthcare_center_url[index] ?
+                                                    (data.healthcare_center_url[index].startsWith('http') ?
+                                                        data.healthcare_center_url[index] :
+                                                        `https://${data.healthcare_center_url[index]}`)
+                                                    : '#'}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className='cursor-pointer rounded-full p-3 bg-[#2D2D2D] text-white no-underline hover:bg-white hover:text-black transition-colors'
+                                                key={`hc-${index}`}
+                                            >
+                                                <p>
+                                                    {d}
+                                                </p>
+                                            </a>
+                                        ))}
+
+                                        {/* Private Attention */}
+                                        {data.private_practice_addresses && data.private_practice_addresses.map((d, index) => (
+                                            <button key={`pa-${index}`} className='rounded-full p-3 bg-[#2D2D2D] text-white pointer-events-none'>
+                                                <p>
+                                                    {d}
+                                                </p>
+                                            </button>
+                                        ))}
+                                    </>
+                                ) : (
+                                    <p>Pronto más información</p>
+                                )}
+
+
+                            </div>
+                        </div>
+                        {/* BACKGROUND, INVESTIGATION & PROJECTS */}
+                        <div className='w-full sm:w-3/5 md:w-3/5 xl:w-2/5 pb-5'>
+                            <h1 className='text-3xl sm:text-4xl text-start pb-2'>Estudios</h1>
+                            <div className='flex justify-start items-center gap-3'>
+                                {/* Background */}
+                                {data.background && data.background.length > 0 ? (
+                                    data.background.map((d, index) => (
+                                        <button key={index} className='rounded-full p-3 bg-[#2D2D2D] text-white pointer-events-none'>
+                                            <p>
+                                                {d}
+                                            </p>
+                                        </button>
+                                    ))
+                                ) : (
+                                    <p>Pronto más información</p>
+                                )
+                                }
+                            </div>
+                        </div>
+                        <div className='w-full sm:w-3/5 md:w-3/5 xl:w-2/5 pb-5'>
+                            <h1 className='text-3xl sm:text-4xl text-start pb-2'>Investigación y Proyectos</h1>
+                            <div className='flex flex-row sm:min-h-fit items-start gap-2 w-full overflow-x-scroll overflow-y-hidden hide-scrollbar-desktop horizontal-scroll'>
+                                {/* Investigation & Projects */}
+                                {data.background && data.background.length > 0 ? (
+
+                                    data.background.map((d, index) => (
+                                        <button key={index} className='rounded-3xl p-2 h-auto w-[280px] xs:w-[280px] sm:w-[300px] xl:w-[350px] bg-[#2D2D2D] text-white pointer-events-none flex-shrink-0  overflow-hidden'>
+                                            <div className='h-full flex flex-col justify-between p-3'>
+                                                <div className='flex items-center justify-between mb-2'>
+                                                    <p className='text-lg font-semibold truncate'>Título del Proyecto</p>
+                                                    <p className='text-sm whitespace-nowrap ml-2'>10-Oct-22</p>
+                                                </div>
+                                                <div className='flex-1 overflow-hidden'>
+                                                    <p className='text-sm text-left line-clamp-6'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. </p>
+                                                </div>
+                                                <div className='text-left mt-2'>
+                                                    <span className='text-[8px] xl:text-xs bg-white text-black px-2 py-1 rounded-full'>{d}</span>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    ))
+
+                                ) : (
+                                    <p>Sin información</p>
+                                )}
+
+                                <button className='rounded-3xl p-2 h-auto w-[250px] xs:w-[280px] sm:w-[300px] xl:w-[350px] bg-[#2D2D2D] text-white pointer-events-none flex-shrink-0  overflow-hidden'>
+                                    <div className='h-full flex flex-col justify-between p-3'>
+                                        <div className='flex items-center justify-between mb-2'>
+                                            <p className='text-lg font-semibold truncate'>Título del Proyecto</p>
+                                            <p className='text-sm whitespace-nowrap ml-2'>10-Oct-22</p>
+                                        </div>
+                                        <div className='flex-1 overflow-hidden'>
+                                            <p className='text-sm text-left line-clamp-6'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. </p>
+                                        </div>
+                                        <div className='text-left mt-2'>
+                                            <span className='text-[8px] xl:text-xs bg-white text-black px-2 py-1 rounded-full'>Test</span>
+                                        </div>
+                                    </div>
+                                </button>
+                                <button className='rounded-3xl p-2 h-auto w-[250px] xs:w-[280px] sm:w-[300px] xl:w-[350px] bg-[#2D2D2D] text-white pointer-events-none flex-shrink-0  overflow-hidden'>
+                                    <div className='h-full flex flex-col justify-between p-3'>
+                                        <div className='flex items-center justify-between mb-2'>
+                                            <p className='text-lg font-semibold truncate'>Título del Proyecto</p>
+                                            <p className='text-sm whitespace-nowrap ml-2'>10-Oct-22</p>
+                                        </div>
+                                        <div className='flex-1 overflow-hidden'>
+                                            <p className='text-sm text-left line-clamp-6'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. </p>
+                                        </div>
+                                        <div className='text-left mt-2'>
+                                            <span className='text-[8px] xl:text-xs bg-white text-black px-2 py-1 rounded-full'>Test</span>
+                                        </div>
+                                    </div>
+                                </button>
+                                <button className='rounded-3xl p-2 h-auto w-[250px] xs:w-[280px] sm:w-[300px] xl:w-[350px] bg-[#2D2D2D] text-white pointer-events-none flex-shrink-0  overflow-hidden'>
+                                    <div className='h-full flex flex-col justify-between p-3'>
+                                        <div className='flex items-center justify-between mb-2'>
+                                            <p className='text-lg font-semibold truncate'>Título del Proyecto</p>
+                                            <p className='text-sm whitespace-nowrap ml-2'>10-Oct-22</p>
+                                        </div>
+                                        <div className='flex-1 overflow-hidden'>
+                                            <p className='text-sm text-left line-clamp-6'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. </p>
+                                        </div>
+                                        <div className='text-left mt-2'>
+                                            <span className='text-[8px] xl:text-xs bg-white text-black px-2 py-1 rounded-full'>Test</span>
+                                        </div>
+                                    </div>
+                                </button>
+                                <button className='rounded-3xl p-2 h-auto w-[250px] xs:w-[280px] sm:w-[300px] xl:w-[350px] bg-[#2D2D2D] text-white pointer-events-none flex-shrink-0  overflow-hidden'>
+                                    <div className='h-full flex flex-col justify-between p-3'>
+                                        <div className='flex items-center justify-between mb-2'>
+                                            <p className='text-lg font-semibold truncate'>Título del Proyecto</p>
+                                            <p className='text-sm whitespace-nowrap ml-2'>10-Oct-22</p>
+                                        </div>
+                                        <div className='flex-1 overflow-hidden'>
+                                            <p className='text-sm text-left line-clamp-6'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. </p>
+                                        </div>
+                                        <div className='text-left mt-2'>
+                                            <span className='text-[8px] xl:text-xs bg-white text-black px-2 py-1 rounded-full'>Test</span>
+                                        </div>
+                                    </div>
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fixed bottom-3 sm:bottom-20 left-1/2 w-3/4 right-auto -translate-x-1/2  sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 z-30 sm:w-auto">
                     <AuthReviewButton
                         client:load
                         drId={id}
                         doctorName={data.doctor_first_name}
                     />
                 </div>
-                <div className='flex sm:flex-wrap overflow-y-auto gap-2 h-[40rem] relative hide-scrollbar-desktop'>
-                    <div className='md:columns-3 xl:columns-4 2xl:columns-5 3xl:columns-6 p-[10px] w-full safari-columns'>
-                        <DrReviews client:load doctorId={id} />
+                <div className='pt-12'>
+                    <h1 className='text-center font-medium text-3xl pb-5'>Reseñas</h1>
+
+                    <div className='flex sm:flex-wrap overflow-y-auto gap-2 h-[40rem] relative hide-scrollbar-desktop'>
+                        <div className='md:columns-3 xl:columns-4 2xl:columns-5 3xl:columns-6 p-[10px] w-full safari-columns'>
+                            <DrReviews client:load doctorId={id} />
+                        </div>
                     </div>
                 </div>
             </div>

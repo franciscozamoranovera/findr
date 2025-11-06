@@ -64,7 +64,7 @@ const ReviewButton = ({
 
         return (
 
-            <div className="flex items-center gap-2 sm:drop-shadow-2xl">
+            <div className="flex items-center gap-2  sm:drop-shadow-2xl">
                 <button
                     className="sm:drop-shadow-2xl rounded-full bg-[#2D2D2D] text-white py-4 px-4 sm:py-6 sm:px-6 text-sm flex-1 sm:flex-initial"
                     onClick={handleLoginRedirect}
@@ -96,9 +96,11 @@ const ReviewButton = ({
                     }}
                 >
                     <span>
-                    <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="none" stroke="#ffffff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 18h3.75a5.25 5.25 0 1 0 0-10.5H5M7.5 4L4 7.5L7.5 11"/></svg>
+                    {/* <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                         <path fill="#ffffff" d="M416 208c0 45.9-14.9 88.3-40 122.7l126.6 126.7c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.1-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0s208 93.1 208 208M208 352a144 144 0 1 0 0-288a144 144 0 1 0 0 288" />
-                    </svg>
+                    </svg> */}
+
                 </span>
                 </button>
             </div>
