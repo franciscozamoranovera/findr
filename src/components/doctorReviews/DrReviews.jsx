@@ -3,16 +3,9 @@ import { useState, useEffect } from "react";
 import { supabase } from "../api/supabase/supabase"
 
 
-/* NOTA:
 
-- PASAR EL ID DEL DOCT PARA QUE CAPTE LAS REVIEWS... POR ESO NO SE VEN
-- CON EL BTN DE REVIEWBUTTON PASA LO MISMO, NO CAPTURA SI HAY O NO SESSION
-
-*/
-
-export const DrReviews = ({ doctorId }) => {
+export const DrReviews = ({ doctorId, nextPage }) => {
     const [reviews, setReviews] = useState([])
-
 
 
     useEffect(() => {
@@ -22,17 +15,16 @@ export const DrReviews = ({ doctorId }) => {
                 .from("reviews_overall_rating")
                 .select("diseases, written_review, created_at, is_anonymous, user_email, appointment_reason, promedio_general")
                 .eq("doctor_id", doctorId)
+                .order('created_at', {ascending: false})
+                .range(nextPage.a, nextPage.b)
+
 
             if (error) {
                 console.error('Error fetching reviews:', error)
                 return
             }
-            
-          /*   const prueba = Object.values(reviews.promedio_general)
-            
-            console.log(prueba) */
-            
-                
+
+
             setReviews(reviews)
 
             console.log('Reviews del doctor:', reviews)
@@ -40,7 +32,7 @@ export const DrReviews = ({ doctorId }) => {
 
         fetchDrReviews()
 
-    }, [])
+    }, [nextPage])
 
     // HIDE USER EMAIL %
     const maskEmailName = (email) => {
@@ -98,6 +90,8 @@ export const DrReviews = ({ doctorId }) => {
 
     return (
         <>
+
+
             {reviews.length > 0 ? (
 
                 reviews
@@ -154,6 +148,7 @@ export const DrReviews = ({ doctorId }) => {
                 </div>
 
             )}
+
         </>
     )
 }

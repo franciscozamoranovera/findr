@@ -27,3 +27,5 @@ pnpm-debug.log*
 # Internal notes
 .TO-DO.md
 .TS-LEARNING.ts
+# Local Netlify folder
+.netlify
