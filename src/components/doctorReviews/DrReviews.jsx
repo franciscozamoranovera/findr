@@ -1,40 +1,51 @@
 
-import { useState, useEffect } from "react";
-import { supabase } from "../api/supabase/supabase"
-
+import { fetchDrReviews } from "../api/supabase/fetchFunctions";
+import { useQuery } from "@tanstack/react-query"
 
 
 export const DrReviews = ({ doctorId, nextPage }) => {
-    const [reviews, setReviews] = useState([])
+
+    /* DR REVIEWS FROM SUPABASE, TANSTACK QUERY */
+    const postQuery = useQuery({
+        queryKey: ["reviews", doctorId, nextPage],
+        queryFn: () => fetchDrReviews(doctorId, nextPage),
+        staleTime: 1000 * 60 * 6, /* fresh state activated for 1 minute */
+    })
+
+    
+    if (postQuery.isPending) {
+        return <>
+            <div className="bg-gray-300 pt-20 pb-16  rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-48 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-48 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-14 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-24 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-32 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-24 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-14 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-32 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-16 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-16 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-36 rounded-3xl  "></div>
+            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+
+        </>
+
+    }
 
 
-    useEffect(() => {
-        const fetchDrReviews = async () => {
+    /* DOCTOR REVIEW DATA */
+    const reviewData = postQuery.data;
 
-            const { data: reviews, error } = await supabase
-                .from("reviews_overall_rating")
-                .select("diseases, written_review, created_at, is_anonymous, user_email, appointment_reason, promedio_general")
-                .eq("doctor_id", doctorId)
-                .order('created_at', {ascending: false})
-                .range(nextPage.a, nextPage.b)
-
-
-            if (error) {
-                console.error('Error fetching reviews:', error)
-                return
-            }
-
-
-            setReviews(reviews)
-
-            console.log('Reviews del doctor:', reviews)
-        }
-
-        fetchDrReviews()
-
-    }, [nextPage])
-
-    // HIDE USER EMAIL %
+    console.log('REVIEW DATA', reviewData)
+    // HIDE USER EMAIL %›
     const maskEmailName = (email) => {
         const [name, domain] = email.split('@');
 
@@ -91,10 +102,9 @@ export const DrReviews = ({ doctorId, nextPage }) => {
     return (
         <>
 
+            {reviewData && reviewData.length > 0 ? (
 
-            {reviews.length > 0 ? (
-
-                reviews
+                reviewData
                     .sort((a, b) =>
                         new Date(b.created_at) - new Date(a.created_at))
                     .map((data, i) => (
@@ -143,6 +153,7 @@ export const DrReviews = ({ doctorId, nextPage }) => {
 
                     ))
             ) : (
+
                 <div className="absolute inset-0 flex items-center justify-center z-20 backdrop-blur-sm">
                     <p className="text-center text-gray-600 font-medium">Todavía no tiene reseñas</p>
                 </div>

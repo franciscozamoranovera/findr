@@ -1,7 +1,9 @@
 
+import { supabase } from "../api/supabase/supabase";
+import { useQuery } from '@tanstack/react-query';
+import { fetchDrProfile } from '../api/supabase/fetchFunctions';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
-import { supabase } from "../api/supabase/supabase";
 import { DrReviews } from "../doctorReviews/DrReviews";
 import AuthReviewButton from "@/components/reviewForm/buttons/progressBar/AuthReviewButton";
 
@@ -11,13 +13,28 @@ export const DoctorProfile = () => {
 
     const { id } = useParams();
     const [searchParams] = useSearchParams();
-    const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
 
+    const [nextPage, setNextPage] = useState({ fromPage: 0, toPage: 5 })
 
-    /* States to handle ratings */
+
+    /* DATA FETCHING : Pasar a un hook personalizado, ej.: */
+    const postQuery = useQuery({
+        queryKey: ["drProfile", id], /* id from useParams */
+        queryFn: () => fetchDrProfile(id), /* fetch dr profile data from supabase, tanstack */
+        staleTime: 1000 * 60 * 6, //1 min stale time (fresh)
+
+
+    })
+
+    const doctorData = postQuery.data;
+
+
+    console.log('NEXT PAGE', nextPage)
+
+    /* STATES TO HANDLE RATINGS */
     const [ratings, setRatings] = useState({
 
         overall: '0.0',
@@ -39,12 +56,9 @@ export const DoctorProfile = () => {
 
     })
 
-    const [nextPage, setNextPage] = useState({
-        a: 0,
-        b: 1
-    })
 
-    /* Breadcrumbs */
+
+    /* BREADCRUMBS */
     const breadcrumbs = searchParams.get('from');
 
     let sddSearch = null;
@@ -68,84 +82,86 @@ export const DoctorProfile = () => {
     }
 
 
-    /* Document Title */
+    /* DOCUMENT TITLE */
     useEffect(() => {
-        if (data?.full_name) {
-            document.title = `${data.full_name} | findr`;
+        if (doctorData?.full_name) {
+            document.title = `${doctorData.full_name} | findr`;
         }
-    }, [data]);
 
 
-    /* Data Fetching */
+    }, [doctorData]);
+
+
+
     useEffect(() => {
-        const fetchDoctorData = async () => {
-            const { data: doctorData, error } = await supabase
-                .from("doctor_search_view_flat")
-                .select("doctor_first_name,full_name, speciality_name, sub_speciality_name, diseases, previsiones, about, background,total_reviews, promedio_general, promedio_atencion, promedio_comunicacion, promedio_continuidad, promedio_conocimiento, promedio_recomendacion, healthcare_centers, private_practice_addresses, healthcare_center_url")
-                .eq('id', id)
-                .single();
 
-            if (error) {
-                setError(error);
-                setLoading(false);
-                return;
-            }
-
-            if (doctorData) {
-                setData(doctorData)
-
-                const toString = (num) => {
-                    const count = num.toString();
-
-                    if (count === "0.0") return 0;
-
-                    if (!count.includes(".")) {
-                        return count + ".0";
-                    } else return count;
-                };
-
-                //Convert rating to % for bars
-                const toPercentaje = (num) => {
-                    const conversion = num * 20 + "%";
-                    return conversion;
-                };
-
-                setRatings({
-                    overall: toString(doctorData.promedio_general),
-                    continuationRating: toString(doctorData.promedio_continuidad),
-                    comunicationRating: toString(doctorData.promedio_comunicacion),
-                    knowledgeDomainRating: toString(doctorData.promedio_conocimiento),
-                    attentionRating: toString(doctorData.promedio_atencion),
-                    recomendationRating: toString(doctorData.promedio_recomendacion),
-
-                });
-
-                setToPercentage({
-                    continuationRating: toPercentaje(doctorData.promedio_continuidad),
-                    comunicationRating: toPercentaje(doctorData.promedio_comunicacion),
-                    knowledgeDomainRating: toPercentaje(doctorData.promedio_conocimiento),
-                    attentionRating: toPercentaje(doctorData.promedio_atencion),
-                    recomendationRating: toPercentaje(doctorData.promedio_recomendacion)
-                })
-            }
-
+        if (error) {
+            setError(error);
             setLoading(false);
+            return;
+        }
 
-        };
+        if (doctorData) {
 
-        if (id) fetchDoctorData();
+            const toString = (num) => {
+                const count = num.toString();
 
-    }, [id])
+                if (count === "0.0") return 0;
 
-    if (loading) return <div className="text-black p-8 text-center items-center flex flex-col justify-center">
+                if (!count.includes(".")) {
+                    return count + ".0";
+                } else return count;
+            };
+
+            //Convert rating to % for bars
+            const toPercentaje = (num) => {
+                const conversion = num * 20 + "%";
+                return conversion;
+            };
+
+            setRatings({
+                overall: toString(doctorData.promedio_general),
+                continuationRating: toString(doctorData.promedio_continuidad),
+                comunicationRating: toString(doctorData.promedio_comunicacion),
+                knowledgeDomainRating: toString(doctorData.promedio_conocimiento),
+                attentionRating: toString(doctorData.promedio_atencion),
+                recomendationRating: toString(doctorData.promedio_recomendacion),
+
+            });
+
+            setToPercentage({
+                continuationRating: toPercentaje(doctorData.promedio_continuidad),
+                comunicationRating: toPercentaje(doctorData.promedio_comunicacion),
+                knowledgeDomainRating: toPercentaje(doctorData.promedio_conocimiento),
+                attentionRating: toPercentaje(doctorData.promedio_atencion),
+                recomendationRating: toPercentaje(doctorData.promedio_recomendacion)
+            })
+
+        }
+
+
+        setLoading(false);
+
+    }, [doctorData])
+
+    // TODO 
+    /* 
+        HAY QUE MEJORAR EL MATCH THE "CARGANDO" Y "DOCTOR NOT FOUND"
+    
+    */
+
+    if (postQuery.isLoading) return <div className="text-black p-8 text-center items-center flex flex-col justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="#000000" d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z"><animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12" /></path></svg>
         <p >
             Cargando perfil...
         </p>
-    </div>;
+    </div>
 
-    if (error) return <div className="text-red-500 p-8">Error: {error.message}</div>;
-    if (!data) return <div className="text-black p-8">Doctor not found</div>;
+    if (postQuery.error) return <div className="text-red-500 p-8">Error: {error.message}</div>;
+
+    //TODO: debe ejecutarse si hay después de cargar no hay nada...
+    if (!doctorData) return <div className="text-black p-8">¡Doctor no encontrado!</div>;
+
 
 
 
@@ -165,10 +181,10 @@ export const DoctorProfile = () => {
                     <div className='items-center'>
                         <p className='text-3xl pb-2'>👨🏻‍⚕️</p>
                     </div>
-                    <h1 className="text-black text-3xl pb-1">{data.full_name}</h1>
-                    <h2 className="text-black font-light text-sm">{data.speciality_name}</h2>
-                    {data.sub_speciality_name && (
-                        <h3 className="text-black pt-1 text-xl font-semi-bold">{data.sub_speciality_name}</h3>
+                    <h1 className="text-black text-3xl pb-1">{doctorData.full_name}</h1>
+                    <h2 className="text-black font-light text-sm">{doctorData.speciality_name}</h2>
+                    {doctorData.sub_speciality_name && (
+                        <h3 className="text-black pt-1 text-xl font-semi-bold">{doctorData.sub_speciality_name}</h3>
                     )}
                 </div>
 
@@ -202,8 +218,8 @@ export const DoctorProfile = () => {
 
                         {/* Healthcare Center rating description - TOP 5 TO 20 PERCENT */}
                         <div className='text-center sm:w-2/3 xl:w-2/3'>
-                            <p className='text-xl'><strong>{data.doctor_first_name}</strong> está dentro del 20%
-                                de los cardiólogos mejor valorados en <strong>{data.healthcare_centers}</strong></p>
+                            <p className='text-xl'><strong>{doctorData.doctor_first_name}</strong> está dentro del 20%
+                                de los cardiólogos mejor valorados en <strong>{doctorData.healthcare_centers}</strong></p>
                         </div>
                     </div>
                 </div>
@@ -222,7 +238,7 @@ export const DoctorProfile = () => {
 
                 <div className='flex items-center justify-center pt-3'>
                     <p className="font-medium text-md">
-                        ({data.total_reviews} reseñas)
+                        ({doctorData.total_reviews} reseñas)
                     </p>
                 </div>
 
@@ -393,11 +409,11 @@ export const DoctorProfile = () => {
                     {/* ABOUT */}
                     <div className='w-full pt-12 flex flex-col items-center justify-center'>
                         <div className='w-full sm:w-3/5 md:w-3/5 xl:w-2/5 pb-5 '>
-                            <h1 className='text-3xl sm:text-4xl pb-2'>Sobre {data.full_name}</h1>
-                            {data.about && data.about.length > 0 ?
+                            <h1 className='text-3xl sm:text-4xl pb-2'>Sobre {doctorData.full_name}</h1>
+                            {doctorData.about && doctorData.about.length > 0 ?
                                 (
                                     <p className=''>
-                                        {data.about}
+                                        {doctorData.about}
                                     </p>
 
                                 ) : (
@@ -413,8 +429,8 @@ export const DoctorProfile = () => {
                                 <h1 className='text-3xl sm:text-4xl text-start'>Patologías que trata</h1>
                             </div>
                             <div className='flex justify-start items-center gap-3'>
-                                {data.diseases && data.diseases.length > 0 ? (
-                                    data.diseases.map((d, index) => (
+                                {doctorData.diseases && doctorData.diseases.length > 0 ? (
+                                    doctorData.diseases.map((d, index) => (
                                         <button key={index} className='rounded-full p-3 bg-[#2D2D2D] text-white pointer-events-none'>
                                             <p>
                                                 {d}
@@ -433,8 +449,8 @@ export const DoctorProfile = () => {
                                 <h1 className='text-3xl sm:text-4xl text-start'>Previsión</h1>
                             </div>
                             <div className='flex justify-start items-center gap-3'>
-                                {data.previsiones && data.previsiones.length > 0 ? (
-                                    data.previsiones.map((d, index) => (
+                                {doctorData.previsiones && doctorData.previsiones.length > 0 ? (
+                                    doctorData.previsiones.map((d, index) => (
                                         <button key={index} className='rounded-full p-3 bg-[#2D2D2D] text-white pointer-events-none'>
                                             <p>
                                                 {d}
@@ -453,15 +469,15 @@ export const DoctorProfile = () => {
                                 <h1 className='text-3xl sm:text-4xl text-start '>Centros de atención</h1>
                             </div>
                             <div className='flex justify-start items-center gap-3'>
-                                {(data.healthcare_centers && data.healthcare_centers.length > 0) || (data.private_practice_addresses && data.private_practice_addresses.length > 0) ? (
+                                {(doctorData.healthcare_centers && doctorData.healthcare_centers.length > 0) || (doctorData.private_practice_addresses && doctorData.private_practice_addresses.length > 0) ? (
                                     <>
                                         {/* Healthcare centers */}
-                                        {data.healthcare_centers && data.healthcare_centers.map((d, index) => (
+                                        {doctorData.healthcare_centers && doctorData.healthcare_centers.map((d, index) => (
                                             <a
-                                                href={data.healthcare_center_url && data.healthcare_center_url[index] ?
-                                                    (data.healthcare_center_url[index].startsWith('http') ?
-                                                        data.healthcare_center_url[index] :
-                                                        `https://${data.healthcare_center_url[index]}`)
+                                                href={doctorData.healthcare_center_url && doctorData.healthcare_center_url[index] ?
+                                                    (doctorData.healthcare_center_url[index].startsWith('http') ?
+                                                        doctorData.healthcare_center_url[index] :
+                                                        `https://${doctorData.healthcare_center_url[index]}`)
                                                     : '#'}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
@@ -475,7 +491,7 @@ export const DoctorProfile = () => {
                                         ))}
 
                                         {/* Private Attention */}
-                                        {data.private_practice_addresses && data.private_practice_addresses.map((d, index) => (
+                                        {doctorData.private_practice_addresses && doctorData.private_practice_addresses.map((d, index) => (
                                             <button key={`pa-${index}`} className='rounded-full p-3 bg-[#2D2D2D] text-white pointer-events-none'>
                                                 <p>
                                                     {d}
@@ -499,8 +515,8 @@ export const DoctorProfile = () => {
                             </div>
                             <div className='flex justify-start items-center gap-3'>
                                 {/* Background */}
-                                {data.background && data.background.length > 0 ? (
-                                    data.background.map((d, index) => (
+                                {doctorData.background && doctorData.background.length > 0 ? (
+                                    doctorData.background.map((d, index) => (
                                         <button key={index} className='rounded-full p-3 bg-[#2D2D2D] text-white pointer-events-none'>
                                             <p>
                                                 {d}
@@ -520,9 +536,9 @@ export const DoctorProfile = () => {
                             </dic>
                             <div className='flex flex-row sm:min-h-fit items-start gap-2 w-full overflow-x-scroll overflow-y-hidden hide-scrollbar-desktop horizontal-scroll'>
                                 {/* Investigation & Projects */}
-                                {data.background && data.background.length > 0 ? (
+                                {doctorData.background && doctorData.background.length > 0 ? (
 
-                                    data.background.map((d, index) => (
+                                    doctorData.background.map((d, index) => (
                                         <button key={index} className='rounded-3xl p-2 h-auto w-[280px] xs:w-[280px] sm:w-[300px] xl:w-[350px] bg-[#2D2D2D] text-white pointer-events-none flex-shrink-0  overflow-hidden'>
                                             <div className='h-full flex flex-col justify-between p-3'>
                                                 <div className='flex items-center justify-between mb-2'>
@@ -609,7 +625,7 @@ export const DoctorProfile = () => {
                     <AuthReviewButton
                         client:load
                         drId={id}
-                        doctorName={data.doctor_first_name}
+                        doctorName={doctorData.doctor_first_name}
                     />
                 </div>
                 <div className='pt-12'>
@@ -619,30 +635,21 @@ export const DoctorProfile = () => {
                     </div>
 
                 </div>
-                <div className='flex sm:flex-wrap overflow-y-auto gap-2 h-[40rem] relative hide-scrollbar-desktop'>
+                <div className='flex sm:flex-wrap overflow-y-auto gap-2 h-auto relative hide-scrollbar-desktop'>
                     <div className='md:columns-3 xl:columns-4 2xl:columns-5 3xl:columns-6 p-[10px] w-full safari-columns'>
                         <DrReviews client:load doctorId={id} nextPage={nextPage} />
-                        <div className="justify-center">
-                            {/*   <button
-                            className="text-white bg-black rounded-full p-3"
-                            onClick={() => setNextPage(prev => ({
-                                a: prev.a - 1,
-                                b: prev.b - 1
-                            }))}
-                        >
-                            VER MENOS
-                        </button> */}
-                            <button
-                                className="text-white bg-black rounded-full p-3"
-                                onClick={() => setNextPage(prev => ({
-                                    a: prev.a + 0,
-                                    b: prev.b + 2
-                                }))}
-                            >
-                                VER MAS
-                            </button>
-                        </div>
                     </div>
+                </div>
+                <div className="flex justify-center">
+                    <button
+                        className="text-white bg-black rounded-full p-3"
+                        onClick={() => setNextPage(prev => ({
+                            fromPage: prev.fromPage + 1,
+                            toPage: prev.toPage + 4
+                        }))}
+                    >
+                        VER MAS
+                    </button>
                 </div>
                 <div className='pt-60'>
 

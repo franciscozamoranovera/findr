@@ -6,21 +6,16 @@
     1. ..
 */
 
-
-import { useEffect, useState } from "react";
 import { useSearchParams, Link } from 'react-router-dom';
-import { supabase } from "@/components/api/supabase/supabase";
 
+import { fetchSearchResultsData } from "../api/supabase/fetchFunctions";
+import { useQuery } from "@tanstack/react-query";
 
 
 export const SearchResults = () => {
 
   const [searchParams] = useSearchParams();
 
-  // HANDLE FILTER RESULTS
-  const [results, setResults] = useState([]);
-
-  const [noResults, setNoResults] = useState([]);
 
   // HANDLE URL
   const SDDsearch = searchParams.get("SDDsearch") || "";
@@ -33,86 +28,36 @@ export const SearchResults = () => {
 
   const currentSearchUrl = window.location.href;
 
+  const postQuery = useQuery({
+    queryKey: ["searchResults", { search: SDDsearch, region, comuna, prevision, attentionType, healthcareCenter, diseaseSelection }],
+    queryFn: () => fetchSearchResultsData({ SDDsearch, region, comuna, prevision, attentionType, healthcareCenter, diseaseSelection }),
+    staleTime: 1000 * 60 * 6,
+    //gcTime: 1000 * 60 * 30, (persistencia en memoria por 30 min)
+  })
 
 
+  /* Errors before using the data (tanstack) */
 
-  useEffect(() => {
+  if (postQuery.isError) {
 
-    const fetchData = async () => {
+    if (postQuery.error.message.includes("fetch")) {
 
-      try {
+      return <div className="text-red-600 p-8 text-center items-center flex flex-col justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="#2d2d2d"><g fill="#2d2d2d"><path d="M8.106 18.247C5.298 16.083 2 13.542 2 9.137c0-4.6 4.923-7.935 9.264-4.323L9.81 8.204a.75.75 0 0 0 .253.906l2.833 2.024l-2.466 2.878a.75.75 0 0 0 .039 1.018l1.7 1.7l-.91 3.64c-.756-.253-1.516-.843-2.298-1.46c-.277-.218-.564-.438-.856-.663Z" /><path d="M12.812 20.345c.732-.265 1.469-.837 2.226-1.434c.277-.219.564-.44.856-.664C18.702 16.083 22 13.542 22 9.137c0-4.515-4.741-7.81-9.02-4.518l-1.553 3.622l3.009 2.149a.75.75 0 0 1 .133 1.098l-2.548 2.973l1.51 1.509a.75.75 0 0 1 .197.712l-.916 3.663Z" /></g></svg>
+        <h2 className="text-xl">¡Error al cargar los resultados, verifica tu conexión a internet!</h2>
+      </div>
 
-        let query = supabase.from("doctor_search_view_flat").select('*')
+    } else {
+      return <div className="text-red-600 p-8 text-center items-center flex flex-col justify-center">
+        {postQuery.error.message}
+      </div>
+    }
+  }
 
-        /* PRIMARY FILTERS */
-        if (region) { query = query.ilike('region', `%${region}%`) }
-        if (comuna) { query = query.ilike('comuna', `%${comuna}%`) }
-        if (SDDsearch) { query = query.or(`full_name.ilike.%${SDDsearch}%,speciality_name.ilike.%${SDDsearch}%,sub_speciality_name.ilike.%${SDDsearch}%,diseases_text.ilike.%${SDDsearch}%`) }
-        if (prevision.length) { query = query.overlaps('previsiones', prevision) }
-
-
-        /* SECONDARY FILTERS */
-        if (attentionType.length) { query = query.overlaps('attention_types', attentionType) }
-        if (healthcareCenter.length) { query = query.overlaps('healthcare_centers', healthcareCenter) }
-
-        if (diseaseSelection.length) { query = query.contains('diseases', diseaseSelection) }
-
-
-        const { data, error } = await query;
-        if (error) throw error;
-        if (!data) return;
+  /* SEARCH RESULTS DATA */
+  const searchResultsData = postQuery.data;
 
 
-        /* 
-        Note: if (!data) return;
-
-        La línea if (!data) return; es una validación defensiva que verifica si la variable data existe antes de continuar con el resto del código.
-        ¿Por qué es importante?
-        Evita errores si la consulta a la base de datos falla y retorna null o undefined
-        Previene que el código intente acceder a propiedades de data (como data.length) cuando data no existe
-        Es una práctica común en JavaScript para manejar casos edge de forma segura
-        En este contexto específico:
-        Después de hacer la consulta a Supabase (const { data, error } = await query;), esta validación asegura que solo se procese el código siguiente si data contiene resultados válidos, evitando errores en las comparaciones data.length === 0 y data.length > 0.
-        
-        */
-
-
-        if (data.length === 0) {
-
-          const message = "Sin resultados para tu búsqueda";
-
-
-          setNoResults(message)
-
-        } else if (data.length > 0) {
-
-          setNoResults([]);
-
-        }
-
-        /* Send data */
-        setResults(data)
-
-
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        throw new Error(`Failed to fetch data: ${error.message}`);
-      }
-
-    };
-
-    fetchData();
-
-  }, [SDDsearch,
-    region,
-    comuna,
-    prevision.join(','),
-    attentionType.join(','),
-    healthcareCenter.join(','),
-    diseaseSelection.join(',')]);
-
-
-    /* ?from=${encodeURIComponent(currentSearchUrl)} */
   return (
     <div>
       {/* Pinterest-style Masonry Grid */}
@@ -120,8 +65,8 @@ export const SearchResults = () => {
       <div className="w-full">
         {/* Mensaje de no resultados */}
 
-        {noResults && (
-          <div className="text-center text-gray-400 py-6">{noResults}</div>
+        {searchResultsData.length === 0 && (
+          <div className="text-center text-gray-400 py-6">"Sin resultados para tu búsqueda</div>
         )}
 
 
@@ -139,14 +84,14 @@ export const SearchResults = () => {
             mt-4
           "
         >
-          {results.map((r) => (
+          {searchResultsData.map((r) => (
             <div
               key={r.id}
               className="mb-4 break-inside-avoid"
             >
               <Link
                 to={`/doctor/${r.id}?from=${encodeURIComponent(currentSearchUrl)}`}
-               
+
                 className="block bg-[#262626] rounded-2xl p-4 transition-all duration-200 border-4 border-transparent hover:border-blue-600 shadow-lg w-full"
                 style={{ color: "#fff", minHeight: "320px" }}
               >

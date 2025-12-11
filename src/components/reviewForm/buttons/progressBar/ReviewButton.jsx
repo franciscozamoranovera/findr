@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/components/api/supabase/AuthProvider";
-
+import { useNavigate } from "react-router-dom";
 
 
 const ReviewButton = ({
@@ -13,6 +13,7 @@ const ReviewButton = ({
     const [isProcessing, setIsProcessing] = useState(false)
     const { user, loading, isAuthenticated } = useAuth()
 
+    const navigate = useNavigate();
 
     //Resetear estado en useEffect cuando se detecta que volvió:
     useEffect(() => {
@@ -155,13 +156,18 @@ const ReviewButton = ({
             <button
                 className="sm:drop-shadow-2xl rounded-full bg-[#2D2D2D] text-white p-4 sm:p-5"
                 onClick={() => {
+
                     const urlParams = new URLSearchParams(window.location.search);
                     const fromPage = urlParams.get('from');
 
+                    /* extraemos solo la parte de la ruta:  */
+                    const url = new URL(fromPage)
+                    const path = url.pathname + url.search //tomamos solo pathname y url, se concatena.
+
                     if (fromPage && fromPage.includes('/search?')) {
-                        window.location.href = fromPage;
+                        navigate(path)
                     } else {
-                        window.location.href = '/search';
+                        navigate('/search')
                     }
                 }}
             >
