@@ -1,166 +1,174 @@
 
 import { fetchDrReviews } from "../api/supabase/fetchFunctions";
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query"
 
 
 export const DrReviews = ({ doctorId, nextPage }) => {
 
     /* DR REVIEWS FROM SUPABASE, TANSTACK QUERY */
-    const postQuery = useQuery({
+    /* const postQuery = useQuery({
         queryKey: ["reviews", doctorId, nextPage],
         queryFn: () => fetchDrReviews(doctorId, nextPage),
-        staleTime: 1000 * 60 * 6, /* fresh state activated for 1 minute */
+        staleTime: 1000 * 60 * 6, 
+    }) */
+
+    const postQuery = useInfiniteQuery({ // useInfiniteQuery puede hacer multiples llamadas, maneja cache
+        queryKey: ["reviews", "infinite", doctorId], //infinite (puede ser otro nombre) ayuda como id para identificar cache y no confundir con otras que digan "review" (data vs data.pages)
+        queryFn: ({ pageParam }) => fetchDrReviews(doctorId, pageParam), //pageParam controla paginación
+        initialPageParam: 0, //comienza en 0
+        getNextPageParam: (lastPage, pages) => lastPage.length > 0 ? pages.length : undefined, 
+
     })
 
+    //TODO: ACTIVAR BTN PARA "CARGAR MÁS"...fetchNextPage()
+
+if (postQuery.isPending) {
+    return <>
+        <div className="bg-gray-300 pt-20 pb-16  rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-48 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-48 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-14 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-24 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-32 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-24 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-14 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-32 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-16 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-16 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-36 rounded-3xl  "></div>
+        <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+    </>
+}
+
+
+/* DOCTOR REVIEW DATA */
+//const reviewData = postQuery.data;
+const reviewData = postQuery.data?.pages.flat()
+
+console.log('REVIEW DATA', reviewData)
+// HIDE USER EMAIL %
+const maskEmailName = (email) => {
+    const [name, domain] = email.split('@');
+
+    return name.substring(0, 7) + '***@' + domain;
+}
+
+//RELATIVE DATE FORMAT
+const getRelativeTime = (dateString) => {
+    //current date
+    const now = new Date();
+
+    //Convert created_at to string
+    const date = new Date(dateString);
+
+    //Math to calculate difference of time
+    const diffTime = Math.abs(now - date)
+
+    //Convert ms to days
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+
+    if (diffDays < 1) return "Hace unas horas"
+    if (diffDays === 1) return "Hace 1 día"
+    if (diffDays < 7) return `Hace ${diffDays} días`
+    if (diffDays < 14) return "Hace 1 semana"
+    if (diffDays < 30) return `Hace ${Math.floor(diffDays / 7)} semanas`
+    if (diffDays < 365) return `Hace ${Math.floor(diffDays / 30)} meses`
+    return `Hace ${Math.floor(diffDays / 365)} años` //se ejecuta cuando hayan pasado +365 días
+
+    /* 
+    más precisa... usar esta (para semana, días, meses y años):
+
+    if(diffDays >= 365) {
+    const years = Math.floor(diffDays/365);
+    if(years === 1) return "Hace 1 año";
+    return `Hace ${years} años`;
+}
     
-    if (postQuery.isPending) {
-        return <>
-            <div className="bg-gray-300 pt-20 pb-16  rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-48 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-48 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-14 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-24 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-32 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-24 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-14 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-32 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-16 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-16 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-36 rounded-3xl  "></div>
-            <div className="bg-gray-300 pt-20 pb-20 rounded-3xl  "></div>
+    */
+}
 
-        </>
+/* Helper */
+const toString = (num) => {
+    const count = num.toString();
 
-    }
+    if (count === "0.0") return 0;
 
-
-    /* DOCTOR REVIEW DATA */
-    const reviewData = postQuery.data;
-
-    console.log('REVIEW DATA', reviewData)
-    // HIDE USER EMAIL %›
-    const maskEmailName = (email) => {
-        const [name, domain] = email.split('@');
-
-        return name.substring(0, 7) + '***@' + domain;
-    }
-
-    //RELATIVE DATE FORMAT
-    const getRelativeTime = (dateString) => {
-        //current date
-        const now = new Date();
-
-        //Convert created_at to string
-        const date = new Date(dateString);
-
-        //Math to calculate difference of time
-        const diffTime = Math.abs(now - date)
-
-        //Convert ms to days
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
-
-        if (diffDays < 1) return "Hace unas horas"
-        if (diffDays === 1) return "Hace 1 día"
-        if (diffDays < 7) return `Hace ${diffDays} días`
-        if (diffDays < 14) return "Hace 1 semana"
-        if (diffDays < 30) return `Hace ${Math.floor(diffDays / 7)} semanas`
-        if (diffDays < 365) return `Hace ${Math.floor(diffDays / 30)} meses`
-        return `Hace ${Math.floor(diffDays / 365)} años` //se ejecuta cuando hayan pasado +365 días
-
-        /* 
-        más precisa... usar esta (para semana, días, meses y años):
-
-        if(diffDays >= 365) {
-        const years = Math.floor(diffDays/365);
-        if(years === 1) return "Hace 1 año";
-        return `Hace ${years} años`;
-  }
-        
-        */
-    }
-
-    /* Helper */
-    const toString = (num) => {
-        const count = num.toString();
-
-        if (count === "0.0") return 0;
-
-        if (!count.includes(".")) {
-            return count + ".0";
-        } else return count;
-    };
+    if (!count.includes(".")) {
+        return count + ".0";
+    } else return count;
+};
 
 
 
-    return (
-        <>
+return (
+    <>
 
-            {reviewData && reviewData.length > 0 ? (
+        {reviewData && reviewData.length > 0 ? (
 
-                reviewData
-                    .sort((a, b) =>
-                        new Date(b.created_at) - new Date(a.created_at))
-                    .map((data, i) => (
+            reviewData
+                .sort((a, b) =>
+                    new Date(b.created_at) - new Date(a.created_at))
+                .map((data, i) => (
 
-                        <div className="bg-white p-4 rounded-3xl w-full break-inside-avoid " key={i}>
+                    <div className="bg-white p-4 rounded-3xl w-full break-inside-avoid " key={i}>
 
-                            <div className="flex items-center p-1">
-                                <div className="pr-3">🙋🏻‍♂️</div>
-                                <div className="">
-                                    {data.is_anonymous ? (
-                                        <h4 className="text-sm">Anonimo</h4>
-                                    ) : (
-                                        <h4 className="text-sm">{maskEmailName(data.user_email)}</h4>
-                                    )}
-                                </div>
-                                {/* <div className="verified">✅</div> */}
+                        <div className="flex items-center p-1">
+                            <div className="pr-3">🙋🏻‍♂️</div>
+                            <div className="">
+                                {data.is_anonymous ? (
+                                    <h4 className="text-sm">Anonimo</h4>
+                                ) : (
+                                    <h4 className="text-sm">{maskEmailName(data.user_email)}</h4>
+                                )}
                             </div>
+                            {/* <div className="verified">✅</div> */}
+                        </div>
 
-                            <div className="flex items-center p-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path fill="#000000" d="M17.562 21.56a1.003 1.003 0 0 1-.465-.115L12 18.765l-5.097 2.68a1 1 0 0 1-1.451-1.054l.973-5.676l-4.123-4.02a1 1 0 0 1 .554-1.705l5.699-.828l2.548-5.164a1.042 1.042 0 0 1 1.794 0l2.548 5.164l5.699.828a1 1 0 0 1 .554 1.706l-4.123 4.019l.973 5.676a1 1 0 0 1-.986 1.169Z" /></svg>
-                                <div className="pr-1 pl-0.5">{toString(data.promedio_general)}</div>
-                                <div className="text-xs">
-                                    <p className="font-normal"> • {getRelativeTime(data.created_at)}</p>
-                                </div>
+                        <div className="flex items-center p-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path fill="#000000" d="M17.562 21.56a1.003 1.003 0 0 1-.465-.115L12 18.765l-5.097 2.68a1 1 0 0 1-1.451-1.054l.973-5.676l-4.123-4.02a1 1 0 0 1 .554-1.705l5.699-.828l2.548-5.164a1.042 1.042 0 0 1 1.794 0l2.548 5.164l5.699.828a1 1 0 0 1 .554 1.706l-4.123 4.019l.973 5.676a1 1 0 0 1-.986 1.169Z" /></svg>
+                            <div className="pr-1 pl-0.5">{toString(data.promedio_general)}</div>
+                            <div className="text-xs">
+                                <p className="font-normal"> • {getRelativeTime(data.created_at)}</p>
                             </div>
+                        </div>
 
-                            <div className="p-2" style={{ whiteSpace: 'pre-line' }}>
-                                <p>
-                                    {data.written_review}
-                                </p>
-                            </div>
+                        <div className="p-2" style={{ whiteSpace: 'pre-line' }}>
+                            <p>
+                                {data.written_review}
+                            </p>
+                        </div>
 
-                            <div className="p-1 mb-1 border-black border rounded-xl w-fit">
-                                <p className="text-xs">{data.appointment_reason}</p>
-                            </div>
+                        <div className="p-1 mb-1 border-black border rounded-xl w-fit">
+                            <p className="text-xs">{data.appointment_reason}</p>
+                        </div>
 
-                            <div className="flex flex-wrap items-center gap-1">
-                                {data.diseases.map((diseases, i) => (
-                                    <ul className="bg-gray-400 p-2 rounded-xl w-fit" key={i}>
-                                        <li className="text-sm">{diseases}</li>
-                                    </ul>
-                                ))}
-                            </div>
+                        <div className="flex flex-wrap items-center gap-1">
+                            {data.diseases.map((diseases, i) => (
+                                <ul className="bg-gray-400 p-2 rounded-xl w-fit" key={i}>
+                                    <li className="text-sm">{diseases}</li>
+                                </ul>
+                            ))}
+                        </div>
 
-                        </div >
+                    </div >
 
-                    ))
-            ) : (
+                ))
+        ) : (
 
-                <div className="absolute inset-0 flex items-center justify-center z-20 backdrop-blur-sm">
-                    <p className="text-center text-gray-600 font-medium">Todavía no tiene reseñas</p>
-                </div>
+            <div className="absolute inset-0 flex items-center justify-center z-20 backdrop-blur-sm">
+                <p className="text-center text-gray-600 font-medium">Todavía no tiene reseñas</p>
+            </div>
 
-            )}
+        )}
 
-        </>
-    )
+    </>
+)
 }
 

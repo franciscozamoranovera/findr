@@ -1,7 +1,7 @@
 import { supabase } from "./supabase"
 
 /* DR REVIEW DATA, IN PROFILE PAGE */
-export const fetchDrReviews = async (doctorId, nextPage) => {
+/* export const fetchDrReviews = async (doctorId, nextPage) => {
 
     const { data: reviews, error } = await supabase
         .from("reviews_overall_rating")
@@ -9,6 +9,28 @@ export const fetchDrReviews = async (doctorId, nextPage) => {
         .eq("doctor_id", doctorId)
         .order('created_at', { ascending: false })
         .range(nextPage.fromPage, nextPage.toPage)
+
+
+    if (error) {
+        console.error('Error fetching reviews:', error)
+        throw error
+    }
+
+    return reviews;
+
+} */
+export const fetchDrReviews = async (doctorId, pageParam) => {
+
+    const itemsPerPage = 5 //número de reviews
+    const start = pageParam * itemsPerPage
+    const end = start + itemsPerPage - 1
+
+    const { data: reviews, error } = await supabase
+        .from("reviews_overall_rating")
+        .select("diseases, written_review, created_at, is_anonymous, user_email, appointment_reason, promedio_general")
+        .eq("doctor_id", doctorId)
+        .order('created_at', { ascending: false })
+        .range(start, end)
 
 
     if (error) {
