@@ -1,7 +1,6 @@
 
-import { supabase } from "../api/supabase/supabase";
-import { useQuery } from '@tanstack/react-query';
-import { fetchDrProfile } from '../api/supabase/fetchFunctions';
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
+import { fetchDrProfile, fetchDrReviews } from '../api/supabase/fetchFunctions';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import { DrReviews } from "../doctorReviews/DrReviews";
@@ -17,7 +16,16 @@ export const DoctorProfile = () => {
     const [error, setError] = useState(null);
 
 
-    const [nextPage, setNextPage] = useState({ fromPage: 0, toPage: 5 })
+
+    /* REVIEW DATA */
+    const postReviewQuery = useInfiniteQuery({ // useInfiniteQuery puede hacer multiples llamadas, maneja cache
+        queryKey: ["reviews", "infinite", id], //infinite (puede ser otro nombre) ayuda como id para identificar cache y no confundir con otras que digan "review" (data vs data.pages)
+        queryFn: ({ pageParam }) => fetchDrReviews(id, pageParam), //pageParam controla paginación
+        initialPageParam: 0, //comienza en 0
+        getNextPageParam: (lastPage, pages) => lastPage.length > 0 ? pages.length : undefined,
+        staleTime: 1000 * 60,
+
+    })
 
 
     /* DATA FETCHING : Pasar a un hook personalizado, ej.: */
@@ -31,8 +39,6 @@ export const DoctorProfile = () => {
 
     const doctorData = postQuery.data;
 
-
-    console.log('NEXT PAGE', nextPage)
 
     /* STATES TO HANDLE RATINGS */
     const [ratings, setRatings] = useState({
@@ -635,22 +641,24 @@ export const DoctorProfile = () => {
                     </div>
 
                 </div>
-                <div className='flex sm:flex-wrap overflow-y-auto gap-2 h-auto relative hide-scrollbar-desktop'>
-                    <div className='md:columns-3 xl:columns-4 2xl:columns-5 3xl:columns-6 p-[10px] w-full safari-columns'>
-                        <DrReviews client:load doctorId={id} nextPage={nextPage} />
+
+                {/* DR REVIEW CARDS */}
+                <div className='flex justify-center overflow-y-auto gap-2 h-auto relative hide-scrollbar-desktop'>
+                    <div className='w-full max-w-[1100px] md:columns-3 xl:columns-4 2xl:columns-5 3xl:columns-6 p-[10px] safari-columns'>
+                        <DrReviews client:load postReviewQuery={postReviewQuery} />
                     </div>
                 </div>
-                <div className="flex justify-center">
+
+                {/* LOAD MORE REVIEWS (DR REVIEWS COMPONENT) */}
+                <div className="break-inside-avoid-column w-full flex justify-center py-10">
                     <button
-                        className="text-white bg-black rounded-full p-3"
-                        onClick={() => setNextPage(prev => ({
-                            fromPage: prev.fromPage + 1,
-                            toPage: prev.toPage + 4
-                        }))}
+                        className="text-white bg-black px-6 py-3 rounded-full shadow"
+                        onClick={() => postReviewQuery.fetchNextPage()}
                     >
-                        VER MAS
+                        VER MÁS
                     </button>
                 </div>
+
                 <div className='pt-60'>
 
                 </div>

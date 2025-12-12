@@ -19,16 +19,16 @@ import { supabase } from "./supabase"
     return reviews;
 
 } */
-export const fetchDrReviews = async (doctorId, pageParam) => {
+export const fetchDrReviews = async (id, pageParam) => {
 
-    const itemsPerPage = 5 //número de reviews
-    const start = pageParam * itemsPerPage
+    const itemsPerPage = 5 //número de reviews que quiero traer inicialmente
+    const start = pageParam * itemsPerPage //pageParam maneja la paginación
     const end = start + itemsPerPage - 1
 
     const { data: reviews, error } = await supabase
         .from("reviews_overall_rating")
         .select("diseases, written_review, created_at, is_anonymous, user_email, appointment_reason, promedio_general")
-        .eq("doctor_id", doctorId)
+        .eq("doctor_id", id)
         .order('created_at', { ascending: false })
         .range(start, end)
 
