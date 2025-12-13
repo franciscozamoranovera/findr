@@ -39,6 +39,7 @@ export const DoctorProfile = () => {
 
     const doctorData = postQuery.data;
 
+    console.log('HAS NEXT PAGE', postReviewQuery.hasNextPage)
 
     /* STATES TO HANDLE RATINGS */
     const [ratings, setRatings] = useState({
@@ -651,12 +652,32 @@ export const DoctorProfile = () => {
 
                 {/* LOAD MORE REVIEWS (DR REVIEWS COMPONENT) */}
                 <div className="break-inside-avoid-column w-full flex justify-center py-10">
-                    <button
-                        className="text-white bg-black px-6 py-3 rounded-full shadow"
-                        onClick={() => postReviewQuery.fetchNextPage()}
-                    >
-                        VER MÁS
-                    </button>
+                    {
+                        postReviewQuery.hasNextPage ? (
+
+                            <button
+                                className="text-white bg-black px-6 py-3 rounded-full shadow disabled:text-gray-400"
+                                onClick={() => postReviewQuery.fetchNextPage()}
+                                disabled={postReviewQuery.isFetchingNextPage}
+
+                            >
+                                {
+                                    postReviewQuery.isFetchingNextPage
+                                        ? <p>Cargando más...</p>
+                                        : <p>Cargar más</p>
+                                }
+                            </button>
+                        ) : (
+
+                            <button
+                                className="text-white bg-black px-6 py-3 rounded-full shadow pointer-events-none cursor-pointer"
+                            >
+                                <p>
+                                    No hay más comentarios para cargar
+                                </p>
+                            </button>
+
+                        )}
                 </div>
 
                 <div className='pt-60'>
