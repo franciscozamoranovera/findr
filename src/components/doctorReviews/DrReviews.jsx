@@ -1,9 +1,8 @@
 
-import { fetchDrReviews } from "../api/supabase/fetchFunctions";
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query"
 
 
-export const DrReviews = ({ postReviewQuery, doctorId, nextPage, setNextPage }) => {
+
+export const DrReviews = ({ postReviewQuery }) => {
 
     /* Handle is loading... */
     if (postReviewQuery.isPending) {

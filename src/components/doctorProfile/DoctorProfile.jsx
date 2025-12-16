@@ -5,6 +5,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import { DrReviews } from "../doctorReviews/DrReviews";
 import AuthReviewButton from "@/components/reviewForm/buttons/progressBar/AuthReviewButton";
+import { GetBackButton } from '../reviewForm/buttons/GetBackButton';
 
 
 
@@ -628,12 +629,13 @@ export const DoctorProfile = () => {
                     </div>
                 </div>
 
-                <div class="fixed bottom-3 sm:bottom-20 left-1/2 w-3/4 right-auto -translate-x-1/2  sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 z-30 sm:w-auto">
+                <div class="items-center gap-2 flex fixed bottom-3 sm:bottom-20 left-1/2 w-3/4 right-auto -translate-x-1/2  sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 z-30 sm:w-auto">
                     <AuthReviewButton
                         client:load
                         drId={id}
                         doctorName={doctorData.doctor_first_name}
                     />
+                    <GetBackButton client:load/>
                 </div>
                 <div className='pt-12'>
                     <div className='flex justify-center'>

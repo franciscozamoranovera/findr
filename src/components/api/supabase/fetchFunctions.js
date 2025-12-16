@@ -84,6 +84,7 @@ export const fetchSearchResultsData = async (params) => {
 
         if (diseaseSelection.length) { query = query.contains('diseases', diseaseSelection) }
 
+                                          
 
         const { data, error } = await query;
         if (error) throw error;
@@ -106,13 +107,14 @@ export const fetchSearchResultsData = async (params) => {
         if (data.length === 0) {
 
             const message = "Sin resultados para tu búsqueda";
-
+            
             return message
 
         }
 
         /* Send data */
         return data
+
 
 
     } catch (error) {
