@@ -2,6 +2,11 @@ import { defineMiddleware } from "astro:middleware";
 import { checkAuth } from "./components/api/supabase/supabase";
 
 const onRequest = defineMiddleware(async (context, next) => {
+    
+    if (context.url.pathname.startsWith('/api/')) {
+        console.log('⚡ Ruta API detectada, saltando middleware de auth');
+        return next();
+    }
     console.log('🚀 Middleware ejecutándose para:', context.url.pathname);
 
     //Routes that needs Auth

@@ -137,7 +137,7 @@ export const SearchResults = () => {
                       </div>
 
 
-                      {/* Reviews, Ratings and Healthcare Center */}
+                      {/* Reviews, Ratings and Prevision */}
                       {
                         r.total_reviews === 0 ? (
                           <>
@@ -145,15 +145,15 @@ export const SearchResults = () => {
                               <svg width="20" height="20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="#2d2d2d" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 2.5V3c0 2.828 0 4.243.879 5.121C14.757 9 16.172 9 19 9h.5m.5 1.657V14c0 3.771 0 5.657-1.172 6.828S15.771 22 12 22s-5.657 0-6.828-1.172S4 17.771 4 14V9.456c0-3.245 0-4.868.886-5.967a4 4 0 0 1 .603-.603C6.59 2 8.211 2 11.456 2c.705 0 1.058 0 1.381.114q.1.036.197.082c.31.148.559.397 1.058.896l4.736 4.736c.579.578.867.868 1.02 1.235c.152.368.152.776.152 1.594" /></svg>
                               <p className='text-black font-semibold text-sm p-1'>Sin reseñas</p>
                             </div>
-                            
-                            <button
+
+                            {/*  <button
                               className='bg-[#2D2D2D] relative rounded-[25px] mt-3 p-2 hover:bg-blue-600'
                             >
                               <div className='absolute inset-0 opacity-0 mb-5'>
                                 <AuthReviewButton client:load drId={r.id} />
                               </div>
                               <p>Escribe una reseña</p>
-                            </button>
+                            </button> */}
                           </>
 
                         )
@@ -166,7 +166,7 @@ export const SearchResults = () => {
                                       <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path fill="#2D2D2D" d="M12.865 2.996a1 1 0 0 0-1.73 0L8.421 7.674a1.25 1.25 0 0 1-.894.608L2.44 9.05c-.854.13-1.154 1.208-.488 1.76l3.789 3.138c.35.291.515.75.43 1.197L5.18 20.35a1 1 0 0 0 1.448 1.072l4.79-2.522a1.25 1.25 0 0 1 1.164 0l4.79 2.522a1 1 0 0 0 1.448-1.072l-.991-5.205a1.25 1.25 0 0 1 .43-1.197l3.79-3.139c.665-.55.365-1.63-.49-1.759l-5.085-.768a1.25 1.25 0 0 1-.895-.608l-2.714-4.678Z" /></svg>
                                       <p className='text-black font-medium text-lg '>{toString(r.promedio_general)}</p>
                                     </div>
-                                    <p className='text-black font-medium text-sm'>Reseñas</p>
+                                    <p className='text-gray-500 font-medium text-sm'>Calificación</p>
                                   </div>
                                 </div>
 
@@ -174,29 +174,38 @@ export const SearchResults = () => {
 
                                 <div className='flex flex-col items-center justify-center gap-1'>
                                   <p className='text-black font-medium text-lg'>{r.total_reviews}</p>
-                                  <p className='text-black font-medium text-sm'>Reseñas</p>
+                                  <p className='text-gray-500 font-medium text-sm'>Reseñas</p>
                                 </div>
 
                                 {/* <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 24 24"><path fill="none" stroke="#2d2d2d" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21V3" /></svg> */}
 
-                                <div className='text-start'>
-                                  {/*  <p className='text-black text-xs'>{r.healthcare_centers[0]}</p> */}
+                                <div className='flex flex-col items-center justify-center gap-1'>
+                                  {r.previsiones ? (
+                                    r.previsiones.map((prev) => (
+                                      <p className='text-black font-medium text-sm'>{prev}</p>
+                                    ))
+                                  ) : (
+                                    ''
+                                  )}
+                                  {/* <p className='text-gray-500 font-medium text-sm'>Previsiones</p> */}
                                 </div>
-
                               </div>
-
-                              <button
-                                className='bg-[#2D2D2D] rounded-[25px] mt-3 p-2 hover:bg-blue-600'
-                              >
-                                <div className='opacity-0 absolute'>
-                                  <AuthReviewButton client:load drId={r.id} />
-                                </div>
-                                <p>Escribe una reseña</p>
-                              </button>
-
                             </>
                           )}
+
                     </div>
+
+                    <button
+                      className='bg-[#2D2D2D] rounded-[25px] mt-2 p-2 hover:bg-blue-600'
+                    >
+                      <div className='opacity-0 absolute'>
+                        <AuthReviewButton client:load drId={r.id} />
+                      </div>
+                      <div className='flex items-center justify-center'>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="#ffffff"><g fill="#ffffff"><path fill-rule="evenodd" d="M3.25 22a.75.75 0 0 1 .75-.75h16a.75.75 0 0 1 0 1.5H4a.75.75 0 0 1-.75-.75Z" clip-rule="evenodd" /><path d="m11.52 14.929l5.917-5.917a8.232 8.232 0 0 1-2.661-1.787a8.232 8.232 0 0 1-1.788-2.662L7.07 10.48c-.462.462-.693.692-.891.947a5.24 5.24 0 0 0-.599.969c-.139.291-.242.601-.449 1.22l-1.088 3.267a.848.848 0 0 0 1.073 1.073l3.266-1.088c.62-.207.93-.31 1.221-.45a5.19 5.19 0 0 0 .969-.598c.255-.199.485-.43.947-.891Zm7.559-7.559a3.146 3.146 0 0 0-4.45-4.449l-.71.71l.031.09c.26.749.751 1.732 1.674 2.655A7.003 7.003 0 0 0 18.37 8.08l.71-.71Z" /></g></svg>
+                        <p className='ml-2'>Escribe una reseña</p>
+                      </div>
+                    </button>
 
                   </div>
                 </Link>
