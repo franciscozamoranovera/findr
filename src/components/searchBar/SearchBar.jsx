@@ -18,6 +18,7 @@ import { regions } from "@/data/regionsComunas";
 import { PrevisionButtons } from "./components/prevision/PrevisionButtons";
 import { SecondaryFilters } from "./components/secondaryFilters/SecondaryFilters";
 import { ClearButton } from "./components/button/ClearButton";
+import { Logout } from "@/components/reviewForm/components/Logout";
 
 
 
@@ -123,7 +124,7 @@ export const SearchBar = () => {
     useEffect(() => {
         if (isOpen || isSecFilterOpen) {
             document.body.style.overflow = 'hidden';
-            
+
         } else {
             document.body.style.overflow = 'auto';
         }
@@ -134,9 +135,65 @@ export const SearchBar = () => {
     return (
         <>
 
+            {/* Findr logo */}
+            <div className="sm:flex items-center justify-between pl-4 pt-2 hidden">
+
+                {/* <h1 className="text-black text-4xl">fin</h1><h1 className="text-[#0066FF] text-4xl">dr</h1> */}
+                <a href="/search">
+
+                    <svg
+                        viewBox="0 0 820 180"
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="max-w-3xl w-48 sm:w-48 md:w-56 lg:w-56"
+
+                    >
+                        <defs>
+                            {/*  Inner Shadow solo para "dr"  */}
+                            <filter id="innerShadow" x="-20%" y="-20%" width="140%" height="140%">
+                                <feOffset dx="7" dy="7" /> {/* da profundidad al inner shadow de "dr" */}
+                                <feGaussianBlur stdDeviation="5" result="blur" />
+                                <feComposite
+                                    operator="out"
+                                    in="SourceGraphic"
+                                    in2="blur"
+                                    result="inverse"
+                                />
+                                <feFlood flood-color="black" flood-opacity="0.28" result="color" />
+                                <feComposite operator="in" in="color" in2="inverse" result="shadow" />
+                                <feComposite operator="over" in="shadow" in2="SourceGraphic" />
+                            </filter>
+                        </defs>
+
+                        {/* "fin" negro */}
+                        <text
+                            x="20"
+                            y="140"
+                            font-family="'EB Garamond', serif"
+                            font-size="160"
+                            font-weight="500"
+                        >
+                            <tspan fill="#000000">fin</tspan>
+                            <tspan
+                                fill="#0066FF"
+                                filter="url(#innerShadow)"
+                                dx="-1" /* da separación a "dr" */
+                            >
+                                dr
+                            </tspan>
+                        </text>
+                    </svg>
+                </a>
+                <div className="items-center pr-5 hidden sm:flex">
+                    {/* TODO:
+                        No mostrar botón si NO ESTÁS AUTENTICADO
+                    */}
+                    <Logout client:load />
+                </div>
+            </div >
+
             {!isOpen && (
 
-                <div className="flex items-center justify-center w-full gap-1 sm:gap-2 md:gap-3 lg:gap-4 pt-6">
+                <div className="flex items-center justify-center w-full gap-1 sm:gap-2 md:gap-3 lg:gap-4 pb-6 pt-2">
 
                     {(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
                         <ClearButton
@@ -183,13 +240,13 @@ export const SearchBar = () => {
                                     <div className="truncate max-w-[150px]">
                                         {
                                             selectedRegion && (
-                                                <p className="text-[#2e3ffc] text-xs font-semibold truncate">
+                                                <p className="text-[#2e3ffc] text-sm font-semibold truncate">
                                                     {selectedRegion}
                                                 </p>
                                             )}
                                         {
                                             !selectedRegion && (
-                                                <p className="text-[#505050] text-xs font-semibold truncate">
+                                                <p className="text-[#505050] text-sm font-semibold truncate">
                                                     Elige tu región
                                                 </p>
                                             )
@@ -203,13 +260,13 @@ export const SearchBar = () => {
                                     <div className="truncate max-w-[150px]">
                                         {
                                             selectedComuna && (
-                                                <p className="text-[#2e3ffc] text-xs font-semibold truncate">
+                                                <p className="text-[#2e3ffc] text-sm font-semibold truncate">
                                                     {selectedComuna}
                                                 </p>
                                             )}
                                         {
                                             !selectedComuna && (
-                                                <p className="text-[#505050] text-xs font-semibold">
+                                                <p className="text-[#505050] text-sm font-semibold">
                                                     Elige tu comuna
                                                 </p>
                                             )
@@ -223,15 +280,15 @@ export const SearchBar = () => {
                         {!(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
                             <div className="flex flex-row items-center justify-start relative w-full">
                                 <svg
-                                    className="absolute left-3"
+                                    className="absolute left-2"
                                     width="20"
                                     height="20"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 512 512"
-                                    >
+                                >
                                     <path fill="#2d2d2d" d="M416 208c0 45.9-14.9 88.3-40 122.7l126.6 126.7c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.1-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0s208 93.1 208 208M208 352a144 144 0 1 0 0-288a144 144 0 1 0 0 288" />
                                 </svg>
-                                <p className="text-black text-sm text-center w-full">
+                                <p className="text-black pl-2 text-md text-center w-full">
                                     Médico, enfermedad o especialidad
                                 </p>
                             </div>
@@ -330,6 +387,8 @@ export const SearchBar = () => {
                         </div>
                     )}
                 </div>
+
+
             )}
 
 

@@ -6,9 +6,9 @@
     1. ..
 */
 
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { useSearchParams, Link } from 'react-router-dom';
 import { fetchSearchResultsData } from "../api/supabase/fetchFunctions";
-import { useQuery } from "@tanstack/react-query";
 import ReviewButton from '../reviewForm/buttons/progressBar/ReviewButton';
 import ReviewAuthGuard from '../reviewForm/ReviewAuthGuard';
 import AuthReviewButton from '../reviewForm/buttons/progressBar/AuthReviewButton';
@@ -31,9 +31,20 @@ export const SearchResults = () => {
 
   const currentSearchUrl = window.location.href;
 
-  const postQuery = useQuery({
-    queryKey: ["searchResults", { search: SDDsearch, region, comuna, prevision, attentionType, healthcareCenter, diseaseSelection }],
-    queryFn: () => fetchSearchResultsData({ SDDsearch, region, comuna, prevision, attentionType, healthcareCenter, diseaseSelection }),
+
+  const postQuery = useInfiniteQuery({
+    queryKey: ["searchResults", "infinite", { search: SDDsearch, region, comuna, prevision, attentionType, healthcareCenter, diseaseSelection }],
+
+    queryFn: ({ pageParam }) => fetchSearchResultsData({ SDDsearch, region, comuna, prevision, attentionType, healthcareCenter, diseaseSelection }, pageParam), //pageParam es el segundo argumento
+    initialPageParam: 0, //comienza en 0 pageParam (comienza en 0 para que obtenga 0-9)
+    getNextPageParam: (lastPage, pages) => {
+
+      if (typeof lastPage === 'string') return undefined
+
+      if (lastPage.length < 10) return undefined
+
+      return pages.length
+    },
     staleTime: 1000 * 60 * 6,
     //gcTime: 1000 * 60 * 30, (persistencia en memoria por 30 min)
   })
@@ -68,8 +79,13 @@ export const SearchResults = () => {
 
 
   /* SEARCH RESULTS DATA */
-  const searchResultsData = postQuery.data;
+  const searchResultsData = postQuery.data?.pages.flatMap(page => page) || []; //searchResults necesita mapear (recibir un array plano), por eso se accede a páginas y usa flatMap para poder renderizar datos y además, paginar.
 
+  /*  
+      PROBLEMA PARA PAGINACION
+      searchResultsData DA UNDEFINED ... VER CONSOLE LOG DE TEST....AHÍ ESTÁ LA PISTA...(PAGEPARAMS : UNDEFINED)
+  */
+  console.log('TEEESTTT', searchResultsData)
 
   /* HELPERS */
   const toString = (num) => {
@@ -88,20 +104,24 @@ export const SearchResults = () => {
       {/* Pinterest-style Masonry Grid */}
 
       {/* Mensaje de no resultados */}
-      {searchResultsData === "Sin resultados para tu búsqueda" ? (
-        <div className="text-center text-gray-400 py-6">"Sin resultados para tu búsqueda</div>
+      {searchResultsData.length === 0 ? (
+        <div className="text-center text-gray-400 py-6">Sin resultados para tu búsqueda</div>
       ) : (
         <>
-          {/* Masonry grid */}
+          {/* Grid */}
           < div
             className="
-              columns-1
-              sm:columns-2
-              md:columns-3
-              lg:columns-4 
+              grid
+              grid-cols-1
 
+
+              sm:grid-cols-2
+              md:grid-cols-2
+              lg:grid-cols-3
+              xl:grid-cols-4
+
+              justify-items-center
               gap-4
-
               max-w-7xl
               mx-auto
               mt-4
@@ -118,14 +138,27 @@ export const SearchResults = () => {
                   style={{ color: "#fff", minHeight: "420px" }}
                 >
                   {/* Card Info */}
-                  <div className='border-[5px] border-none w-full h-full flex flex-col'>
+                  <div className='border-[5px] border-none w-full h-[536px] flex flex-col'>
 
                     {/* Photo profile */}
-                    <div className='flex-1 overflow-hidden'>
-                      <img
-                        className='rounded-[25px] w-full h-full object-cover'
-                        src='/img/profile-photo-example.png'
-                      />
+                    <div className='flex-1 '>
+                      {
+                        /* profile_photo here */
+                        r.profile_photo ? (
+                          <img
+                            className='rounded-[25px] w-full h-80 object-cover object-top'
+                            src={r.profile_photo}
+                          />
+                        ) : (
+                          <img
+                            className='rounded-[25px] w-full h-80 object-cover object-top'
+                            src='/img/profile-photo-example.png'
+                          />
+
+                        )
+
+                      }
+
                     </div>
 
                     {/* Summary info */}
@@ -210,8 +243,37 @@ export const SearchResults = () => {
                   </div>
                 </Link>
               </div>
+
             ))}
           </div >
+          <div className="break-inside-avoid-column w-full flex justify-center py-10">
+            {
+              postQuery.hasNextPage ? (
+
+                <button
+                  className="text-white bg-black px-6 py-3 rounded-full shadow disabled:text-gray-400 "
+                  onClick={() => postQuery.fetchNextPage()}
+                  disabled={postQuery.isFetchingNextPage}
+
+                >
+                  {
+                    postQuery.isFetchingNextPage
+                      ? <p>Cargando más...</p>
+                      : <p>Cargar más</p>
+                  }
+                </button>
+              ) : (
+
+                <button
+                  className="text-black bg-[#b7b7b7] px-6 py-3 rounded-full  pointer-events-none cursor-pointer"
+                >
+                  <p>
+                    No hay más resultados para mostrar
+                  </p>
+                </button>
+
+              )}
+          </div>
         </>
       )}
     </>

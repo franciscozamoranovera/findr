@@ -1,3 +1,10 @@
+/* 
+
+  Sin uso por ahora. Todo se hace vía worker y no desde astro astro mismo hacia R2
+
+*/
+
+
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3"
 
 export const r2 = new S3Client({

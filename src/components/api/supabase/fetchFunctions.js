@@ -21,9 +21,9 @@ import { supabase } from "./supabase"
 } */
 export const fetchDrReviews = async (id, pageParam) => {
 
-    const itemsPerPage = 5 //número de reviews que quiero traer inicialmente
+    const itemsPerPage = 10 //número de reviews que quiero traer inicialmente
     const start = pageParam * itemsPerPage //pageParam maneja la paginación
-    const end = start + itemsPerPage - 1
+    const end = start + itemsPerPage - 1 // ?
 
     const { data: reviews, error } = await supabase
         .from("reviews_overall_rating")
@@ -47,9 +47,10 @@ export const fetchDrProfile = async (doctorId) => {
 
     const { data: profileData, error } = await supabase
         .from("doctor_search_view_flat")
-        .select("doctor_first_name, full_name, speciality_name, sub_speciality_name, diseases, previsiones, about, background,total_reviews, promedio_general, promedio_atencion, promedio_comunicacion, promedio_continuidad, promedio_conocimiento, promedio_recomendacion, healthcare_centers, private_practice_addresses, healthcare_center_url")
+        .select("doctor_first_name, full_name, speciality_name, sub_speciality_name, diseases, previsiones, about, background,total_reviews, promedio_general, promedio_atencion, promedio_comunicacion, promedio_continuidad, promedio_conocimiento, promedio_recomendacion, healthcare_centers, private_practice_addresses, healthcare_center_url, profile_photo")
         .eq("id", doctorId)
         .single();
+
 
 
     if (error) {
@@ -63,7 +64,11 @@ export const fetchDrProfile = async (doctorId) => {
 }
 
 /* SEARCH RESULTS DATA COMPONENT */
-export const fetchSearchResultsData = async (params) => {
+export const fetchSearchResultsData = async (params, pageParam) => {
+
+    const itemsPerPage = 10;
+    const start = pageParam * itemsPerPage;
+    const end = start + itemsPerPage - 1;
 
     const { region, comuna, SDDsearch, attentionType, healthcareCenter, prevision, diseaseSelection } = params;
 
@@ -84,11 +89,13 @@ export const fetchSearchResultsData = async (params) => {
 
         if (diseaseSelection.length) { query = query.contains('diseases', diseaseSelection) }
 
-                                          
 
-        const { data, error } = await query;
+
+        const { data, error } = await query.range(start,end)
         if (error) throw error;
-        if (!data) return;
+        /* if (!data) return;  */
+
+
 
         /* 
         Note: if (!data) return;
@@ -103,14 +110,6 @@ export const fetchSearchResultsData = async (params) => {
         
         */
 
-
-        if (data.length === 0) {
-
-            const message = "Sin resultados para tu búsqueda";
-            
-            return message
-
-        }
 
         /* Send data */
         return data

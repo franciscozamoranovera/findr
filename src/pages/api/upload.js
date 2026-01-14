@@ -1,3 +1,8 @@
+/* 
+  not in use right now, replaced by uploadAvatar (local api: http://localhost:4321/api/uploadAvatar)
+*/
+
+
 export default {
   async fetch(request, env) {
     if (request.method !== "POST") {
@@ -16,7 +21,7 @@ export default {
       }
 
       let key = ""
-      
+
       if (type === "avatar") {
         key = `doctors/${doctorId}/profile/avatar.jpg`
       }
