@@ -35,7 +35,6 @@ export const DoctorProfile = () => {
         queryFn: () => fetchDrProfile(id), /* fetch dr profile data from supabase, tanstack */
         staleTime: 1000 * 60 * 6, //1 min stale time (fresh)
 
-
     })
 
     const doctorData = postQuery.data;
@@ -171,7 +170,7 @@ export const DoctorProfile = () => {
     if (!doctorData) return <div className="text-black p-8">¡Doctor no encontrado!</div>;
 
 
-
+    console.log('TEEESSS', postReviewQuery)
 
     return (
         <div className=''>
@@ -653,34 +652,35 @@ export const DoctorProfile = () => {
                 </div>
 
                 {/* LOAD MORE REVIEWS (DR REVIEWS COMPONENT) */}
-                <div className="break-inside-avoid-column w-full flex justify-center py-10">
-                    {
-                        postReviewQuery.hasNextPage ? (
-
-                            <button
-                                className="text-white bg-black px-6 py-3 rounded-full shadow disabled:text-gray-400"
-                                onClick={() => postReviewQuery.fetchNextPage()}
-                                disabled={postReviewQuery.isFetchingNextPage}
-
-                            >
-                                {
-                                    postReviewQuery.isFetchingNextPage
-                                        ? <p>Cargando más...</p>
-                                        : <p>Cargar más</p>
-                                }
-                            </button>
-                        ) : (
-
-                            <button
-                                className="text-white bg-black px-6 py-3 rounded-full shadow pointer-events-none cursor-pointer"
-                            >
-                                <p>
-                                    No hay más comentarios para cargar
-                                </p>
-                            </button>
-
-                        )}
-                </div>
+                {
+                    (postReviewQuery.hasNextPage || postReviewQuery.data?.pages?.length > 1) && (
+                        <div className="break-inside-avoid-column w-full flex justify-center py-10">
+                            {
+                                postReviewQuery.hasNextPage ? (
+                                    <button
+                                        className="text-white bg-black px-6 py-3 rounded-full shadow disabled:opacity-50"
+                                        onClick={() => postReviewQuery.fetchNextPage()}
+                                        disabled={postReviewQuery.isFetchingNextPage}
+                                    >
+                                        {
+                                            postReviewQuery.isFetchingNextPage
+                                                ? <p>Cargando más...</p>
+                                                : <p>Cargar más</p>
+                                        }
+                                    </button>
+                                ) : (
+                                    <button
+                                        className="text-black bg-[#b7b7b7] px-6 py-3 rounded-full  pointer-events-none cursor-pointer"
+                                    >
+                                        <p>
+                                            No hay más comentarios para cargar
+                                        </p>
+                                    </button>
+                                )
+                            }
+                        </div>
+                    )
+                }
 
                 <div className='pt-60'>
 

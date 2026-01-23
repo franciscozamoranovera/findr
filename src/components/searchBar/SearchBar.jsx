@@ -8,7 +8,7 @@
     1. Evaluate whether Subdivide the whole component into components...
 */
 
-
+import { supabase } from "../api/supabase/supabase";
 import { RegionComuna } from "./components/dropdown/RegionComuna"
 import { SpecialtyDeseaseDrnameInput } from "./components/input/SpecialtyDeseaseDrnameInput"
 import { SearchButton } from "./components/button/SearchButton"
@@ -19,6 +19,7 @@ import { PrevisionButtons } from "./components/prevision/PrevisionButtons";
 import { SecondaryFilters } from "./components/secondaryFilters/SecondaryFilters";
 import { ClearButton } from "./components/button/ClearButton";
 import { Logout } from "@/components/reviewForm/components/Logout";
+import { ClearButtonModal } from "./components/button/ClearButtonModal";
 
 
 
@@ -130,13 +131,58 @@ export const SearchBar = () => {
         }
     }, [isOpen, isSecFilterOpen]);
 
+    // Solo se ejecuta cuando hay un refresh explícito
+    useEffect(() => {
 
+        /* This fix the search bar button. When we comes from another page and then go back to filters, this update de searchBar with the data in the URL */
+        const shouldRefresh = searchParams.get('refresh');
+
+        if (shouldRefresh) {
+            // Lee y actualiza todos los estados
+            const region = searchParams.get('region') || "";
+            const comuna = searchParams.get('comuna') || "";
+            const sddSearch = searchParams.get('SDDsearch') || "";
+            const prevision = searchParams.get('prevision') || null;
+            const attention = searchParams.get('attentiontype') || null;
+            const healthcare = searchParams.get('healthcareCenter') || "";
+
+            setSelectedRegion(region);
+            setSelectedComuna(comuna);
+            setInputValue(sddSearch);
+            setFonasaButton(prevision === 'fonasa' ? 'fonasa' : null);
+            setIsapreButton(prevision === 'isapre' ? 'isapre' : null);
+            setParticularButton(prevision === 'particular' ? 'particular' : null);
+            setAttentionType(attention);
+            setHealthcareCenterValue(healthcare);
+
+            // Limpia el parámetro refresh de la URL
+            searchParams.delete('refresh');
+            setSearchParams(searchParams, { replace: true });
+        }
+    }, [searchParams]);
+
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const checkSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            setIsLoggedIn(!!session);
+        }
+
+        checkSession();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            setIsLoggedIn(!!session)
+        })
+
+        return () => subscription.unsubscribe()
+    }, [])
 
     return (
         <>
 
             {/* Findr logo */}
-            <div className="sm:flex items-center justify-between pl-4 pt-2 hidden">
+            <div className="sm:flex items-center justify-between pl-4 pt-3 hidden">
 
                 {/* <h1 className="text-black text-4xl">fin</h1><h1 className="text-[#0066FF] text-4xl">dr</h1> */}
                 <a href="/search">
@@ -144,7 +190,7 @@ export const SearchBar = () => {
                     <svg
                         viewBox="0 0 820 180"
                         xmlns="http://www.w3.org/2000/svg"
-                        class="max-w-3xl w-48 sm:w-48 md:w-56 lg:w-56"
+                        class="max-w-3xl w-48 sm:w-48 md:w-52 lg:w-52"
 
                     >
                         <defs>
@@ -176,18 +222,29 @@ export const SearchBar = () => {
                             <tspan
                                 fill="#0066FF"
                                 filter="url(#innerShadow)"
-                                dx="-1" /* da separación a "dr" */
+                                dx="-6" /* da separación a "dr". -10 = más separación. -1 menos. */
                             >
                                 dr
                             </tspan>
                         </text>
                     </svg>
                 </a>
-                <div className="items-center pr-5 hidden sm:flex">
-                    {/* TODO:
-                        No mostrar botón si NO ESTÁS AUTENTICADO
-                    */}
-                    <Logout client:load />
+                <div className="items-center pr-5 hidden sm:flex gap-10 md:gap-5 sm:gap-4 lg:gap-10 ">
+                    <a
+                        className=""
+                    >
+                        <span className="text-lg  text-gray-500 hover:text-[#2D2D2D] underline cursor-pointer ">
+                            Soy especialista
+                        </span>
+                    </a>
+                    {
+                        isLoggedIn ? (
+
+                            <Logout client:load />
+                        ) : (
+                            []
+                        )
+                    }
                 </div>
             </div >
 
@@ -210,24 +267,24 @@ export const SearchBar = () => {
                             setDiseaseList={setDiseaseList}
                         />
                     )}
-                    <button onClick={() => setIsOpen(true)} className="bg-[#ffffff] w-full min-w-[250px] max-w-[350px] h-[60px]  px-3 py-3 rounded-full border border-[#b9b9b9] flex flex-col items-center justify-center m-1 shadow-[0_0_10px_rgba(0,0,0,0.2)]">
+                    <button onClick={() => setIsOpen(true)} className="bg-[#ffffff] w-full min-w-[250px] max-w-[350px] h-[65px]  px-3 py-3 rounded-full border border-[#b9b9b9] flex flex-col items-center justify-center m-1 shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:border-[#2D2D2D] transition-colors duration-200">
 
                         {(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
 
-                            <div className="min-w-[250px] w-full">
+                            <div className="min-w-[250px] w-full ">
 
                                 <div className="flex justify-center w-full" >
                                     {
                                         inputValue && (
                                             <div className="max-w-[350px] truncate">
-                                                <p className="text-[#2e3ffc] text-sm font-semibold truncate">
+                                                <p className="text-[#2e3ffc] text-sm font-semibold truncate ">
                                                     {inputValue}
                                                 </p>
                                             </div>
                                         )}
                                     {
                                         !inputValue && (
-                                            <p className="text-[#505050] text-sm font-semibold truncate">
+                                            <p className="text-[#505050] text-sm font-semibold truncate ">
                                                 Elige médico, especialidad o patología
                                             </p>
                                         )
@@ -253,7 +310,7 @@ export const SearchBar = () => {
                                         }
                                     </div>
 
-                                    <div className="text-[#505050] text-xs font-bold">
+                                    <div className="text-[#505050] text-sm font-bold">
                                         •
                                     </div>
 
@@ -455,7 +512,7 @@ export const SearchBar = () => {
                             <div className="sticky bottom-0 flex justify-between w-[325px] items-center p-3 mr-4 ml-4 rounded-xl bg-[#959595] backdrop-blur-xl z-10" >
                                 <div>
                                     {/* Clear everything (prim. and sec.) from primary filter */}
-                                    <ClearButton
+                                    <ClearButtonModal
                                         /* prim filters */
                                         setInputValue={setInputValue}
                                         setSelectedRegion={setSelectedRegion}

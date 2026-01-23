@@ -120,9 +120,9 @@ export const SearchResults = () => {
               lg:grid-cols-3
               xl:grid-cols-4
 
-              justify-items-center
               gap-4
               max-w-7xl
+
               mx-auto
               mt-4
               "
@@ -163,10 +163,13 @@ export const SearchResults = () => {
 
                     {/* Summary info */}
                     <div className='flex-1 flex flex-col justify-center p-2'>
-                      <div className="mb-2 items-center justify-center">
-                        <h1 className='text-xl text-black'>{r.full_name}</h1>
+                      
+                      {/* <div className="mb-2 items-center justify-center"> */}
+                      <div className="mb-2 items-center grid auto-rows-fr justify-start h-24">
+                        <h1 className='text-xl text-black pb-1'>{r.full_name}</h1>
                         <p className='text-sm text-blue-600'>{r.speciality_name}</p>
-                        <p className='text-black text-sm pt-1'>{r.healthcare_centers[0]}</p>
+                        <p className='text-sm text-blue-600 font-medium'>{r.sub_speciality_name}</p>
+                        <p className='text-black text-sm'>{r.healthcare_centers[0]}</p>
                       </div>
 
 
@@ -227,9 +230,9 @@ export const SearchResults = () => {
                           )}
 
                     </div>
-
+                        
                     <button
-                      className='bg-[#2D2D2D] rounded-[25px] mt-2 p-2 hover:bg-blue-600'
+                      className='bg-[#2D2D2D] rounded-[25px]  p-2 hover:bg-blue-600'
                     >
                       <div className='opacity-0 absolute'>
                         <AuthReviewButton client:load drId={r.id} />
@@ -251,7 +254,7 @@ export const SearchResults = () => {
               postQuery.hasNextPage ? (
 
                 <button
-                  className="text-white bg-black px-6 py-3 rounded-full shadow disabled:text-gray-400 "
+                  className="text-white bg-black px-6 py-3 rounded-full shadow disabled:text-gray-400 cursor-pointer"
                   onClick={() => postQuery.fetchNextPage()}
                   disabled={postQuery.isFetchingNextPage}
 
@@ -265,7 +268,7 @@ export const SearchResults = () => {
               ) : (
 
                 <button
-                  className="text-black bg-[#b7b7b7] px-6 py-3 rounded-full  pointer-events-none cursor-pointer"
+                  className="text-black bg-[#b7b7b7] px-6 py-3 rounded-full  pointer-events-none cursor-none"
                 >
                   <p>
                     No hay más resultados para mostrar

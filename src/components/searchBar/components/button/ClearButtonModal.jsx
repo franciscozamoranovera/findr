@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { navigation } from "@/components/helpers/navigation/navigate"
 
-export const ClearButton = ({
+export const ClearButtonModal = ({
     setInputValue,
     setSelectedRegion,
     setSelectedComuna,
@@ -53,12 +53,12 @@ export const ClearButton = ({
                 onClick={handleFilterReset}
             >
 
-                <div className="">
+               {/*  <div className="">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="m14.03 1.889l9.657 9.657l-8.345 8.345l-.27.27H20v2H6.747l-3.666-3.666a4 4 0 0 1 0-5.657zm-8.242 11.07l-1.293 1.294a2 2 0 0 0 0 2.828l3.08 3.08h4.68l.366-.368z" /></svg>
-                </div>
+                </div> */}
 
-                <p className="hidden  md:block font-medium ml-1">
-                    Limpiar
+                <p className="font-medium ml-1">
+                    Limpiar filtros
                 </p>
 
             </button>

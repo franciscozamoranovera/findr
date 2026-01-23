@@ -1,3 +1,5 @@
+//Go back to search button
+
 import { useNavigate } from "react-router-dom";
 
 export const GetBackButton = () => {
@@ -18,7 +20,7 @@ export const GetBackButton = () => {
                     const path = url.pathname + url.search //tomamos solo pathname y url, se concatena.
 
                     if (fromPage && fromPage.includes('/search?')) {
-                        navigate(path)
+                        navigate(path + '&refresh=true')
                     } else {
                         navigate('/search')
                     }
