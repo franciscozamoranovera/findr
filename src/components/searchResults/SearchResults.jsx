@@ -6,7 +6,7 @@
     1. ..
 */
 
-import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useSearchParams, Link } from 'react-router-dom';
 import { fetchSearchResultsData } from "../api/supabase/fetchFunctions";
 import ReviewButton from '../reviewForm/buttons/progressBar/ReviewButton';

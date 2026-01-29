@@ -3,7 +3,7 @@
 import { useNavigate } from "react-router-dom";
 
 export const GetBackButton = () => {
-    
+
     const navigate = useNavigate();
 
     return (
@@ -15,15 +15,28 @@ export const GetBackButton = () => {
                     const urlParams = new URLSearchParams(window.location.search);
                     const fromPage = urlParams.get('from');
 
-                    /* extraemos solo la parte de la ruta:  */
+                    // Si estamos en /doctor y NO hay fromPage, ir a /search
+                    if (window.location.pathname.startsWith('/doctor') && !fromPage) {
+                        navigate('/search');
+                        return;
+                    }
+                    if (!fromPage) {
+                        navigate('/search')
+                        return;
+                    }
+                    
+                    /* Extraemos solo la parte de la ruta:  */
                     const url = new URL(fromPage)
                     const path = url.pathname + url.search //tomamos solo pathname y url, se concatena.
-
+                    
                     if (fromPage && fromPage.includes('/search?')) {
                         navigate(path + '&refresh=true')
                     } else {
                         navigate('/search')
                     }
+
+                    
+
                 }}
             >
                 <span>

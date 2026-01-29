@@ -6,6 +6,7 @@ export const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [emailError, setEmailError] = useState("")
   const [emailSent, setEmailSent] = useState(false);
 
   // Verificar si el usuario ya está logueado al cargar el componente
@@ -39,11 +40,13 @@ export const LoginForm = () => {
 
 
 
+
   }, [])
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
 
     try {
       // Leer el parámetro redirect de la URL
@@ -76,9 +79,20 @@ export const LoginForm = () => {
         }
       })
 
+      const emailValue = e.target.value;
+
+      if (emailValue && !emailValue.includes('@')) {
+        setEmailError('El email debe contener un @');
+      } else {
+        setEmailError('');
+      }
+
+
       console.log(result)
 
       setEmail("")
+
+      setEmailSent(true)
 
     } catch (error) {
       console.error(error)
@@ -98,37 +112,61 @@ export const LoginForm = () => {
 
   return (
     <>
-      <div className=" flex justify-center items-center min-h-screen  bg-cover bg-center bg-no-repeat" style={{backgroundImage:"url(public/img/login-findr-bg.jpg)"}}>
-        <div className="bg-[#2D2D2D]/90 backdrop-blur-sm  rounded-3xl w-96 text-white flex flex-col  items-center p-6">
-          <div className="flex flex-col justify-center items-center">
-            <h1>Inicia sesión</h1>
-            <p className="text-center min-w-min ">Inicia sólo con tu correo electrónico y un <span className="font-extrabold">LINK</span> que te enviaremos a tu bandeja de entrada</p>
-          </div>
-          <div className="w-96 p-4">
-            <form
-              className="flex flex-col gap-3 p-2"
-              onSubmit={handleSubmit}
+      <div className=" flex justify-center items-center min-h-screen  bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url(public/img/login-findr-bg.jpg)" }}>
 
-            >
-              <input
-                className="text-center bg-[#555555] text-white rounded-full px-4 py-2 focus:outline-none focus:border-transparent w-full h-[50px] pl-12 pr-[40px] placeholder:italic focus:bg-[#666666] cursor-pointer transition-colors duration-700 ease-in-out border border-transparent hover:border-black focus:border-black"
-                type="email"
-                name="email"
-                placeholder="correo@gmail.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+        {
+          emailSent ? (
+
+            <div className="bg-[#2D2D2D]/90 backdrop-blur-sm  rounded-3xl w-96 text-white flex flex-col  items-center p-6">
+              <div className="flex flex-col justify-center items-center">
+                <h1>Revisa tu email</h1>
+                <h3 className="text-center min-w-min ">¡Has recibido un enlace para iniciar sesión!</h3>
+              </div>
+              <div className="flex justify-center items-center p-3">
+                <p className="text-center">Si el link no llegó a tu bandeja principal, revisa tu bandeja de spam. Si no está, tal vez el email estaba mal escrito. Intenta nuevamente.</p>
+              </div>
               <button
-                className="rounded-full bg-black text-white py-3 px-2 hover:bg-[#0066FF] transition-colors duration-300 ease-in-out"
+                className="w-full rounded-full bg-black text-white py-3 px-2 hover:bg-[#0066FF] transition-colors duration-300 ease-in-out"
+                onClick={() => setEmailSent(false)}
               >
-                Enviar código
+                Repetir el proceso
               </button>
-            </form>
-            <div className="flex justify-center items-center p-3">
-              <p className="text-center">Si el link no llegó a tu bandeja principal, revisa tu bandeja de spam. Si no está, tal vez el email estaba mal escrito. Intenta nuevamente.</p>
             </div>
-          </div>
-        </div>
+          ) : (
+            <div className="bg-[#2D2D2D]/90 backdrop-blur-sm  rounded-3xl w-96 text-white flex flex-col  items-center p-6">
+              <div className="flex flex-col justify-center items-center">
+                <h1>Inicia sesión</h1>
+                <p className="text-center min-w-min ">Inicia sólo con tu correo electrónico y un <span className="font-extrabold">LINK</span> que te enviaremos a tu bandeja de entrada</p>
+              </div>
+              <div className="w-96 p-4">
+                <form
+                  className="flex flex-col gap-3 p-2"
+                  onSubmit={handleSubmit}
+
+                >
+                  <input
+                    className="text-center bg-[#555555] text-white rounded-full px-4 py-2 focus:outline-none focus:border-transparent w-full h-[50px] pl-12 pr-[40px] placeholder:italic focus:bg-[#666666] cursor-pointer transition-colors duration-700 ease-in-out border border-transparent hover:border-black focus:border-black"
+                    type="email"
+                    name="email"
+                    placeholder="correo@gmail.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <button
+                    className="rounded-full bg-black text-white py-3 px-2 hover:bg-[#0066FF] transition-colors duration-300 ease-in-out"
+                  >
+                    Enviar link
+                    {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
+                  </button>
+                </form>
+                <div className="flex justify-center items-center p-3">
+                  <p className="text-center">Si el link no llegó a tu bandeja principal, revisa tu bandeja de spam. Si no está, tal vez el email estaba mal escrito. Intenta nuevamente.</p>
+                </div>
+              </div>
+            </div>
+          )
+        }
+
       </div>
     </>
 
