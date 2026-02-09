@@ -1,17 +1,21 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../api/supabase/supabase";
+import { NavBar } from "../navbar/NavBar";
 
 export const LoginForm = () => {
 
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [emailError, setEmailError] = useState("")
   const [emailSent, setEmailSent] = useState(false);
+  const [sendButtonBlocked, setSendButtonBlocked] = useState(false);
+  const [invalidEmail, setInvalidEmail] = useState(false);
 
   // Verificar si el usuario ya está logueado al cargar el componente
   useEffect(() => {
+
     const checkUserAuth = async () => {
+
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
@@ -36,19 +40,13 @@ export const LoginForm = () => {
 
 
 
-  useEffect(() => {
-
-
-
-
-  }, [])
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setSendButtonBlocked(true);
 
-    try {
+    /* try { */
       // Leer el parámetro redirect de la URL
       const urlParams = new URLSearchParams(window.location.search)
       const redirectUrl = urlParams.get('redirect')
@@ -87,16 +85,35 @@ export const LoginForm = () => {
         setEmailError('');
       }
 
-
       console.log(result)
+      //console.log(result.error.code)
+      
+      if(result.error) {
+        console.log(result.error.code)
+        console.log(result.error)
 
-      setEmail("")
+        
+        if (result.error.code === "email_address_invalid" || result.error.code === "validation_failed" || result.error.code ===  "unexpected_failure")  {
+          setEmailError(true);
+          setSendButtonBlocked(false);
+          return;
+        }
+      }
 
-      setEmailSent(true)
+      setEmail("") //clear email input
 
-    } catch (error) {
+      
+   /*  } catch (error) {
+      
+       if (error.code === 400) {
+        alert('Email inválido')
+      } 
+      
       console.error(error)
-    }
+      
+    } */
+    
+    setEmailSent(true) // shows up the "email sent" message 
 
   }
 
@@ -112,7 +129,31 @@ export const LoginForm = () => {
 
   return (
     <>
-      <div className=" flex justify-center items-center min-h-screen  bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url(public/img/login-findr-bg.jpg)" }}>
+    <NavBar/>
+      <div className="flex pb-14 justify-center items-center min-h-screen  bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url(public/img/findr-background-login.png)" }}>
+        {
+          emailError ? (
+
+              <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm justify-center w-full text-white flex flex-col  items-center">
+                <h1 className="p-1">¡Email Inválido!</h1>
+                <p className="text-white p-3">
+                  Por favor, revisa tu email y vuelve a intentarlo
+                </p>
+                <button
+                  className="w-48 rounded-full bg-[#2D2D2D] text-white py-3 px-2 hover:bg-[#0066FF] transition-colors duration-400 ease-in-out"
+                  onClick={() => {
+                    setEmailError(false);
+                    setEmailSent(false); //return to main view (write again a valid email)
+                  }}
+                >
+                  Volver a intentar
+                </button>
+              </div>
+
+          ) : (
+            ""
+          )
+        }
 
         {
           emailSent ? (
@@ -122,16 +163,21 @@ export const LoginForm = () => {
                 <h1>Revisa tu email</h1>
                 <h3 className="text-center min-w-min ">¡Has recibido un enlace para iniciar sesión!</h3>
               </div>
-              <div className="flex justify-center items-center p-3">
+              <div className="flex flex-col justify-center items-center p-3 gap-2">
+                <p className="text-center font-medium">Haz click en el enlace y serás redireccionado para dejar tu reseña.</p>
                 <p className="text-center">Si el link no llegó a tu bandeja principal, revisa tu bandeja de spam. Si no está, tal vez el email estaba mal escrito. Intenta nuevamente.</p>
               </div>
               <button
-                className="w-full rounded-full bg-black text-white py-3 px-2 hover:bg-[#0066FF] transition-colors duration-300 ease-in-out"
-                onClick={() => setEmailSent(false)}
+                className="w-full rounded-full bg-black text-white py-3 px-2 hover:bg-[#0066FF] transition-colors duration-400 ease-in-out"
+                onClick={() => {
+                  setEmailSent(false);
+                  setSendButtonBlocked(false);
+                }}
               >
                 Repetir el proceso
               </button>
             </div>
+
           ) : (
             <div className="bg-[#2D2D2D]/90 backdrop-blur-sm  rounded-3xl w-96 text-white flex flex-col  items-center p-6">
               <div className="flex flex-col justify-center items-center">
@@ -153,7 +199,8 @@ export const LoginForm = () => {
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   <button
-                    className="rounded-full bg-black text-white py-3 px-2 hover:bg-[#0066FF] transition-colors duration-300 ease-in-out"
+                    className="rounded-full bg-black text-white py-3 px-2 hover:bg-[#0066FF] transition-colors duration-300 ease-in-out disabled:text-[#4a4a4b]"
+                    disabled={sendButtonBlocked}
                   >
                     Enviar link
                     {emailError && <p className="text-red-500 text-sm mt-1">{emailError}</p>}
