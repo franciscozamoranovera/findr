@@ -84,8 +84,9 @@ export const NavBar = () => {
                     </a>
                     {
                         isLoggedIn ? (
-
-                            <Logout client:load />
+                            <div className="hidden sm:block">
+                                <Logout client:load />
+                            </div>
                         ) : (
                             []
                         )
