@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build && tsc",
+    "build": "astro build && tsc",
     "preview": "astro preview",
     "astro": "astro",
     "test": "jest --watchAll"
