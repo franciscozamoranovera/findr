@@ -66,7 +66,7 @@ export const fetchDrProfile = async (doctorId) => {
 /* SEARCH RESULTS DATA COMPONENT */
 export const fetchSearchResultsData = async (params, pageParam) => {
 
-    const itemsPerPage = 10;
+    const itemsPerPage = 12;
     const start = pageParam * itemsPerPage;
     const end = start + itemsPerPage - 1;
 

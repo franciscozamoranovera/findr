@@ -122,7 +122,7 @@ export const DrReviews = ({ postReviewQuery }) => {
                                 </div>
                             </div>
 
-                            <div className="p-2" style={{ whiteSpace: 'pre-line' }}>
+                            <div className="p-2 break-words min-w-0" style={{ whiteSpace: 'pre-line' }}>
                                 <p>
                                     {data.written_review}
                                 </p>

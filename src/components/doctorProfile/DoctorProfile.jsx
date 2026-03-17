@@ -521,10 +521,10 @@ export const DoctorProfile = () => {
                                                     : '#'} //link of the healthcare center
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className=' text-center cursor-pointer rounded-full p-3 bg-[#2D2D2D] text-white no-underline hover:bg-white hover:text-black transition-colors'
+                                                className='text-center cursor-pointer rounded-full p-3 bg-[#2D2D2D] text-white no-underline hover:bg-white hover:text-black transition-colors'
                                                 key={`hc-${index}`}
                                             >
-                                                <p className='text-sm text-center'>
+                                                <p className='text-sm text-center line-clamp-2'>
                                                     {d}
                                                 </p>
                                             </a>
