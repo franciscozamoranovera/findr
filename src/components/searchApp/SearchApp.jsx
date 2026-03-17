@@ -28,7 +28,7 @@ export const SearchApp = () => {
                     <Route path="/search" element={<SearchResults />} />
                     <Route path="/doctor/:id" element={<DoctorProfile />} />
                 </Routes>
-                <ReactQueryDevtools initialIsOpen={false}/>
+                {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false}/>}
             </QueryClientProvider>
         </BrowserRouter>
     )
