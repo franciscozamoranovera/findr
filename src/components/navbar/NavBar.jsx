@@ -25,7 +25,7 @@ export const NavBar = () => {
 
     return (
         <>
-            <div className="sm:flex items-center justify-between pl-4 pt-3  bg-transparent">
+            <div className="flex items-center justify-between pl-4 pt-3  bg-transparent">
 
                 {/* <h1 className="text-black text-4xl">fin</h1><h1 className="text-[#0066FF] text-4xl">dr</h1> */}
                 <a href="/search">
@@ -72,12 +72,14 @@ export const NavBar = () => {
                         </text>
                     </svg>
                 </a>
-                <div className="items-center pr-5 hidden sm:flex gap-10 md:gap-5 sm:gap-4 lg:gap-10 ">
+                <div className="items-center pr-5 flex gap-10 md:gap-5 sm:gap-4 lg:gap-10 ">
                     <a
                         className=""
                     >
                         <span className="text-lg  text-gray-500 hover:text-[#2D2D2D] underline cursor-pointer ">
-                            Soy especialista
+                            <a href="https://wa.me/56951083930?text=Hola!%20Qu%C3%A9%20tal%3F" target="_blank" rel="noopener noreferrer">
+                                Soy especialista
+                            </a>
                         </span>
                     </a>
                     {
