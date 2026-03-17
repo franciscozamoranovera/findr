@@ -642,7 +642,7 @@ export const DoctorProfile = () => {
                     </div>
                 </div>
 
-                <div className="items-center gap-2 flex fixed bottom-3 sm:bottom-20 left-1/2 -translate-x-1/2 z-30 w-3/4 sm:w-auto">
+                <div className="items-center gap-2 flex fixed bottom-3 sm:bottom-20 left-1/2 -translate-x-1/2 z-30 w-auto">
                     <AuthReviewButton
                         client:load
                         drId={id}
