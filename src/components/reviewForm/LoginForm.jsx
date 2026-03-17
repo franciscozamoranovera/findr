@@ -51,7 +51,6 @@ export const LoginForm = () => {
       const urlParams = new URLSearchParams(window.location.search)
       const redirectUrl = urlParams.get('redirect')
 
-      console.log('Redirect URL:', redirectUrl)
 
       // Guardar la URL de redirección en localStorage para usar después del login
       if (redirectUrl) {
@@ -67,8 +66,6 @@ export const LoginForm = () => {
         (import.meta.env.PUBLIC_SITE_URL || window.location.origin)
 
       const redirectTo = baseUrl // Siempre al home, sin query params
-      console.log('🔗 Magic link redirigirá a home:', redirectTo)
-      console.log('📄 Página guardada en localStorage:', redirectUrl)
 
       const result = await supabase.auth.signInWithOtp({
         email,
@@ -130,7 +127,7 @@ export const LoginForm = () => {
   return (
     <>
     <NavBar/>
-      <div className="flex pb-14 justify-center items-center min-h-screen  bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url(public/img/findr-background-login.png)" }}>
+      <div className="flex pb-14 justify-center items-center min-h-screen  bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url(/img/findr-background-login.png)" }}>
         {
           emailError ? (
 
