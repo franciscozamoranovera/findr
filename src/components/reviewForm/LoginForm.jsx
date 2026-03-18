@@ -132,7 +132,7 @@ export const LoginForm = () => {
           emailError ? (
 
               <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm justify-center w-full text-white flex flex-col  items-center">
-                <h1 className="p-1">¡Email Inválido!</h1>
+                <h1 className="text-3xl p-1">¡Email Inválido!</h1>
                 <p className="text-white p-3">
                   Por favor, revisa tu email y vuelve a intentarlo
                 </p>
@@ -157,7 +157,7 @@ export const LoginForm = () => {
 
             <div className="bg-[#2D2D2D]/90 backdrop-blur-sm  rounded-3xl w-96 text-white flex flex-col  items-center p-6">
               <div className="flex flex-col justify-center items-center">
-                <h1>Revisa tu email</h1>
+                <h1 className="text-3xl pb-2">¡Revisa tu email!</h1>
                 <h3 className="text-center min-w-min ">¡Has recibido un enlace para iniciar sesión!</h3>
               </div>
               <div className="flex flex-col justify-center items-center p-3 gap-2">
@@ -178,7 +178,7 @@ export const LoginForm = () => {
           ) : (
             <div className="bg-[#2D2D2D]/90 backdrop-blur-sm  rounded-3xl w-96 text-white flex flex-col  items-center p-6">
               <div className="flex flex-col justify-center items-center">
-                <h1>Inicia sesión</h1>
+                <h1 className="text-3xl pb-2">Inicia sesión</h1>
                 <p className="text-center min-w-min ">Inicia sólo con tu correo electrónico y un <span className="font-extrabold">LINK</span> que te enviaremos a tu bandeja de entrada</p>
               </div>
               <div className="w-96 p-4">

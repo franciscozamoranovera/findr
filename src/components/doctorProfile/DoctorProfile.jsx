@@ -286,7 +286,7 @@ export const DoctorProfile = () => {
                             </button>
                         </div>
                         <div className=''>
-                            <h1 className='text-center'>{ratings.continuationRating}</h1>
+                            <h1 className='text-center text-3xl'>{ratings.continuationRating}</h1>
                         </div>
 
                     </div>
@@ -318,7 +318,7 @@ export const DoctorProfile = () => {
                             </button>
                         </div>
                         <div className=''>
-                            <h1 className='text-center'>{ratings.comunicationRating}</h1>
+                            <h1 className='text-center text-3xl'>{ratings.comunicationRating}</h1>
                         </div>
                     </div>
                     {/* ATTENTION & PROFESSIONAILISM */}
@@ -349,7 +349,7 @@ export const DoctorProfile = () => {
                             </button>
                         </div>
                         <div className=''>
-                            <h1 className='text-center'>{ratings.attentionRating}</h1>
+                            <h1 className='text-center text-3xl'>{ratings.attentionRating}</h1>
                         </div>
                     </div>
                     {/* KNOWLEDGE DOMAIN */}
@@ -380,7 +380,7 @@ export const DoctorProfile = () => {
                             </button>
                         </div>
                         <div className=''>
-                            <h1 className='text-center'>{ratings.knowledgeDomainRating}</h1>
+                            <h1 className='text-center text-3xl'>{ratings.knowledgeDomainRating}</h1>
                         </div>
                     </div>
                     {/* RECOMENDATION TO FAMILY */}
@@ -411,7 +411,7 @@ export const DoctorProfile = () => {
                             </button>
                         </div>
                         <div className=''>
-                            <h1 className='text-center'>{ratings.recomendationRating}</h1>
+                            <h1 className='text-center text-3xl'>{ratings.recomendationRating}</h1>
                         </div>
                     </div>
                 </div>
