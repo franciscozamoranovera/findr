@@ -78,7 +78,9 @@ export const NavBar = () => {
                     >
                         <span className="text-lg  text-gray-500 hover:text-[#2D2D2D] underline cursor-pointer ">
                             <a href="https://wa.me/56951083930?text=Hola!%20Qu%C3%A9%20tal%3F" target="_blank" rel="noopener noreferrer">
-                                Soy especialista
+                                <p className="text-md">
+                                    Soy especialista
+                                </p>
                             </a>
                         </span>
                     </a>
