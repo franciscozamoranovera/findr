@@ -66,6 +66,7 @@ h1 {
     margin: 0;
     font-family: var(--font-primary);
     font-weight: 500;
+    font-size: 35px;
 }
 
 h2,
