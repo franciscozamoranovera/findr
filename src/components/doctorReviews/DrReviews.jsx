@@ -146,7 +146,7 @@ export const DrReviews = ({ postReviewQuery }) => {
                     ))
             ) : (
 
-                <div className="absolute inset-0 flex items-center justify-center z-20 backdrop-blur-sm">
+                <div className="absolute inset-0 flex items-center justify-center z-20 backdrop-blur-sm p-3">
                     <p className="text-center text-gray-600 font-medium">Todavía no tiene reseñas</p>
                 </div>
 

@@ -174,8 +174,6 @@ export const DoctorProfile = () => {
     if (!doctorData) return <div className="text-black p-8">¡Doctor no encontrado!</div>;
 
 
-    console.log('TEEESSS', postReviewQuery)
-
     return (
         <div className=''>
             {/* Breadcrumbs */}
@@ -194,7 +192,7 @@ export const DoctorProfile = () => {
                         <p className='text-3xl pb-2'>👨🏻‍⚕️</p>
                     </div>
                     <h1 className="text-black text-3xl pb-1">{doctorData.full_name}</h1>
-                    <h2 className="text-black font-light text-sm">{doctorData.speciality_name}</h2>
+                    <h2 className="text-black font-light text-md">{doctorData.speciality_name}</h2>
                     {doctorData.sub_speciality_name && (
                         <h3 className="text-black pt-1 text-xl font-semi-bold">{doctorData.sub_speciality_name}</h3>
                     )}
