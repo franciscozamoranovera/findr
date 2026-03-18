@@ -29,3 +29,10 @@ pnpm-debug.log*
 .TS-LEARNING.ts
 # Local Netlify folder
 .netlify
+
+ARCHITECTURE.md
+AUTHPROVIDER-ISSUE.md
+
+NOTES.md
+
+README.md

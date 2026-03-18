@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { AuthWrapper } from "../components/api/supabase/AuthWrapper.jsx";
+import Footer from "@/pages/footer.astro";
 
 interface Props {
     title: string;
@@ -22,11 +23,14 @@ const { title } = Astro.props;
         <title>{title}</title>
         <!-- title: finder.it viene del index se le pasa por props -->
     </head>
-    <body>
-        <AuthWrapper client:load>
-            <slot />
-            <!-- Acá van las pages renderizadas-->
-        </AuthWrapper>
+    <body class="flex flex-col min-h-screen">
+        <div class="min-h-dvh">
+            <AuthWrapper client:load>
+                <slot />
+                <!-- Acá van las pages renderizadas-->
+            </AuthWrapper>
+        </div>
+        <Footer/>
     </body>
 </html>
 
