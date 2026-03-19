@@ -105,14 +105,21 @@ input {
 }
 
 /* Safari mobile viewport height fix */
-/* Sobreescribe las clases dvh de Tailwind con fallbacks para Safari */
+/* -webkit-fill-available solo en html/body, NO en elementos hijos */
+body {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    min-height: 100dvh;
+}
+
+/* Para elementos con h-dvh: svh como fallback (safe para Safari con address bar) */
 .h-dvh {
     height: 100vh;
-    height: -webkit-fill-available;
+    height: 100svh;
     height: 100dvh;
 }
 .min-h-dvh {
     min-height: 100vh;
-    min-height: -webkit-fill-available;
+    min-height: 100svh;
     min-height: 100dvh;
 }
