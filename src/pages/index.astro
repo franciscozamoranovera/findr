@@ -40,7 +40,7 @@ import { NavBar } from "@/components/navbar/NavBar";
 			</a>
 
 			<div class="overflow-hidden w-full pt-10">
-				<div class="marquee-track flex gap-3 w-max">
+				<div class="marquee-track flex gap-3 w-max pb-4">
 					<!-- items originales -->
 					<a href="/search?SDDsearch=Cardiología&healthcareCenter=Centro+Médico+y+Dental+RedSalud+Quilicura" class="whitespace-nowrap bg-white text-[#2D2D2D] rounded-full px-4 py-2 text-md font-light hover:bg-[#0066FF] hover:text-white transition-colors duration-200">Cardiólogo en Red Salud Quilicura</a>
 					<a href="/search?SDDsearch=Ginecología+y+Obstetricia&region=Región+Metropolitana&comuna=Quilicura" class="whitespace-nowrap bg-white text-[#2D2D2D] rounded-full px-4 py-2 text-md font-light hover:bg-[#0066FF] hover:text-white transition-colors duration-200">Ginecólogos en Red Salud Quilicura</a>
@@ -52,6 +52,18 @@ import { NavBar } from "@/components/navbar/NavBar";
 					<a href="/search?SDDsearch=Neurología&region=Región+Metropolitana&comuna=Quilicura" class="whitespace-nowrap bg-white text-[#2D2D2D] rounded-full px-4 py-2 text-md font-light hover:bg-[#0066FF] hover:text-white transition-colors duration-200">Neurólogos en Red Salud Quilicura</a>
 					<a href="/search?region=Región+Metropolitana&comuna=Quilicura&healthcareCenter=Centro+Médico+y+Dental+RedSalud+Quilicura" class="whitespace-nowrap bg-white text-[#2D2D2D] rounded-full px-4 py-2 text-md font-light hover:bg-[#0066FF] hover:text-white transition-colors duration-200">Médico general en Red Salud Quilicura</a>
 				</div>
+				<div class="marquee-track-reverse flex gap-3 w-max">
+					<!-- items originales -->
+					<a href="/search?SDDsearch=Arritmia" class="whitespace-nowrap bg-white text-[#2D2D2D] rounded-full px-4 py-2 text-md font-light hover:bg-[#0066FF] hover:text-white transition-colors duration-200">Especialista en Arritmias</a>
+					<a href="/search?SDDsearch=Palpitaciones" class="whitespace-nowrap bg-white text-[#2D2D2D] rounded-full px-4 py-2 text-md font-light hover:bg-[#0066FF] hover:text-white transition-colors duration-200">Especialista en Palpitaciones</a>
+					<!-- <a href="/search?SDDsearch=Neurología&region=Región+Metropolitana&comuna=Quilicura" class="whitespace-nowrap bg-white text-[#2D2D2D] rounded-full px-4 py-2 text-md font-light hover:bg-[#0066FF] hover:text-white transition-colors duration-200">Neurólogos en Red Salud Quilicura</a> -->
+					<!-- <a href="/search?region=Región+Metropolitana&comuna=Quilicura&healthcareCenter=Centro+Médico+y+Dental+RedSalud+Quilicura" class="whitespace-nowrap bg-white text-[#2D2D2D] rounded-full px-4 py-2 text-md font-light hover:bg-[#0066FF] hover:text-white transition-colors duration-200">Médico general en Red Salud Quilicura</a> -->
+					<!-- duplicados para loop continuo -->
+					<a href="/search?SDDsearch=Arritmia" class="whitespace-nowrap bg-white text-[#2D2D2D] rounded-full px-4 py-2 text-md font-light hover:bg-[#0066FF] hover:text-white transition-colors duration-200">Especialista en Arritmias</a>
+					<a href="/search?SDDsearch=Palpitaciones" class="whitespace-nowrap bg-white text-[#2D2D2D] rounded-full px-4 py-2 text-md font-light hover:bg-[#0066FF] hover:text-white transition-colors duration-200">Especialista en Palpitaciones</a>
+					<!-- <a href="/search?SDDsearch=Neurología&region=Región+Metropolitana&comuna=Quilicura" class="whitespace-nowrap bg-white text-[#2D2D2D] rounded-full px-4 py-2 text-md font-light hover:bg-[#0066FF] hover:text-white transition-colors duration-200">Neurólogos en Red Salud Quilicura</a> -->
+					<!-- <a href="/search?region=Región+Metropolitana&comuna=Quilicura&healthcareCenter=Centro+Médico+y+Dental+RedSalud+Quilicura" class="whitespace-nowrap bg-white text-[#2D2D2D] rounded-full px-4 py-2 text-md font-light hover:bg-[#0066FF] hover:text-white transition-colors duration-200">Médico general en Red Salud Quilicura</a> -->
+				</div>
 			</div>
 		</div>
 		
@@ -60,8 +72,8 @@ import { NavBar } from "@/components/navbar/NavBar";
 
 <style>
 	@keyframes marquee {
-		0%   { transform: translateX(-50%); }
-		100% { transform: translateX(0%); }
+		0%   { transform: translateX(0%); }
+		100% { transform: translateX(-50%); }
 	}
 	.marquee-track {
 		animation: marquee 25s linear infinite;
@@ -70,6 +82,19 @@ import { NavBar } from "@/components/navbar/NavBar";
 		font-family: "Open Sans", sans-serif;
 	}
 	.marquee-track:hover {
+		animation-play-state: paused;
+	}
+	@keyframes marquee-reverse {
+		0%   { transform: translateX(-50%); }
+		100% { transform: translateX(0%); }
+	}
+	.marquee-track-reverse {
+		animation: marquee-reverse 25s linear infinite;
+	}
+	.marquee-track-reverse a {
+		font-family: "Open Sans", sans-serif;
+	}
+	.marquee-track-reverse:hover {
 		animation-play-state: paused;
 	}
 </style>
