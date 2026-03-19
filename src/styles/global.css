@@ -20,7 +20,8 @@
 html {
     font-family: var(--font-primary);
     background: var(--background-color);
-    
+    height: -webkit-fill-available; /* Safari mobile fix */
+
     /* Ocultar scrollbar del navegador pero mantener funcionalidad */
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE/Edge */
@@ -103,3 +104,15 @@ input {
     font-family: var(--font-secondary);
 }
 
+/* Safari mobile viewport height fix */
+/* Sobreescribe las clases dvh de Tailwind con fallbacks para Safari */
+.h-dvh {
+    height: 100vh;
+    height: -webkit-fill-available;
+    height: 100dvh;
+}
+.min-h-dvh {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    min-height: 100dvh;
+}
