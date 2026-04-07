@@ -5,7 +5,9 @@ import { SearchApp } from "../components/searchApp/SearchApp.jsx";
 ---
 
 <Layout title="findr | Encuentra médicos de confianza">
-	<SearchApp client:only="react" />
+	<div class="min-h-dvh">
+		<SearchApp client:only="react" />
+	</div>
 	<!-- <Results title="Findr.it" /> --> <!-- results could not be here, and could be inside SearchApp.jsx -->
 </Layout>
 

@@ -144,18 +144,11 @@ export const SearchResults = () => {
                       <div className='flex-1 '>
                         {
                           /* profile_photo here */
-                          r.profile_photo ? (
-                            <img
-                              className='rounded-[25px] w-full h-80 object-cover object-top'
-                              src={r.profile_photo}
-                            />
-                          ) : (
-                            <img
-                              className='rounded-[25px] w-full h-80 object-cover object-top'
-                              src='/img/profile-photo-example.png'
-                            />
-
-                          )
+                          <img
+                            className='rounded-[25px] w-full h-80 object-cover object-top'
+                            src={r.profile_photo || '/img/profile-photo-example.png'}
+                            onError={(e) => { e.target.src = '/img/profile-photo-example.png'; }}
+                          />
 
                         }
 

@@ -24,10 +24,12 @@ export const SearchApp = () => {
         <BrowserRouter>
             <QueryClientProvider client={queryClient}> {/* Involve the entire app */}
                 <SearchBar client:load />
-                <Routes>
-                    <Route path="/search" element={<SearchResults />} />
-                    <Route path="/doctor/:id" element={<DoctorProfile />} />
-                </Routes>
+                <div className="min-h-dvh">
+                    <Routes>
+                        <Route path="/search" element={<SearchResults />} />
+                        <Route path="/doctor/:id" element={<DoctorProfile />} />
+                    </Routes>
+                </div>
                 {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false}/>}
             </QueryClientProvider>
         </BrowserRouter>
