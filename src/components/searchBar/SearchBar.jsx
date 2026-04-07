@@ -141,9 +141,10 @@ export const SearchBar = () => {
     /* Ghost click prevention: re-enable interactions after tap delay passes */
     useEffect(() => {
         if (isOpen) {
-            setModalInteractive(false);
             const t = setTimeout(() => setModalInteractive(true), 350);
             return () => clearTimeout(t);
+        } else {
+            setModalInteractive(false);
         }
     }, [isOpen]);
 
