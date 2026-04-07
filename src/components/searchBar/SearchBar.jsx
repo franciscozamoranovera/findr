@@ -202,7 +202,7 @@ export const SearchBar = () => {
 
             {!isOpen && (
 
-                <div className="flex items-center justify-center w-full gap-1 sm:gap-2 md:gap-3 lg:gap-4 pb-6 pt-2">
+                <div className="flex items-center justify-center w-full gap-2 sm:gap-3 md:gap-4 lg:gap-4 pb-6 pt-2 px-4 sm:px-6">
 
                     {(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
                         <ClearButton
@@ -219,17 +219,17 @@ export const SearchBar = () => {
                             setDiseaseList={setDiseaseList}
                         />
                     )}
-                    <button onClick={() => setIsOpen(true)} className="bg-[#ffffff] w-full min-w-[250px] max-w-[350px] h-[65px]  px-3 py-3 rounded-full border border-[#b9b9b9] flex flex-col items-center justify-center m-1 shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:border-[#2D2D2D] transition-colors duration-200">
+                    <button onClick={() => setIsOpen(true)} className="bg-[#ffffff] flex-1 min-w-0 max-w-[350px] h-[65px] px-4 rounded-full border border-[#b9b9b9] flex flex-col items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:border-[#2D2D2D] transition-colors duration-200">
 
                         {(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
 
-                            <div className="min-w-[250px] w-full ">
+                            <div className="w-full overflow-hidden">
 
                                 <div className="flex justify-center w-full" >
                                     {
                                         inputValue && (
-                                            <div className="max-w-[350px] truncate">
-                                                <p className="text-[#2e3ffc] text-sm font-semibold truncate ">
+                                            <div className="w-full truncate">
+                                                <p className="text-[#2e3ffc] text-sm font-semibold truncate">
                                                     {inputValue}
                                                 </p>
                                             </div>
@@ -244,42 +244,24 @@ export const SearchBar = () => {
 
                                 </div>
 
-                                <div className="flex flex-row gap-1 justify-center m-1 ">
+                                <div className="flex flex-row gap-1 justify-center mt-1">
 
-                                    <div className="truncate max-w-[150px]">
-                                        {
-                                            selectedRegion && (
-                                                <p className="text-[#2e3ffc] text-sm font-semibold truncate">
-                                                    {selectedRegion}
-                                                </p>
-                                            )}
-                                        {
-                                            !selectedRegion && (
-                                                <p className="text-[#505050] text-sm font-semibold truncate">
-                                                    Elige tu región
-                                                </p>
-                                            )
-                                        }
+                                    <div className="flex-1 min-w-0 truncate">
+                                        {selectedRegion ? (
+                                            <p className="text-[#2e3ffc] text-sm font-semibold truncate">{selectedRegion}</p>
+                                        ) : (
+                                            <p className="text-[#505050] text-sm font-semibold truncate">¿Región?</p>
+                                        )}
                                     </div>
 
-                                    <div className="text-[#505050] text-sm font-bold">
-                                        •
-                                    </div>
+                                    <div className="text-[#505050] text-sm font-bold shrink-0">•</div>
 
-                                    <div className="truncate max-w-[150px]">
-                                        {
-                                            selectedComuna && (
-                                                <p className="text-[#2e3ffc] text-sm font-semibold truncate">
-                                                    {selectedComuna}
-                                                </p>
-                                            )}
-                                        {
-                                            !selectedComuna && (
-                                                <p className="text-[#505050] text-sm font-semibold">
-                                                    Elige tu comuna
-                                                </p>
-                                            )
-                                        }
+                                    <div className="flex-1 min-w-0 truncate">
+                                        {selectedComuna ? (
+                                            <p className="text-[#2e3ffc] text-sm font-semibold truncate">{selectedComuna}</p>
+                                        ) : (
+                                            <p className="text-[#505050] text-sm font-semibold truncate">¿Comuna?</p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -309,7 +291,7 @@ export const SearchBar = () => {
 
                             {/* filter button */}
                             <button
-                                className="flex justify-center items-center cursor-pointer transition-colors duration-300 ease-in-out rounded-3xl sm:w-20 hover:underline hover:text-blue-700"
+                                className="flex justify-center items-center cursor-pointer transition-colors duration-300 ease-in-out rounded-3xl w-11 h-11 sm:w-20 shrink-0 hover:underline hover:text-blue-700"
                                 onClick={() => setIsSecFiltersOpen(true)}
                             >
 
