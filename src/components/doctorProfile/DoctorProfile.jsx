@@ -43,7 +43,10 @@ export const DoctorProfile = () => {
 
     const doctorData = postQuery.data;
 
+
     console.log('HAS NEXT PAGE', postReviewQuery.hasNextPage)
+
+
 
     /* STATES TO HANDLE RATINGS */
     const [ratings, setRatings] = useState({
@@ -189,7 +192,14 @@ export const DoctorProfile = () => {
                 {/* Doctor Summary Info */}
                 <div className='text-center pt-10'>
                     <div className='items-center'>
-                        <p className='text-3xl pb-2'>👨🏻‍⚕️</p>
+                        <p className='text-3xl pb-2'>
+                            {doctorData?.gender === 1 ? (
+                                <span>👨🏻‍⚕️</span>
+                            ) : (
+                                <span>🧑🏻‍⚕️</span>
+                                
+                            )}
+                        </p>
                     </div>
                     <h1 className="text-black text-3xl pb-1">{doctorData.full_name}</h1>
                     <h2 className="text-black font-light text-md">{doctorData.speciality_name}</h2>
@@ -535,7 +545,7 @@ export const DoctorProfile = () => {
                                         {/* Private Attention */}
                                         {doctorData.private_practice_addresses && doctorData.private_practice_addresses.map((d, index) => (
                                             <button key={`pa-${index}`} className='rounded-full p-3 bg-[#2D2D2D] text-white pointer-events-none'>
-                                                <p className='text-sm text-center'> 
+                                                <p className='text-sm text-center'>
                                                     {d}
                                                 </p>
                                             </button>

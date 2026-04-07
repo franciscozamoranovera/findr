@@ -47,7 +47,7 @@ export const fetchDrProfile = async (doctorId) => {
 
     const { data: profileData, error } = await supabase
         .from("doctor_search_view_flat")
-        .select("doctor_first_name, full_name, speciality_name, sub_speciality_name, diseases, previsiones, about, background,total_reviews, promedio_general, promedio_atencion, promedio_comunicacion, promedio_continuidad, promedio_conocimiento, promedio_recomendacion, healthcare_centers, private_practice_addresses, healthcare_center_url, profile_photo")
+        .select("doctor_first_name, full_name, speciality_name, sub_speciality_name, diseases, previsiones, about, background,total_reviews, promedio_general, promedio_atencion, promedio_comunicacion, promedio_continuidad, promedio_conocimiento, promedio_recomendacion, healthcare_centers, private_practice_addresses, healthcare_center_url, profile_photo, gender")
         .eq("id", doctorId)
         .single();
 

@@ -134,7 +134,7 @@ export const SearchResults = () => {
                 >
                   <Link
                     to={`/doctor/${r.id}?from=${encodeURIComponent(currentSearchUrl)}`}
-                    className="block bg-white rounded-[30px] p-1.5 transition-all duration-200 border-4 border-transparent hover:border-blue-600  w-full"
+                    className="block bg-white rounded-[30px] p-1.5 transition-all duration-200 border-4 border-transparent [@media(hover:hover)]:hover:border-blue-600 w-full"
                     style={{ color: "#fff", minHeight: "420px" }}
                   >
                     {/* Card Info */}
@@ -146,8 +146,17 @@ export const SearchResults = () => {
                           /* profile_photo here */
                           <img
                             className='rounded-[25px] w-full h-80 object-cover object-top'
-                            src={r.profile_photo || '/img/profile-photo-example.png'}
-                            onError={(e) => { e.target.src = '/img/profile-photo-example.png'; }}
+                            src={
+                              r.profile_photo ||
+                              (r.gender === 1
+                                ? '/img/compressed_dr-default-image-male-fndr.webp'
+                                : '/img/compressed_dr-default-image-female-fndr.webp')
+                            }
+                            onError={(e) => {
+                              e.target.src = r.gender === 1
+                                ? '/img/compressed_dr-default-image-male-fndr.webp'
+                                : '/img/compressed_dr-default-image-female-fndr.webp';
+                            }}
                           />
 
                         }
