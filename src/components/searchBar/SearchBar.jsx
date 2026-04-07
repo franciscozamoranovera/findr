@@ -40,6 +40,9 @@ export const SearchBar = () => {
     /* Secondary filter modal */
     const [isSecFilterOpen, setIsSecFiltersOpen] = useState(false);
 
+    /* Ghost click prevention: disable modal interactions briefly after open */
+    const [modalInteractive, setModalInteractive] = useState(false);
+
 
     // HANDLE PRIMARY SEARCH FILTERS
 
@@ -134,6 +137,15 @@ export const SearchBar = () => {
             document.body.style.overflow = 'auto';
         }
     }, [isOpen, isSecFilterOpen]);
+
+    /* Ghost click prevention: re-enable interactions after tap delay passes */
+    useEffect(() => {
+        if (isOpen) {
+            setModalInteractive(false);
+            const t = setTimeout(() => setModalInteractive(true), 350);
+            return () => clearTimeout(t);
+        }
+    }, [isOpen]);
 
     // Solo se ejecuta cuando hay un refresh explícito
     useEffect(() => {
@@ -404,7 +416,7 @@ export const SearchBar = () => {
                     </div>
 
                     {/* Filter Container */}
-                    <div className="flex flex-col items-center">
+                    <div className={`flex flex-col items-center ${!modalInteractive ? 'pointer-events-none' : ''}`}>
 
                         <PrevisionButtons
                             fonasaButton={fonasaButton}
