@@ -24,10 +24,17 @@ export const navigation = ({
     if (healthcareCenterValue) params.set("healthcareCenter", healthcareCenterValue);
     if (diseasesList && diseasesList.length > 0) params.set("diseaseSelection", diseasesList)
 
-    navigate(`/search?${params.toString()}`)
+    const searchUrl = `/search?${params.toString()}`;
+
+    if (window.location.pathname !== '/search') {
+        window.location.href = searchUrl;
+        return; // página navegando, no cerrar modal
+    }
+
+    navigate(searchUrl);
 
     if (typeof closeModals === "function") {
         closeModals();
-      }
+    }
 
 }

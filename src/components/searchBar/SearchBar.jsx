@@ -24,7 +24,7 @@ import { NavBar } from "../navbar/NavBar";
 
 
 
-export const SearchBar = () => {
+export const SearchBar = ({ hideNavBar = false }) => {
 
     // UTILS
 
@@ -148,6 +148,23 @@ export const SearchBar = () => {
         }
     }, [isOpen]);
 
+    /* Modal fade animation state */
+    const [modalVisible, setModalVisible] = useState(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            const t = setTimeout(() => setModalVisible(true), 10);
+            return () => clearTimeout(t);
+        } else {
+            setModalVisible(false);
+        }
+    }, [isOpen]);
+
+    const closeModal = () => {
+        setModalVisible(false);
+        setTimeout(() => setIsOpen(false), 150);
+    };
+
     // Solo se ejecuta cuando hay un refresh explícito
     useEffect(() => {
 
@@ -198,13 +215,12 @@ export const SearchBar = () => {
     return (
         <>
             {/* Findr nav */}
-            <NavBar />
+            {!hideNavBar && <NavBar />}
 
-            {!isOpen && (
+            <div className="flex items-center justify-center w-full gap-2 sm:gap-3 md:gap-4 lg:gap-4 pb-6 pt-2 px-4 sm:px-6">
 
-                <div className="flex items-center justify-center w-full gap-2 sm:gap-3 md:gap-4 lg:gap-4 pb-6 pt-2 px-4 sm:px-6">
-
-                    {(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
+                    {/* Left side - always takes space for centering */}
+                    <div className={`w-11 sm:w-20 shrink-0 flex justify-center items-center${!(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) ? ' invisible' : ''}`}>
                         <ClearButton
                             setInputValue={setInputValue}
                             setSelectedRegion={setSelectedRegion}
@@ -212,13 +228,11 @@ export const SearchBar = () => {
                             setFonasaButton={setFonasaButton}
                             setIsapreButton={setIsapreButton}
                             setParticularButton={setParticularButton}
-
-                            /* sec filters */
                             setAttentionType={setAttentionType}
                             setHealthcareCenterValue={setHealthcareCenterValue}
                             setDiseaseList={setDiseaseList}
                         />
-                    )}
+                    </div>
                     <button onClick={() => setIsOpen(true)} className="bg-[#ffffff] flex-1 min-w-0 max-w-[350px] h-[65px] px-4 rounded-full border border-[#b9b9b9] flex flex-col items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:border-[#2D2D2D] transition-colors duration-200">
 
                         {(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
@@ -250,7 +264,7 @@ export const SearchBar = () => {
                                         {selectedRegion ? (
                                             <p className="text-[#2e3ffc] text-sm font-semibold truncate">{selectedRegion}</p>
                                         ) : (
-                                            <p className="text-[#505050] text-sm font-semibold truncate">¿Región?</p>
+                                            <p className="text-[#505050] text-sm font-semibold truncate">¿Tu región?</p>
                                         )}
                                     </div>
 
@@ -260,7 +274,7 @@ export const SearchBar = () => {
                                         {selectedComuna ? (
                                             <p className="text-[#2e3ffc] text-sm font-semibold truncate">{selectedComuna}</p>
                                         ) : (
-                                            <p className="text-[#505050] text-sm font-semibold truncate">¿Comuna?</p>
+                                            <p className="text-[#505050] text-sm font-semibold truncate">¿Tu comuna?</p>
                                         )}
                                     </div>
                                 </div>
@@ -269,24 +283,25 @@ export const SearchBar = () => {
                         )}
 
                         {!(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
-                            <div className="flex flex-row items-center justify-start relative w-full">
+                            <div className="flex flex-row items-center justify-center gap-2 w-full">
                                 <svg
-                                    className="absolute left-2"
                                     width="20"
                                     height="20"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 512 512"
+                                    className="shrink-0"
                                 >
                                     <path fill="#2d2d2d" d="M416 208c0 45.9-14.9 88.3-40 122.7l126.6 126.7c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.1-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0s208 93.1 208 208M208 352a144 144 0 1 0 0-288a144 144 0 1 0 0 288" />
                                 </svg>
-                                <p className="text-black pl-2 text-md text-center w-full">
+                                <p className="text-black text-md">
                                     Médico, enfermedad o especialidad
                                 </p>
                             </div>
                         )}
                     </button>
 
-                    {(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
+                    {/* Right side - always takes space for centering */}
+                    <div className={`w-11 sm:w-20 shrink-0 flex justify-center items-center${!(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) ? ' invisible' : ''}`}>
                         <div className="flex justify-center items-center">
 
                             {/* filter button */}
@@ -376,11 +391,8 @@ export const SearchBar = () => {
 
                             )}
                         </div>
-                    )}
+                    </div>
                 </div>
-
-
-            )}
 
 
             {isOpen && (
@@ -388,11 +400,11 @@ export const SearchBar = () => {
                 // MODAL PRIMARY FILTER
 
                 /* main background */
-                <div className="fixed inset-0 bg-black/55 backdrop-blur-2xl z-50" >
+                <div className={`fixed inset-0 bg-black/55 backdrop-blur-2xl z-50 transition-opacity duration-150 ${modalVisible ? 'opacity-100' : 'opacity-0'}`}>
                     <div className="flex justify-end m-4">
                         <button
                             className="bg-black text-white px-4 py-2 rounded-full cursor-pointer text-m hover:text-black hover:bg-[#fafafa] transition-colors duration-200 ease-in-out"
-                            onClick={() => setIsOpen(false)}
+                            onClick={closeModal}
                         >
                             &times;
                         </button>
@@ -464,7 +476,7 @@ export const SearchBar = () => {
                                 <div>
                                     <SearchButton
                                         /* handle modals */
-                                        setIsOpen={setIsOpen}
+                                        setIsOpen={closeModal}
                                         setIsSecFiltersOpen={setIsSecFiltersOpen}
                                         /* prim filters */
                                         inputValue={inputValue}

@@ -73,16 +73,8 @@ export const NavBar = () => {
                     </svg>
                 </a>
                 <div className="items-center pr-5 flex gap-10 md:gap-5 sm:gap-4 lg:gap-10 ">
-                    <a
-                        className=""
-                    >
-                        <span className="text-lg  text-gray-500 hover:text-[#2D2D2D] underline cursor-pointer ">
-                            <a href="https://wa.me/56951083930?text=Hola!%20Qu%C3%A9%20tal%3F" target="_blank" rel="noopener noreferrer">
-                                <p className="text-md">
-                                    Soy especialista
-                                </p>
-                            </a>
-                        </span>
+                    <a href="https://wa.me/56951083930?text=Hola!%20Qu%C3%A9%20tal%3F" target="_blank" rel="noopener noreferrer" className="text-md text-gray-500 hover:text-[#2D2D2D] underline cursor-pointer">
+                        Soy especialista
                     </a>
                     {
                         isLoggedIn ? (
