@@ -295,7 +295,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                         )}
 
                         {!(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
-                            <div className="flex flex-row items-center justify-center gap-2 w-full">
+                            <div className="flex flex-row items-center justify-between w-full">
                                 <svg
                                     width="20"
                                     height="20"
@@ -305,9 +305,10 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                                 >
                                     <path fill="#2d2d2d" d="M416 208c0 45.9-14.9 88.3-40 122.7l126.6 126.7c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.1-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0s208 93.1 208 208M208 352a144 144 0 1 0 0-288a144 144 0 1 0 0 288" />
                                 </svg>
-                                <p className="text-black text-md">
+                                <p className="text-black pl-1 text-md">
                                     Médico, enfermedad o especialidad
                                 </p>
+                                <div className="w-5 shrink-0" />
                             </div>
                         )}
                     </button>
