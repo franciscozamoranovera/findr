@@ -65,7 +65,7 @@ export const LoginForm = () => {
         (isLocalNetwork ? `http://192.168.0.30:4321` : window.location.origin) :
         (import.meta.env.PUBLIC_SITE_URL || window.location.origin)
 
-      const redirectTo = baseUrl // Siempre al home, sin query params
+      const redirectTo = `${baseUrl}/auth/callback`
 
       const result = await supabase.auth.signInWithOtp({
         email,
