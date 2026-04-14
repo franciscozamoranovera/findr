@@ -232,7 +232,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
             <div className="flex items-center justify-center w-full gap-2 sm:gap-3 md:gap-4 lg:gap-4 pb-6 pt-2 px-4 sm:px-6">
 
                     {/* Left side - always takes space for centering */}
-                    <div className={`w-11 sm:w-20 shrink-0 flex justify-center items-center${!(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) ? ' invisible' : ''}`}>
+                    <div className={`shrink-0 flex justify-center items-center${!(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) ? ' w-2 sm:w-11 invisible' : ' w-11 sm:w-20'}`}>
                         <ClearButton
                             setInputValue={setInputValue}
                             setSelectedRegion={setSelectedRegion}
@@ -305,7 +305,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                                 >
                                     <path fill="#2d2d2d" d="M416 208c0 45.9-14.9 88.3-40 122.7l126.6 126.7c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.1-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0s208 93.1 208 208M208 352a144 144 0 1 0 0-288a144 144 0 1 0 0 288" />
                                 </svg>
-                                <p className="text-black pl-1 text-md">
+                                <p className="text-black pl-2 text-md">
                                     Médico, enfermedad o especialidad
                                 </p>
                                 <div className="w-5 shrink-0" />
@@ -314,7 +314,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                     </button>
 
                     {/* Right side - always takes space for centering */}
-                    <div className={`w-11 sm:w-20 shrink-0 flex justify-center items-center${!(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) ? ' invisible' : ''}`}>
+                    <div className={`shrink-0 flex justify-center items-center${!(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) ? ' w-2 sm:w-11 invisible' : ' w-11 sm:w-20'}`}>
                         <div className="flex justify-center items-center">
 
                             {/* filter button */}
