@@ -1,0 +1,132 @@
+---
+export const prerender = true;
+
+import Layout from "@/layouts/Layout.astro";
+import { createClient } from '@supabase/supabase-js';
+
+// Mapa slug → label para display y para queries
+const ESPECIALIDADES: Record<string, string> = {
+    'cardiologia':           'Cardiología',
+    'ginecologia':           'Ginecología y Obstetricia',
+    'neurologia':            'Neurología',
+    'traumatologia':         'Traumatología',
+    'medicina-general':      'Medicina General',
+    'pediatria':             'Pediatría',
+    'dermatologia':          'Dermatología',
+    'psiquiatria':           'Psiquiatría',
+    'oftalmologia':          'Oftalmología',
+    'urologia':              'Urología',
+};
+
+const CIUDADES: Record<string, string> = {
+    'santiago':    'Santiago',
+    'quilicura':   'Quilicura',
+    'providencia': 'Providencia',
+    'las-condes':  'Las Condes',
+    'maipu':       'Maipú',
+};
+
+export async function getStaticPaths() {
+    const paths = [];
+    for (const especialidad of Object.keys(ESPECIALIDADES)) {
+        for (const ciudad of Object.keys(CIUDADES)) {
+            paths.push({ params: { especialidad, ciudad } });
+        }
+    }
+    return paths;
+}
+
+const { especialidad, ciudad } = Astro.params;
+
+const especialidadLabel = ESPECIALIDADES[especialidad] ?? especialidad;
+const ciudadLabel       = CIUDADES[ciudad] ?? ciudad;
+
+const supabase = createClient(
+    import.meta.env.PUBLIC_SUPABASE_URL,
+    import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+);
+
+const { data: doctors } = await supabase
+    .from('doctor_search_view_flat')
+    .select('id, full_name, speciality_name, sub_speciality_name, promedio_general, total_reviews, healthcare_centers, profile_photo, gender')
+    .ilike('speciality_name', `%${especialidadLabel}%`)
+    .ilike('comuna', `%${ciudadLabel}%`)
+    .order('promedio_general', { ascending: false })
+    .limit(20);
+
+const titulo = `${especialidadLabel} en ${ciudadLabel} | findr`;
+const descripcion = doctors?.length
+    ? `Encuentra los mejores ${especialidadLabel.toLowerCase()} en ${ciudadLabel}. ${doctors.length} especialistas disponibles con reseñas reales de pacientes.`
+    : `Busca especialistas en ${especialidadLabel.toLowerCase()} en ${ciudadLabel}. Compara ratings y filtra por previsión en findr.`;
+
+const canonicalUrl = `https://findr.cl/buscar/${especialidad}/${ciudad}`;
+---
+
+<Layout title={titulo} description={descripcion}>
+    <div class="max-w-5xl mx-auto px-4 py-10">
+
+        <div class="mb-8">
+            <p class="text-sm text-blue-600 font-medium mb-2">
+                <a href="/" class="hover:underline">Inicio</a> › {especialidadLabel} › {ciudadLabel}
+            </p>
+            <h1 class="text-4xl font-normal mb-3">
+                {especialidadLabel} en {ciudadLabel}
+            </h1>
+            <p class="text-gray-500 text-lg">{descripcion}</p>
+        </div>
+
+        {doctors && doctors.length > 0 ? (
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {doctors.map((doctor) => (
+                    <a
+                        href={`/doctor/${doctor.id}`}
+                        class="block bg-white rounded-3xl p-4 border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-200"
+                    >
+                        <img
+                            src={doctor.profile_photo || (doctor.gender === 1
+                                ? '/img/compressed_dr-default-image-male-fndr.webp'
+                                : '/img/compressed_dr-default-image-female-fndr.webp')}
+                            alt={`Foto de ${doctor.full_name}`}
+                            class="w-full h-48 object-cover object-top rounded-2xl mb-3"
+                            loading="lazy"
+                        />
+                        <h2 class="text-lg font-semibold text-gray-900">{doctor.full_name}</h2>
+                        <p class="text-sm text-blue-600">{doctor.speciality_name}</p>
+                        {doctor.sub_speciality_name && (
+                            <p class="text-sm text-blue-500">{doctor.sub_speciality_name}</p>
+                        )}
+                        {doctor.healthcare_centers?.[0] && (
+                            <p class="text-sm text-gray-500 mt-1">{doctor.healthcare_centers[0]}</p>
+                        )}
+                        {doctor.total_reviews > 0 && (
+                            <div class="flex items-center gap-1 mt-2">
+                                <span class="text-yellow-500 text-sm">★</span>
+                                <span class="text-sm font-medium">{doctor.promedio_general}</span>
+                                <span class="text-sm text-gray-400">({doctor.total_reviews} reseñas)</span>
+                            </div>
+                        )}
+                    </a>
+                ))}
+            </div>
+        ) : (
+            <div class="text-center py-20 text-gray-400">
+                <p class="text-xl">No encontramos {especialidadLabel.toLowerCase()} en {ciudadLabel} por el momento.</p>
+                <a href="/" class="mt-4 inline-block text-blue-600 hover:underline">Volver al buscador</a>
+            </div>
+        )}
+
+        <div class="mt-12 p-6 bg-gray-50 rounded-2xl">
+            <h2 class="text-xl font-semibold mb-2">¿Buscas otro especialista?</h2>
+            <p class="text-gray-500 mb-4">Usa el buscador para encontrar médicos por nombre, especialidad o enfermedad.</p>
+            <a
+                href={`/search?SDDsearch=${encodeURIComponent(especialidadLabel)}&comuna=${encodeURIComponent(ciudadLabel)}`}
+                class="inline-block bg-black text-white px-6 py-3 rounded-full hover:bg-blue-600 transition-colors duration-200"
+            >
+                Ver todos los resultados
+            </a>
+        </div>
+
+    </div>
+
+    <link rel="canonical" href={canonicalUrl} slot="head" />
+</Layout>
