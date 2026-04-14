@@ -144,12 +144,9 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
     useEffect(() => {
         if (isOpen || isSecFilterOpen) {
             document.body.style.overflow = 'hidden';
-            document.body.style.backgroundColor = 'black';
-            document.documentElement.style.backgroundColor = 'black';
+
         } else {
             document.body.style.overflow = 'auto';
-            document.body.style.backgroundColor = '';
-            document.documentElement.style.backgroundColor = '';
         }
     }, [isOpen, isSecFilterOpen]);
 
@@ -300,15 +297,15 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                         {!(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
                             <div className="flex flex-row items-center justify-center gap-2 w-full">
                                 <svg
-                                    width="18"
-                                    height="18"
+                                    width="20"
+                                    height="20"
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 512 512"
-                                    className="shrink-0 translate-y-px"
+                                    className="shrink-0"
                                 >
                                     <path fill="#2d2d2d" d="M416 208c0 45.9-14.9 88.3-40 122.7l126.6 126.7c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.1-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0s208 93.1 208 208M208 352a144 144 0 1 0 0-288a144 144 0 1 0 0 288" />
                                 </svg>
-                                <p className="text-black text-base leading-none">
+                                <p className="text-black text-md">
                                     Médico, enfermedad o especialidad
                                 </p>
                             </div>
