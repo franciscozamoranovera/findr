@@ -104,11 +104,10 @@ export const AuthProvider = ({ children }) => {
                         const savedRedirectUrl = localStorage.getItem('findr_redirect_after_login')
                         if (savedRedirectUrl) {
                             console.log('🔄 Redirigiendo a:', savedRedirectUrl)
-                            localStorage.removeItem('findr_redirect_after_login') // Limpiar después de usar
+                            localStorage.removeItem('findr_redirect_after_login')
 
-                            // Pequeño delay para asegurar que el estado se actualice
                             setTimeout(() => {
-                                window.location.href = savedRedirectUrl
+                                window.location.replace(savedRedirectUrl)
                             }, 300)
                         }
 

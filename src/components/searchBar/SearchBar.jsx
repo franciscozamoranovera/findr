@@ -31,6 +31,19 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
     /* searchParams to persist the search data of searchBar (if web is reloaded, the data do not get lost)*/
     const [searchParams, setSearchParams] = useSearchParams();
 
+    /* Si estamos en el perfil de un doctor después de un login, los filtros de búsqueda
+       no están en el URL actual sino dentro del param 'from'. Los extraemos como fallback. */
+    const fromSearchParams = (() => {
+        try {
+            const from = searchParams.get('from');
+            return from ? new URLSearchParams(new URL(from).search) : null;
+        } catch {
+            return null;
+        }
+    })();
+
+    const getParam = (key) => searchParams.get(key) || fromSearchParams?.get(key) || null;
+
 
     // HANDLE MODALS
 
@@ -48,8 +61,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
 
     /* Region dropdown list */
     const [selectedRegion, setSelectedRegion] = useState(
-        //recupera URL, util para recargar web y mantener los resultados del filtro.
-        searchParams.get('region') || ""
+        getParam('region') || ""
     );
 
     /* Comuna list dropdown population */
@@ -57,24 +69,24 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
 
     /* Comuna change linked to Region */
     const [selectedComuna, setSelectedComuna] = useState(
-        searchParams.get('comuna') || ""
+        getParam('comuna') || ""
     );
 
     /* SDDsearch input (Speciality and Sub speciality, Diseases, Dr Name) */
     const [inputValue, setInputValue] = useState(
-        searchParams.get('SDDsearch') || ""
+        getParam('SDDsearch') || ""
     );
 
 
     /* Handle Prevision buttons */
     const [fonasaButton, setFonasaButton] = useState(
-        searchParams.get('prevision') || null
+        getParam('prevision') || null
     );
     const [isapreButton, setIsapreButton] = useState(
-        searchParams.get('prevision') || null
+        getParam('prevision') || null
     );
     const [particularButton, setParticularButton] = useState(
-        searchParams.get('prevision') || null
+        getParam('prevision') || null
     );
 
 
@@ -82,12 +94,12 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
 
     /* Attention Type filter buttons */
     const [attentionType, setAttentionType] = useState(
-        searchParams.get('attentiontype') || null
+        getParam('attentiontype') || null
     );
 
     /* HealthcareCenter input */
     const [healthcareCenterValue, setHealthcareCenterValue] = useState(
-        searchParams.get('healthcareCenter') || ""
+        getParam('healthcareCenter') || ""
     );
 
     /* Autocomplete diseases wrapper (dropdown list) */
@@ -95,7 +107,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
 
     /* Diseases selected (combined +1) */
     const [diseasesList, setDiseaseList] = useState(() => {
-        const diseaseSelectionParam = searchParams.get('diseaseSelection');
+        const diseaseSelectionParam = searchParams.get('diseaseSelection') || fromSearchParams?.get('diseaseSelection');
 
         if (diseaseSelectionParam) {
             // Si es un string, lo convertimos a array... al recargar URL
