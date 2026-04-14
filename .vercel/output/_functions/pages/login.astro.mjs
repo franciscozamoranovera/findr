@@ -1,7 +1,7 @@
 /* empty css                                */
 import { c as createComponent, a as renderComponent, r as renderTemplate } from '../chunks/astro/server_SFlxVYzk.mjs';
 import 'kleur/colors';
-import { $ as $$Layout } from '../chunks/Layout_B3lr_rLA.mjs';
+import { $ as $$Layout } from '../chunks/Layout_D7_TKk5i.mjs';
 import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import { useState, useEffect } from 'react';
 import { s as supabase } from '../chunks/supabase_01iFa7cT.mjs';

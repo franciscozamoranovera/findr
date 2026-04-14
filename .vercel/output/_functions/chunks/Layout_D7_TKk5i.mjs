@@ -4,7 +4,7 @@ import 'kleur/colors';
 import { jsx } from 'react/jsx-runtime';
 import { createContext, useState, useEffect, useContext } from 'react';
 import { s as supabase } from './supabase_01iFa7cT.mjs';
-import { $ as $$Footer } from './footer_DkCDBuL9.mjs';
+import { $ as $$Footer } from './footer_wt9YfWvU.mjs';
 
 const AuthContext = createContext({
   //default values (its like a template)

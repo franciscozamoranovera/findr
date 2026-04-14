@@ -1,7 +1,7 @@
 /* empty css                                */
 import { c as createComponent, a as renderComponent, r as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_SFlxVYzk.mjs';
 import 'kleur/colors';
-import { $ as $$Layout } from '../chunks/Layout_B3lr_rLA.mjs';
+import { $ as $$Layout } from '../chunks/Layout_D7_TKk5i.mjs';
 export { renderers } from '../renderers.mjs';
 
 const $$Search = createComponent(($$result, $$props, $$slots) => {
