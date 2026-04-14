@@ -74,27 +74,14 @@ export const LoginForm = () => {
         }
       })
 
-      const emailValue = e.target.value;
-
-      if (emailValue && !emailValue.includes('@')) {
-        setEmailError('El email debe contener un @');
-      } else {
-        setEmailError('');
-      }
-
-      console.log(result)
-      //console.log(result.error.code)
-      
-      if(result.error) {
-        console.log(result.error.code)
-        console.log(result.error)
-
-        
-        if (result.error.code === "email_address_invalid" || result.error.code === "validation_failed" || result.error.code ===  "unexpected_failure")  {
+      if (result.error) {
+        setSendButtonBlocked(false);
+        if (result.error.code === "email_address_invalid" || result.error.code === "validation_failed") {
           setEmailError(true);
-          setSendButtonBlocked(false);
-          return;
+        } else {
+          setEmailError("server");
         }
+        return;
       }
 
       setEmail("") //clear email input
@@ -132,15 +119,19 @@ export const LoginForm = () => {
           emailError ? (
 
               <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm justify-center w-full text-white flex flex-col  items-center">
-                <h1 className="text-3xl p-1">¡Email Inválido!</h1>
+                <h1 className="text-3xl p-1">
+                  {emailError === "server" ? "Error al enviar" : "¡Email Inválido!"}
+                </h1>
                 <p className="text-white p-3">
-                  Por favor, revisa tu email y vuelve a intentarlo
+                  {emailError === "server"
+                    ? "Ocurrió un error inesperado. Por favor intenta nuevamente en unos momentos."
+                    : "Por favor, revisa tu email y vuelve a intentarlo"}
                 </p>
                 <button
                   className="w-48 rounded-full bg-[#2D2D2D] text-white py-3 px-2 hover:bg-[#0066FF] transition-colors duration-400 ease-in-out"
                   onClick={() => {
                     setEmailError(false);
-                    setEmailSent(false); //return to main view (write again a valid email)
+                    setEmailSent(false);
                   }}
                 >
                   Volver a intentar
