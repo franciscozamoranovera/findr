@@ -4,7 +4,7 @@ export const prerender = false;
 import Layout from "@/layouts/Layout.astro";
 import { supabase } from "@/components/api/supabase/supabase";
 import AuthReviewButton from "@/components/reviewForm/buttons/progressBar/AuthReviewButton";
-import { DrReviews } from "@/components/doctorReviews/DrReviews";
+import { DrReviewsLoader } from "@/components/doctorReviews/DrReviewsLoader";
 
 
 const { id } = Astro.params;
@@ -557,7 +557,7 @@ const jsonLd = {
                 <div class="patient-comments relative">
                     <!-- relative: make the absolute works in DrReviews to show: "Todavía no hay reseñas" -->
                     <div class="patient-comments-desktop">
-                        <DrReviews client:load doctorId={id} />
+                        <DrReviewsLoader client:load doctorId={id} />
                     </div>
                 </div>
             </section>
