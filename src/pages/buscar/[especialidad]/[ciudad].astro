@@ -1,0 +1,98 @@
+---
+export const prerender = true;
+
+import Layout from "@/layouts/Layout.astro";
+import { supabase } from "@/components/api/supabase/supabase";
+import { ESPECIALIDADES, CIUDADES, getBuscarPaths } from "@/data/buscarData";
+
+export async function getStaticPaths() {
+    return getBuscarPaths();
+}
+
+const { especialidad, ciudad } = Astro.params;
+
+const especialidadLabel = ESPECIALIDADES[especialidad!] ?? especialidad;
+const ciudadLabel = CIUDADES[ciudad!] ?? ciudad;
+
+const { data: doctors } = await supabase
+    .from("doctor_search_view_flat")
+    .select("id, full_name, speciality_name, promedio_general, total_reviews, healthcare_centers")
+    .ilike("speciality_name", `%${especialidadLabel}%`)
+    .ilike("healthcare_centers", `%${ciudadLabel}%`)
+    .order("promedio_general", { ascending: false })
+    .limit(20);
+
+const pageTitle = `${especialidadLabel} en ${ciudadLabel} | findr`;
+const pageDescription = `Encuentra los mejores especialistas en ${especialidadLabel} en ${ciudadLabel}. Lee reseñas de pacientes reales y elige con confianza.`;
+
+const SITE = import.meta.env.PUBLIC_SITE_URL || "https://findr.it";
+const canonical = `${SITE}/buscar/${especialidad}/${ciudad}`;
+
+const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "MedicalWebPage",
+    name: pageTitle,
+    description: pageDescription,
+    url: canonical,
+    about: {
+        "@type": "MedicalSpecialty",
+        name: especialidadLabel,
+    },
+};
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+    <link rel="canonical" href={canonical} slot="head" />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
+
+    <main class="max-w-3xl mx-auto px-4 py-10">
+        <h1 class="text-4xl font-normal mb-2">
+            {especialidadLabel} en {ciudadLabel}
+        </h1>
+        <p class="text-[#505050] mb-8">
+            Especialistas mejor evaluados por pacientes reales
+        </p>
+
+        {doctors && doctors.length > 0 ? (
+            <ul class="flex flex-col gap-4">
+                {doctors.map((doc) => (
+                    <li>
+                        <a
+                            href={`/doctor/${doc.id}`}
+                            class="flex items-center justify-between bg-white rounded-2xl px-5 py-4 shadow-sm border border-[#e0e0e0] hover:border-[#2D2D2D] transition-colors duration-200"
+                        >
+                            <div>
+                                <p class="font-semibold text-[#2D2D2D]">{doc.full_name}</p>
+                                <p class="text-sm text-[#505050]">{doc.speciality_name}</p>
+                            </div>
+                            <div class="text-right shrink-0 ml-4">
+                                {doc.promedio_general > 0 && (
+                                    <p class="text-[#0066FF] font-semibold">{doc.promedio_general.toFixed(1)} / 5</p>
+                                )}
+                                {doc.total_reviews > 0 && (
+                                    <p class="text-xs text-[#505050]">{doc.total_reviews} reseña{doc.total_reviews !== 1 ? 's' : ''}</p>
+                                )}
+                            </div>
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        ) : (
+            <p class="text-[#505050]">
+                No encontramos especialistas registrados para esta búsqueda aún.
+                <a href={`/search?SDDsearch=${especialidadLabel}&comuna=${ciudadLabel}`} class="text-[#0066FF] underline ml-1">
+                    Buscar en findr
+                </a>
+            </p>
+        )}
+
+        <div class="mt-10">
+            <a
+                href={`/search?SDDsearch=${especialidadLabel}&comuna=${ciudadLabel}`}
+                class="inline-block bg-[#0066FF] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#0052cc] transition-colors duration-200"
+            >
+                Ver todos los resultados
+            </a>
+        </div>
+    </main>
+</Layout>

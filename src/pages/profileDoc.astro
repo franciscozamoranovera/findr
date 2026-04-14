@@ -58,9 +58,40 @@ const comunicationBar = toPercentaje(data.promedio_comunicacion);
 const knowledgeDomainBar = toPercentaje(data.promedio_conocimiento);
 const attentionBar = toPercentaje(data.promedio_atencion);
 const recomendationBar = toPercentaje(data.promedio_recomendacion);
+
+/* SEO */
+const SITE = import.meta.env.PUBLIC_SITE_URL || "https://findr.it";
+const canonical = `${SITE}/doctor/${id}`;
+const metaTitle = `${data.full_name}${data.speciality_name ? ` — ${data.speciality_name}` : ""} | findr`;
+const metaDescription = `Perfil de ${data.full_name}${data.speciality_name ? `, especialista en ${data.speciality_name}` : ""}. ${data.total_reviews > 0 ? `${data.total_reviews} reseñas de pacientes, nota ${data.promedio_general?.toFixed(1)}/5.` : ""}`;
+
+const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Physician",
+    name: data.full_name,
+    medicalSpecialty: data.speciality_name ?? undefined,
+    url: canonical,
+    ...(data.promedio_general > 0 && {
+        aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: data.promedio_general.toFixed(1),
+            bestRating: "5",
+            worstRating: "1",
+            ratingCount: data.total_reviews,
+        },
+    }),
+    ...(data.healthcare_centers && {
+        hospitalAffiliation: {
+            "@type": "Hospital",
+            name: data.healthcare_centers,
+        },
+    }),
+};
 ---
 
-<Layout title={data.full_name}>
+<Layout title={metaTitle} description={metaDescription}>
+    <link rel="canonical" href={canonical} slot="head" />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
     <body class="doc-profile">
         <section class="summary-section">
             <section class="doc-profile-summary">
