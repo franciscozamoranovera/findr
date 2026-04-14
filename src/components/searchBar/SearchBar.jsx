@@ -224,6 +224,27 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
         return () => subscription.unsubscribe()
     }, [])
 
+    /* Safari bfcache fix: when restored via swipe-back, re-sync state from the
+       actual URL (which is correct) and force-close any open modals */
+    useEffect(() => {
+        const handlePageShow = (e) => {
+            if (!e.persisted) return;
+            const params = new URLSearchParams(window.location.search);
+            setInputValue(params.get('SDDsearch') || '');
+            setSelectedRegion(params.get('region') || '');
+            setSelectedComuna(params.get('comuna') || '');
+            setFonasaButton(params.get('prevision') || null);
+            setIsapreButton(params.get('prevision') || null);
+            setParticularButton(params.get('prevision') || null);
+            setAttentionType(params.get('attentiontype') || null);
+            setHealthcareCenterValue(params.get('healthcareCenter') || '');
+            setIsOpen(false);
+            setIsSecFiltersOpen(false);
+        };
+        window.addEventListener('pageshow', handlePageShow);
+        return () => window.removeEventListener('pageshow', handlePageShow);
+    }, [])
+
     return (
         <>
             {/* Findr nav */}
