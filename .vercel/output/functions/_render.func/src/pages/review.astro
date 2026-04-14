@@ -1,0 +1,61 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+import { supabase } from "@/components/api/supabase/supabase";
+import { ReviewForm } from "@/components/reviewForm/ReviewForm";
+import ReviewAuthGuard from "@/components/reviewForm/ReviewAuthGuard";
+// Al inicio del script
+console.log("🔍 review.astro se está renderizando");
+const url = new URL(Astro.request.url);
+const id = url.searchParams.get("id");
+
+// Validar que tenemos un ID válido
+if (!id) {
+    return Astro.redirect("/404");
+}
+const { data: doctor_search_view_flat, error } = await supabase
+    .from("doctor_search_view_flat")
+    .select("*")
+    .eq("id", id)
+    .single(); //un solo doctor, no array;
+
+// Si no encontramos el doctor, redirigir a 404
+if (error || !doctor_search_view_flat) {
+    return Astro.redirect("/404");
+}
+
+
+const doctorFName = doctor_search_view_flat.doctor_first_name;
+const doctorFullName = doctor_search_view_flat.full_name;
+const doctorPrivatePractice = doctor_search_view_flat.private_practice_addresses;
+const doctorHealthCareCenter = doctor_search_view_flat.healthcare_centers;
+const doctorHC = [...doctorHealthCareCenter, ...doctorPrivatePractice]
+const doctorDiseases = doctor_search_view_flat.diseases;
+
+---
+
+<Layout title="Review Form Page">
+    <body>
+        <ReviewAuthGuard fallbackUrl="/login" client:load>
+            <div class="flex flex-col items-center">
+                <div class="flex flex-col items-center pt-2 pb-3">
+                    <h1 class="p-2 text-lg">
+                        {doctorFullName}
+                    </h1>
+                    <h3 class="text-xs">
+                        {doctor_search_view_flat.sub_speciality_name}
+                    </h3>
+                </div>
+                <ReviewForm
+                doctorId={id}
+                doctorHC={doctorHC}
+                doctorDiseases={doctorDiseases}
+                doctorFName={doctorFName}
+                doctorFullName={doctorFullName}
+                client:load
+
+                />
+            </div>
+        </ReviewAuthGuard>
+    </body>
+</Layout>

@@ -3,28 +3,7 @@ export const prerender = true;
 
 import Layout from "@/layouts/Layout.astro";
 import { createClient } from '@supabase/supabase-js';
-
-// Mapa slug → label para display y para queries
-const ESPECIALIDADES: Record<string, string> = {
-    'cardiologia':           'Cardiología',
-    'ginecologia':           'Ginecología y Obstetricia',
-    'neurologia':            'Neurología',
-    'traumatologia':         'Traumatología',
-    'medicina-general':      'Medicina General',
-    'pediatria':             'Pediatría',
-    'dermatologia':          'Dermatología',
-    'psiquiatria':           'Psiquiatría',
-    'oftalmologia':          'Oftalmología',
-    'urologia':              'Urología',
-};
-
-const CIUDADES: Record<string, string> = {
-    'santiago':    'Santiago',
-    'quilicura':   'Quilicura',
-    'providencia': 'Providencia',
-    'las-condes':  'Las Condes',
-    'maipu':       'Maipú',
-};
+import { ESPECIALIDADES, CIUDADES } from '@/data/buscarData';
 
 export async function getStaticPaths() {
     const paths = [];

@@ -1,0 +1,1 @@
+import{j as r}from"./jsx-runtime.D_zvdyIk.js";import{A as i}from"./AuthProvider.ScMqiYLW.js";const e=({children:t})=>r.jsx(i,{children:t}),o=t=>{const s=h=>r.jsx(i,{children:r.jsx(t,{...h})});return s.displayName=`withAuth(${t.displayName||t.name})`,s};export{e as A,o as w};

@@ -1,0 +1,987 @@
+---
+export const prerender = false;
+
+import Layout from "@/layouts/Layout.astro";
+import { supabase } from "@/components/api/supabase/supabase";
+import AuthReviewButton from "@/components/reviewForm/buttons/progressBar/AuthReviewButton";
+import { DrReviews } from "@/components/doctorReviews/DrReviews";
+
+
+const { id } = Astro.params;
+
+const { data, error } = await supabase
+    .from("doctor_search_view_flat")
+    .select(
+        "doctor_first_name, full_name, speciality_name, sub_speciality_name, diseases, total_reviews, promedio_general, promedio_atencion, promedio_comunicacion, promedio_continuidad, promedio_conocimiento, promedio_recomendacion, healthcare_centers",
+    )
+    .eq("id", id)
+    .single(); //un solo doctor, no array
+
+/* If there's no doctor id that match, this redirect to 404 */
+if (error) {
+    return Astro.redirect("/404");
+}
+
+if (!data) {
+    return Astro.redirect("/404");
+}
+
+/* UTILS */
+
+//Add "." to rating numbers
+const toString = (num: number) => {
+    const count = num.toString();
+
+    if (count === "0") return 0;
+
+    if (!count.includes(".")) {
+        return count + ".0";
+    } else return count; //está retornando el prom para todos
+};
+
+const doctorRating = toString(data.promedio_general);
+
+const continuationRating = toString(data.promedio_continuidad);
+const comunicationRating = toString(data.promedio_comunicacion);
+const knowledgeDomainRating = toString(data.promedio_conocimiento);
+const attentionRating = toString(data.promedio_atencion);
+const recomendationRating = toString(data.promedio_recomendacion);
+
+//Convert rating to % for bars
+const toPercentaje = (num: number) => {
+    const conversion = num * 20 + "%";
+    return conversion;
+};
+
+const continueOrNotBar = toPercentaje(data.promedio_continuidad);
+const comunicationBar = toPercentaje(data.promedio_comunicacion);
+const knowledgeDomainBar = toPercentaje(data.promedio_conocimiento);
+const attentionBar = toPercentaje(data.promedio_atencion);
+const recomendationBar = toPercentaje(data.promedio_recomendacion);
+
+const metaTitle = `${data.full_name} - ${data.speciality_name ?? 'Médico'} | findr`;
+const metaDescription = data.total_reviews > 0
+    ? `${data.full_name}, ${data.speciality_name ?? 'médico'} con calificación ${data.promedio_general}/5 basada en ${data.total_reviews} reseñas. ${data.healthcare_centers?.[0] ? `Atiende en ${data.healthcare_centers[0]}.` : ''}`
+    : `Perfil de ${data.full_name}, ${data.speciality_name ?? 'médico'}. ${data.healthcare_centers?.[0] ? `Atiende en ${data.healthcare_centers[0]}.` : ''}`;
+
+const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Physician",
+    "name": data.full_name,
+    "medicalSpecialty": data.speciality_name ?? undefined,
+    ...(data.total_reviews > 0 && {
+        "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": data.promedio_general,
+            "reviewCount": data.total_reviews,
+            "bestRating": 5,
+            "worstRating": 1,
+        }
+    }),
+    ...(data.healthcare_centers?.[0] && {
+        "worksFor": {
+            "@type": "MedicalOrganization",
+            "name": data.healthcare_centers[0],
+        }
+    }),
+};
+---
+
+<Layout title={metaTitle} description={metaDescription}>
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
+    <body class="doc-profile">
+        <section class="summary-section">
+            <section class="doc-profile-summary">
+                <div class="doc-profile-photo">👨🏻‍⚕️</div>
+                <div class="pb-3">
+                    <h1>
+                        {data.full_name}
+                    </h1>
+                </div>
+                <div class="pb-2">
+                    <p>{data.healthcare_centers}</p>
+                </div>
+                <div class="dp-speciality-subspeciality">
+                    {
+                        data.speciality_name && (
+                            /* check if we can access to sub_speciality (ex. if null we avoid errors) */
+                            <h2>{data.speciality_name}</h2>
+                        )
+                    }
+
+                    {
+                        data.sub_speciality_name && (
+                            <p class="text-xl">{data.sub_speciality_name}</p>
+                        )
+                    }
+                </div>
+                <container class="dp-top-20-percent">
+                    <!-- Hide for those that are out of top 20% -->
+                    <div class="dp-laurel-branches-overall-top-rated">
+                        <!-- Only for top rated drs -->
+                        <div class="left-laurel-branch">
+                            <img
+                                src="/img/doctor-profile/left-laurel-findr-it-rating.png"
+                            />
+                        </div>
+                        <div class="overall-rate">
+                            <h1>{doctorRating}</h1>
+                        </div>
+                        <div class="right-laurel-branch">
+                            <img
+                                src="/img/doctor-profile/right-laurel-findr-it-rating.png"
+                            />
+                        </div>
+                    </div>
+                    <div class="dp-description-top-rated-region">
+                        <!-- Only for top rated drs -->
+
+                        <p>
+                            Favorito entre Cardiólogos en la Región
+                            Metropolitana
+                        </p>
+                    </div>
+                    <div class="dp-description-top-rated-chile">
+                        <!-- Only for top rated drs -->
+                        <p>
+                            <strong>{data.full_name}</strong> está dentro del 20%
+                            de los cardiólogos mejor valorados de Chile
+                        </p>
+                    </div>
+                    <div class="top-rated-reviews-qty">
+                        <h3>({data.total_reviews} reseñas)</h3>
+                    </div>
+                </container>
+
+                <script
+                    define:vars={{
+                        doctorRating,
+                        continueOrNotBar,
+                        comunicationBar,
+                        knowledgeDomainBar,
+                        attentionBar,
+                        recomendationBar,
+                    }}
+                >
+                    //hide overall rating.
+                    if (doctorRating === 0) {
+                        return (document.querySelector(
+                            ".dp-top-20-percent",
+                        ).style.display = "none");
+                    }
+
+                    //add % to width for rating bars
+                    document.documentElement.style.setProperty(
+                        "--width-bar-continueOrNotBar",
+                        continueOrNotBar,
+                    );
+                    document.documentElement.style.setProperty(
+                        "--width-bar-comunicationBar",
+                        comunicationBar,
+                    );
+                    document.documentElement.style.setProperty(
+                        "--width-bar-knowledgeDomainBar",
+                        knowledgeDomainBar,
+                    );
+                    document.documentElement.style.setProperty(
+                        "--width-bar-attentionBar",
+                        attentionBar,
+                    );
+                    document.documentElement.style.setProperty(
+                        "--width-bar-recomendationBar",
+                        recomendationBar,
+                    );
+                </script>
+
+                <!-- hidden -->
+                <container class="dp-out-20percent-rated" hidden>
+                    <div class="dp-star-overall-rate">
+                        <!-- For the 80% mayority rated out of 20% or 0 reviews + 0 rating -->
+
+                        <div class="out-20percent-star">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="40"
+                                height="40"
+                                fill="currentColor"
+                                class="bi bi-star-fill"
+                                viewBox="0 0 16 16"
+                            >
+                                <path
+                                    d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"
+                                ></path>
+                            </svg>
+                        </div>
+                        <div class="out-20percent-overall-rate">
+                            <h1>4,0</h1>
+                        </div>
+                        <div class="out-20percent-reviews-qty">
+                            <h3>• 6 reseñas</h3>
+                        </div>
+                    </div>
+                </container>
+                <!-- hidden -->
+
+                <container
+                    class="tag-clasification-section gap-5 flex flex-row flex-wrap justify-center items-center mt-16 mb-12"
+                >
+                    <div class="resolvio-mi-problema">
+                        <div class="icon-resolvio-mi-problema">
+                            <img
+                                src="/img/doctor-profile/calification-icons/problem-solved.png"
+                            />
+                        </div>
+                        <div>
+                            <p>Continuaría Atendiendose</p>
+                        </div>
+                        <div class="graph-resolvio-mi-problema">
+                            <button class="pointer-events-none" tabindex="-1"
+                            ></button>
+                        </div>
+                        <div class="rate-resolvio-mi-problema">
+                            <h1>{continuationRating}</h1>
+                        </div>
+                    </div>
+                    <div class="comunicacion-clara">
+                        <div class="icon-comunicacion-clara">
+                            <img
+                                src="/img/doctor-profile/calification-icons/comunication.png"
+                            />
+                        </div>
+                        <div>
+                            <p>Comunicación Clara</p>
+                        </div>
+                        <div class="graph-comunicacion-clara">
+                            <button class="pointer-events-none" tabindex="-1"
+                            ></button>
+                        </div>
+                        <div class="rate-comunicacion-clara">
+                            <h1>{comunicationRating}</h1>
+                        </div>
+                    </div>
+                    <div class="atencion-profesionalismo">
+                        <div class="icon-atencion-profesionalismo">
+                            <img
+                                src="/img/doctor-profile/calification-icons/attention-profesionalism.png"
+                            />
+                        </div>
+                        <div>
+                            <p>Atención y Profesionalismo</p>
+                        </div>
+                        <div class="graph-atencion-profesionalismo">
+                            <button class="pointer-events-none" tabindex="-1"
+                            ></button>
+                        </div>
+                        <div class="rate-atencion-profesionalismo">
+                            <h1>{attentionRating}</h1>
+                        </div>
+                    </div>
+                    <div class="dominio-conocimientos">
+                        <div class="icon-dominio-conocimientos">
+                            <img
+                                src="/img/doctor-profile/calification-icons/knoledge-domain.png"
+                            />
+                        </div>
+                        <div>
+                            <p>Dominio Conocimientos</p>
+                        </div>
+                        <div class="graph-dominio-conocimientos">
+                            <button class="pointer-events-none" tabindex="-1"
+                            ></button>
+                        </div>
+                        <div class="rate-dominio-conocimientos">
+                            <h1>{knowledgeDomainRating}</h1>
+                        </div>
+                    </div>
+                    <div class="recomiendo-a-familiar">
+                        <div class="icon-recomiendo-a-familiar">
+                            <img
+                                src="/img/doctor-profile/calification-icons/recomendation.png"
+                            />
+                            <div>
+                                <div>
+                                    <p>Recomendaría a Familiar</p>
+                                </div>
+                                <div class="graph-recomiendo-a-familiar">
+                                    <button
+                                        class="pointer-events-none"
+                                        tabindex="-1"></button>
+                                </div>
+                                <div class="rate-recomiendo-a-familiar">
+                                    <h1>{recomendationRating}</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </container>
+            </section>
+        </section>
+
+        <!-- REVIEWS AND ABOUT SECTION -->
+        <section class="flex flex-col gap-2 items-center">
+            <!-- ---- ABOUT SECTION ---- -->
+            <section class="sm:w-3/5 pl-3 pr-3">
+                <container class="about">
+                    <h1 class="pb-4 pt-4">Sobre {data.doctor_first_name}</h1>
+                    <div class="gap-2 pb-4">
+                        <p>
+                            Soy médico general con casi 40 años de experiencia
+                            en atención de pacientes tanto adultos como niños en
+                            la atención primaria pública de salud , así como en
+                            el área privada; consultas médicas , centros
+                            médicos, atención de urgencia tanto de adultos como
+                            de niños.
+                        </p>
+                    </div>
+                </container>
+
+                <container class="flex flex-col gap-1">
+                    <div class="education">
+                        <div class="flex items-center gap-1">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="30"
+                                height="30"
+                                viewBox="0 0 24 24"
+                                ><g fill="none"
+                                    ><path
+                                        fill="#000000"
+                                        fill-rule="evenodd"
+                                        d="M6.5 16H16c1.886 0 2.828 0 3.414-.586C20 14.828 20 13.886 20 12V7c0-1.886 0-2.828-.586-3.414C18.828 3 17.886 3 16 3H8c-1.886 0-2.828 0-3.414.586C4 4.172 4 5.114 4 7v11.5A2.5 2.5 0 0 1 6.5 16M9 6a2 2 0 1 0 0 4h6a2 2 0 1 0 0-4z"
+                                        clip-rule="evenodd"></path><path
+                                        fill="#000000"
+                                        d="m19.414 15.414l-.707-.707zm0-11.828l-.707.707zM9 6V5zm0 4V9zm6 0v1zm0-4V5zm1 9H6.5v2H16zm2.707-.293c-.076.076-.212.17-.646.229c-.462.062-1.09.064-2.061.064v2c.915 0 1.701.002 2.328-.082c.655-.088 1.284-.287 1.793-.797zM19 12c0 .971-.002 1.599-.064 2.061c-.059.434-.153.57-.229.646l1.414 1.414c.51-.51.709-1.138.797-1.793C21.002 13.7 21 12.915 21 12zm0-5v5h2V7zm-.293-2.707c.076.076.17.212.229.646C18.998 5.4 19 6.029 19 7h2c0-.915.002-1.701-.082-2.328c-.088-.655-.287-1.284-.797-1.793zM16 4c.971 0 1.599.002 2.061.064c.434.059.57.153.646.229l1.414-1.414c-.51-.51-1.138-.709-1.793-.797C17.7 1.998 16.915 2 16 2zM8 4h8V2H8zm-2.707.293c.076-.076.212-.17.646-.229C6.4 4.002 7.029 4 8 4V2c-.915 0-1.701-.002-2.328.082c-.655.088-1.284.287-1.793.797zM5 7c0-.971.002-1.599.064-2.061c.059-.434.153-.57.229-.646L3.879 2.879c-.51.51-.709 1.138-.797 1.793C2.998 5.3 3 6.085 3 7zm0 11.5V7H3v11.5zM6.5 15A3.5 3.5 0 0 0 3 18.5h2A1.5 1.5 0 0 1 6.5 17zM8 8a1 1 0 0 1 1-1V5a3 3 0 0 0-3 3zm1 1a1 1 0 0 1-1-1H6a3 3 0 0 0 3 3zm6 0H9v2h6zm1-1a1 1 0 0 1-1 1v2a3 3 0 0 0 3-3zm-1-1a1 1 0 0 1 1 1h2a3 3 0 0 0-3-3zM9 7h6V5H9zm2 13H6.5v2H11zm-8-1.5A3.5 3.5 0 0 0 6.5 22v-2A1.5 1.5 0 0 1 5 18.5z"
+                                    ></path><path
+                                        stroke="#000000"
+                                        stroke-linecap="round"
+                                        stroke-width="2"
+                                        d="M20 21H10"></path></g
+                                ></svg
+                            >
+                            <h3 class="text-xl">Formación</h3>
+                        </div>
+                        <ul>
+                            <li>
+                                <p>
+                                    - Médico Cirujano, Pontificia Universidad
+                                    Católica de Chile, Chile.
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    - Anestesiólogo, Pontificia Universidad
+                                    Católica de Chile, Chile (2001).
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    - Fellow, Regional Anesthesia & Ambulatory
+                                    Surgery, Duke University Medical Center, USA
+                                    (2006).
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="research-projects">
+                        <div class="flex items-center gap-1 clear-start">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="30"
+                                height="30"
+                                viewBox="0 0 20 20"
+                                ><path
+                                    fill="#000000"
+                                    fill-rule="evenodd"
+                                    d="M1 2.75A.75.75 0 0 1 1.75 2h16.5a.75.75 0 0 1 0 1.5H18v8.75A2.75 2.75 0 0 1 15.25 15h-1.072l.798 3.06a.75.75 0 0 1-1.452.38L13.41 18H6.59l-.114.44a.75.75 0 0 1-1.452-.38L5.823 15H4.75A2.75 2.75 0 0 1 2 12.25V3.5h-.25A.75.75 0 0 1 1 2.75ZM7.373 15l-.391 1.5h6.037l-.392-1.5H7.373Zm7.49-8.931a.75.75 0 0 1-.175 1.046a19.326 19.326 0 0 0-3.398 3.098a.75.75 0 0 1-1.097.04L8.5 8.561l-2.22 2.22A.75.75 0 1 1 5.22 9.72l2.75-2.75a.75.75 0 0 1 1.06 0l1.664 1.663a20.786 20.786 0 0 1 3.122-2.74a.75.75 0 0 1 1.046.176Z"
+                                    clip-rule="evenodd"></path></svg
+                            >
+                            <h3 class="text-xl">Investigación y Proyectos</h3>
+                        </div>
+                        <ul>
+                            <li>
+                                <p>
+                                    - 2010-2012: Director (PI), Proyecto FONIS
+                                    Regular SA09I20035:“Evaluación del uso de
+                                    analgesia de Plexo Lumbar Continuo en la
+                                    incidencia de eventos cardiovasculares en
+                                    perioperatorio de pacientes adultos mayores
+                                    con riesgo coronario con fractura de
+                                    cadera”. Fuente de Financiamiento: CONICYT.
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    - 2011- 2012: Investigador Principal,
+                                    Proyecto Investigación Sociedad de
+                                    Anestesiología de Chile: “Comparación de los
+                                    niveles plasmáticos de levobupivacaína con y
+                                    sin vasoconstrictor administrada en un
+                                    bloqueo de plano transverso abdominal (TAP
+                                    Block) guiado por ultrasonografía”. Fuente
+                                    de Financiamiento: Fondo de Fomento a la
+                                    Investigación, Sociedad de Anestesiología de
+                                    Chile.
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    - 2011- 2012: Investigador Principal,
+                                    Proyecto Investigación Sociedad de
+                                    Anestesiología de Chile: “Comparación de los
+                                    niveles plasmáticos de levobupivacaína con y
+                                    sin vasoconstrictor administrada en un
+                                    bloqueo de plano transverso abdominal (TAP
+                                    Block) guiado por ultrasonografía”. Fuente
+                                    de Financiamiento: Fondo de Fomento a la
+                                    Investigación, Sociedad de Anestesiología de
+                                    Chile.
+                                </p>
+                            </li>
+                            <li>
+                                <p>
+                                    - 2011- 2012: Investigador Principal,
+                                    Proyecto Investigación Sociedad de
+                                    Anestesiología de Chile: “Comparación de los
+                                    niveles plasmáticos de levobupivacaína con y
+                                    sin vasoconstrictor administrada en un
+                                    bloqueo de plano transverso abdominal (TAP
+                                    Block) guiado por ultrasonografía”. Fuente
+                                    de Financiamiento: Fondo de Fomento a la
+                                    Investigación, Sociedad de Anestesiología de
+                                    Chile.
+                                </p>
+                            </li>
+                        </ul>
+                    </div>
+                </container>
+                <container class="placeofcare-prevision">
+                    <div class="placeofcare">
+                        <div class="flex items-center gap-1">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="30"
+                                height="30"
+                                viewBox="0 0 56 56"
+                                ><path
+                                    fill="#000000"
+                                    d="M28 4c9.389 0 17 7 17 19c0 9.13-9.841 22.313-14.548 28.096c-1.354 1.604-3.627 1.54-4.903 0C20.843 45.316 11 32.132 11 23c0-12 7.611-19 17-19m0 11a6 6 0 1 0 0 12a6 6 0 0 0 0-12"
+                                ></path></svg
+                            >
+                            <h1 class="text-2xl">Lugar de Atención</h1>
+                        </div>
+                        <ul>
+                            <div class="flex items-center gap-1">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 14 14"
+                                    ><path
+                                        fill="#000000"
+                                        fill-rule="evenodd"
+                                        d="M8.879.593c0-.272.22-.493.492-.493h1.602c.272 0 .493.22.493.493V2.47h1.94c.272 0 .492.221.492.493v1.602c0 .272-.22.492-.492.492h-1.94v1.94a.493.493 0 0 1-.493.493H9.37A.493.493 0 0 1 8.88 7V5.06H7a.493.493 0 0 1-.493-.493V2.964c0-.272.22-.493.493-.493h1.879zm-.185 13.292a2.66 2.66 0 0 1-1.723-.409A23.878 23.878 0 0 1 .506 7.011a2.66 2.66 0 0 1 .404-3.32l.375-.375a.897.897 0 0 1 1.261 0l1.518 1.577a.887.887 0 0 1 0 1.251a.897.897 0 0 0 0 1.262l2.513 2.513a.897.897 0 0 0 1.261 0a.887.887 0 0 1 1.252 0l1.577 1.567a.897.897 0 0 1 0 1.261l-.375.374a2.66 2.66 0 0 1-1.598.764"
+                                        clip-rule="evenodd"></path></svg
+                                >
+                                <h4>Telemedicina</h4>
+                            </div>
+                            <li>
+                                - Particular: “Av Ricardo Lyon 1450,
+                                Providencia.
+                            </li>
+                        </ul>
+                        <ul>
+                            <h4>Presencial</h4>
+                            <li>
+                                - Particular: “Av Ricardo Lyon 1450,
+                                Providencia.
+                            </li>
+                            <li>- Clinica Indisa</li>
+                            <li>- Clinica Alemana</li>
+                            <li>- Clinica Las Condes</li>
+                        </ul>
+                    </div>
+                    <div class="prevision">
+                        <h2>Prevision</h2>
+                        <ul>
+                            <li>- Fonasa</li>
+                            <li>- Colmena</li>
+                            <li>- Mas Vida</li>
+                        </ul>
+                    </div>
+                </container>
+                <container class="treated-deseases-list">
+                    <h2>Enfermedades que trata</h2>
+                    <div class="flex flex-wrap gap-2">
+                        {
+                            data.diseases.map((disease: string) => (
+                                <button class="p-2 rounded-full bg-[#2D2D2D] text-white">{disease}</button>
+                            ))
+                        }
+                    </div>
+                </container>
+            </section>
+
+            <!-- ---- DOC REVIEWS ---- -->
+
+            <section class="doc-reviews">
+                <!-- <div class="button-review-container"> -->
+                <div class="text-center">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="mx-auto"
+                        width="30"
+                        height="30"
+                        viewBox="0 0 24 24"
+                        ><path
+                            fill="#000000"
+                            d="m6 18l-3.15 3.15q-.25.25-.55.125T2 20.8V4q0-.825.588-1.413T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.588 1.413T20 18H6Zm6-5.525l1.9 1.15q.275.175.55-.013t.2-.512l-.5-2.175l1.7-1.475q.25-.225.15-.537t-.45-.338L13.325 8.4l-.875-2.05q-.125-.3-.45-.3t-.45.3l-.875 2.05l-2.225.175Q8.1 8.6 8 8.913t.15.537l1.7 1.475l-.5 2.175q-.075.325.2.513t.55.012l1.9-1.15Z"
+                        ></path></svg
+                    >
+                    <h1 class="text-xxl pb-2">
+                        ¿Qué se opina sobre {data.doctor_first_name}?
+                    </h1>
+                    <h3 class="p-2">({data.total_reviews} reseñas)</h3>
+                </div>
+                <div
+                    class="fixed bottom-1 sm:bottom-20 left-15 right-15 sm:left-1/2 sm:right-auto sm:transform sm:-translate-x-1/2 z-1 sm:w-auto"
+                >
+                    <AuthReviewButton
+                        client:load
+                        drId={id}
+                        doctorName={data.doctor_first_name}
+                    />
+                </div>
+                <div class="patient-comments relative">
+                    <!-- relative: make the absolute works in DrReviews to show: "Todavía no hay reseñas" -->
+                    <div class="patient-comments-desktop">
+                        <DrReviews client:load doctorId={id} />
+                    </div>
+                </div>
+            </section>
+        </section>
+    </body>
+
+    <style>
+        /* .doc-profile {
+            background-color: #e9e9e9;
+        } */
+        .doc-profile-summary {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .doc-profile-photo {
+            font-size: xxx-large;
+        }
+
+        .dp-speciality-subspeciality {
+            margin-bottom: 5px;
+        }
+        .dp-speciality-subspeciality > h2 {
+            margin-bottom: 5px;
+        }
+
+        /* BRANCHES TOP 20% RATING */
+        .dp-laurel-branches-overall-top-rated {
+            display: grid;
+            grid-template-columns: 1fr 130px 1fr;
+            margin-bottom: 25px;
+            margin-top: 25px;
+        }
+
+        .overall-rate {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .overall-rate > h1 {
+            font-size: 90px;
+        }
+
+        .left-laurel-branch {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .right-laurel-branch {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .left-laurel-branch > img {
+            height: 150px;
+        }
+
+        .right-laurel-branch > img {
+            height: 150px;
+        }
+
+        /* --------------------------- */
+
+        /* TOP 20% RATED DESCRIPTION */
+        .dp-description-top-rated-region {
+            margin-bottom: 5px;
+            font-size: 20px;
+        }
+        .dp-description-top-rated-chile {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .top-rated-reviews-qty {
+            color: #555;
+        }
+        /* --------------------------- */
+
+        /* OUT OF 20% RATED STAR */
+        .dp-star-overall-rate {
+            display: grid;
+            grid-template-columns: 1fr 100px 1fr;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+
+        .out-20percent-star {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .out-20percent-overall-rate {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .out-20percent-overall-rate > h1 {
+            font-size: 60px;
+        }
+
+        .out-20percent-reviews-qty {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        .out-20percent-reviews-qty > h3 {
+            font-size: 20px;
+            color: #555;
+        }
+
+        /* --------------------------- */
+
+        /* TAGS CLASIFICATION */
+        /* Layout */
+        /*  .tag-clasification-section {
+            display: flex;
+
+            justify-content: center;
+
+            margin-top: 60px;
+            margin-bottom: 50px;
+        } */
+
+        .tag-clasification-section > div > div > img {
+            height: 25px;
+            margin: 5px;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .tag-clasification-section > div:first-child {
+            border-left: none;
+            /* delete the border for the first child */
+        }
+
+        /* TAGS */
+
+        /*-------------- GRAPHS ----------------*/
+
+        .graph-resolvio-mi-problema > button {
+            position: relative;
+
+            border-radius: 5px;
+            border: 2px solid black;
+            width: 200px;
+            height: 9px;
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            overflow: hidden;
+        }
+
+        .graph-resolvio-mi-problema > button::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgb(0, 0, 0); /* Or any color you prefer */
+            width: var(
+                --width-bar-continueOrNotBar
+            ); /* Dynamic percentage can be set via inline style or JavaScript */
+        }
+
+        .graph-resolvio-mi-problema > button span {
+            position: absolute;
+            z-index: 0;
+            /* Span: Superpone el texto entre el fondo negro y la barra gris (gráfico) */
+        }
+
+        /* ----------------- */
+
+        .graph-comunicacion-clara > button {
+            position: relative;
+            border-radius: 5px;
+            border: 2px solid black;
+            width: 200px;
+            height: 9px;
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            overflow: hidden;
+        }
+
+        .graph-comunicacion-clara > button::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgb(0, 0, 0); /* Or any color you prefer */
+            width: var(
+                --width-bar-comunicationBar
+            ); /* Dynamic percentage can be set via inline style or JavaScript */
+        }
+
+        .graph-comunicacion-clara > button span {
+            position: absolute;
+            z-index: 0;
+            /* Span: Superpone el texto entre el fondo negro y la barra gris (gráfico) */
+        }
+
+        /* -------------------- */
+
+        .graph-atencion-profesionalismo > button {
+            position: relative;
+            border-radius: 5px;
+            border: 2px solid black;
+            width: 200px;
+            height: 9px;
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            overflow: hidden;
+        }
+
+        .graph-atencion-profesionalismo > button::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgb(0, 0, 0); /* Or any color you prefer */
+            width: var(
+                --width-bar-attentionBar
+            ); /* Dynamic percentage can be set via inline style or JavaScript */
+        }
+
+        .graph-atencion-profesionalismo > button span {
+            position: absolute;
+            z-index: 0;
+            /* Span: Superpone el texto entre el fondo negro y la barra gris (gráfico) */
+        }
+
+        /* -------------------- */
+
+        .graph-dominio-conocimientos > button {
+            position: relative;
+            border-radius: 5px;
+            border: 2px solid black;
+            width: 200px;
+            height: 9px;
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            overflow: hidden;
+        }
+
+        .graph-dominio-conocimientos > button::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgb(0, 0, 0); /* Or any color you prefer */
+            width: var(
+                --width-bar-knowledgeDomainBar
+            ); /* Dynamic percentage can be set via inline style or JavaScript */
+        }
+
+        .graph-dominio-conocimientos > button span {
+            position: absolute;
+            z-index: 0;
+            /* Span: Superpone el texto entre el fondo negro y la barra gris (gráfico) */
+        }
+
+        /* ------------------ */
+        .graph-recomiendo-a-familiar > button {
+            position: relative;
+            border-radius: 5px;
+            border: 2px solid black;
+            width: 200px;
+            height: 9px;
+            background-color: rgb(255, 255, 255);
+            color: rgb(0, 0, 0);
+            overflow: hidden;
+        }
+
+        .graph-recomiendo-a-familiar > button::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background-color: rgb(0, 0, 0); /* Or any color you prefer */
+            width: var(
+                --width-bar-recomendationBar
+            ); /* Dynamic percentage can be set via inline style or JavaScript */
+        }
+
+        .graph-recomiendo-a-familiar > button span {
+            position: absolute;
+            z-index: 0;
+            /* Span: Superpone el texto entre el fondo negro y la barra gris (gráfico) */
+        }
+
+        /* --------------------------- */
+
+        /*  .about-section {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+        } */
+
+        .placeofcare-prevision {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        .treated-deseases-list > ul {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background-color: rgb(227, 227, 227);
+            margin: 3px;
+            padding: 3px;
+        }
+
+        /* Padding for research projects paragraphs */
+        .research-projects p {
+            padding: 8px 0;
+        }
+
+        /* ------- COMMENTS SECTION ------- */
+        /* Overall Layout */
+        .doc-reviews {
+            position: sticky;
+            height: fit-content;
+            top: 6px;
+            padding: 10px;
+        }
+
+        .patient-comments {
+            display: flex;
+            flex-wrap: wrap;
+            overflow-y: auto;
+            gap: 2;
+            height: 40rem;
+        }
+
+        /* Desktop: masonry real */
+        @media (min-width: 800px) {
+            .patient-comments-desktop {
+                columns: 3;
+                padding: 10px;
+            }
+        }
+        /* SCROLL BAR */
+
+        /* For WebKit browsers (Chrome, Safari) */
+        .patient-comments::-webkit-scrollbar {
+            width: 8px;
+            /* Width of the scrollbar */
+        }
+
+        .patient-comments::-webkit-scrollbar-track {
+            background: transparent;
+            /* No background for the track */
+        }
+
+        .patient-comments::-webkit-scrollbar-thumb {
+            background: #888;
+            /* Color of the scrollbar thumb */
+            border-radius: 4px;
+            /* Rounded corners for the thumb */
+        }
+
+        .patient-comments::-webkit-scrollbar-thumb:hover {
+            background: #555;
+            /* Darker color on hover */
+        }
+
+        /* For Firefox */
+        .patient-comments {
+            scrollbar-width: thin;
+            /* Use a thin scrollbar */
+            scrollbar-color: #888 transparent;
+            /* Thumb color and track color */
+        }
+
+        /* Review Cards */
+
+        /* .review-box {
+            border-radius: 5px;
+            border-style: unset;
+            background-color: white;
+
+            padding: 12px;
+            margin: 10px;
+        } */
+
+        /*  .profile-review-header {
+            display: grid;
+            grid-template-columns: 1fr 3fr 1fr;
+            justify-items: start;
+        }
+
+        .stars-review-timestamp {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            justify-items: center;
+            margin: 5px;
+        }
+
+        .review-timestamp {
+            font-size: 10px;
+            align-content: center;
+        }
+
+        .appointments-number {
+            background-color: #316930;
+            color: white;
+            width: fit-content;
+            padding: 3px;
+            margin: 2px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .treated-deseases > ul {
+            display: flex;
+        }
+
+        .treated-deseases > ul > li {
+            background-color: #858585;
+            color: white;
+            width: fit-content;
+            padding: 3px;
+            margin: 2px;
+            border-radius: 5px;
+            font-size: 12px;
+        } */
+    </style>
+</Layout>
