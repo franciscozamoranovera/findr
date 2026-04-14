@@ -5,10 +5,9 @@ import Footer from "@/pages/footer.astro";
 
 interface Props {
     title: string;
-    description?: string;
 }
 
-const { title, description = 'Encuentra tu próximo médico de confianza. Busca por especialidad, ciudad y previsión. Lee reseñas reales de pacientes.' } = Astro.props;
+const { title } = Astro.props;
 ---
 
 <!doctype html>
@@ -22,18 +21,12 @@ const { title, description = 'Encuentra tu próximo médico de confianza. Busca 
 
         <link rel="icon" type="image/svg+xml" href="/img/fav-findr.svg" />
         <title>{title}</title>
-        <meta name="google-site-verification" content="2YhiQURq9L-vlOQka0xXCvm4VhJae-RV5_rsRYJG6NM" />
-        <meta name="description" content={description} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:type" content="website" />
 
         <!-- Google Fonts preconnect -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" />
-
-        <slot name="head" />
+        <!-- title: findr.it viene del index se le pasa por props -->
 
         <!-- Safari mobile viewport fix: sets --real-vh to actual visible height -->
         <script is:inline>

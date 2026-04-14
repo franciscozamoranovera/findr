@@ -3,28 +3,24 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import vercel from '@astrojs/vercel';
-import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 
 export default defineConfig({
-  site: 'https://findr.cl',
   output: 'server', //enable SSR
   adapter: vercel(),
+  build: {
+      server: './server',
+      assets: 'assets',
+  },
+
+  outDir: './dist',
 
   devToolbar: {
       enabled: false
     },
 
-  integrations: [
-    react(),
-    tailwind(),
-    sitemap({
-      filter: (page) =>
-        !page.includes('/login') &&
-        !page.includes('/review'),
-    }),
-  ],
+  integrations: [react(), tailwind()],
 
   vite: {
     esbuild: {

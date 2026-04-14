@@ -10,7 +10,7 @@ export const IndexSearchBar = () => {
     return (
         <div style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.15s ease-in' }}>
             <BrowserRouter>
-                <SearchBar hideNavBar={true} fullWidthMobile={true} />
+                <SearchBar hideNavBar={true} />
             </BrowserRouter>
         </div>
     );

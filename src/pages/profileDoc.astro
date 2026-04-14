@@ -58,37 +58,9 @@ const comunicationBar = toPercentaje(data.promedio_comunicacion);
 const knowledgeDomainBar = toPercentaje(data.promedio_conocimiento);
 const attentionBar = toPercentaje(data.promedio_atencion);
 const recomendationBar = toPercentaje(data.promedio_recomendacion);
-
-const metaTitle = `${data.full_name} - ${data.speciality_name ?? 'Médico'} | findr`;
-const metaDescription = data.total_reviews > 0
-    ? `${data.full_name}, ${data.speciality_name ?? 'médico'} con calificación ${data.promedio_general}/5 basada en ${data.total_reviews} reseñas. ${data.healthcare_centers?.[0] ? `Atiende en ${data.healthcare_centers[0]}.` : ''}`
-    : `Perfil de ${data.full_name}, ${data.speciality_name ?? 'médico'}. ${data.healthcare_centers?.[0] ? `Atiende en ${data.healthcare_centers[0]}.` : ''}`;
-
-const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Physician",
-    "name": data.full_name,
-    "medicalSpecialty": data.speciality_name ?? undefined,
-    ...(data.total_reviews > 0 && {
-        "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": data.promedio_general,
-            "reviewCount": data.total_reviews,
-            "bestRating": 5,
-            "worstRating": 1,
-        }
-    }),
-    ...(data.healthcare_centers?.[0] && {
-        "worksFor": {
-            "@type": "MedicalOrganization",
-            "name": data.healthcare_centers[0],
-        }
-    }),
-};
 ---
 
-<Layout title={metaTitle} description={metaDescription}>
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
+<Layout title={data.full_name}>
     <body class="doc-profile">
         <section class="summary-section">
             <section class="doc-profile-summary">

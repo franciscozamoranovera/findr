@@ -24,7 +24,7 @@ import { NavBar } from "../navbar/NavBar";
 
 
 
-export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
+export const SearchBar = ({ hideNavBar = false }) => {
 
     // UTILS
 
@@ -233,7 +233,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                             setDiseaseList={setDiseaseList}
                         />
                     </div>
-                    <button onClick={() => setIsOpen(true)} className={`bg-[#ffffff] flex-1 min-w-0 ${fullWidthMobile ? 'max-w-full sm:max-w-[350px]' : 'max-w-[350px]'} h-[65px] px-4 rounded-full border border-[#b9b9b9] flex flex-col items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:border-[#2D2D2D] transition-colors duration-200`}>
+                    <button onClick={() => setIsOpen(true)} className="bg-[#ffffff] flex-1 min-w-0 max-w-[350px] h-[65px] px-4 rounded-full border border-[#b9b9b9] flex flex-col items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:border-[#2D2D2D] transition-colors duration-200">
 
                         {(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
 

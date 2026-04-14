@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /login
-Disallow: /review
-
-Sitemap: https://findr.cl/sitemap-index.xml
-Sitemap: https://findr.cl/sitemap-doctors.xml
