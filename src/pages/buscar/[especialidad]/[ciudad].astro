@@ -25,7 +25,7 @@ const { data: doctors } = await supabase
 const pageTitle = `${especialidadLabel} en ${ciudadLabel} | findr`;
 const pageDescription = `Encuentra los mejores especialistas en ${especialidadLabel} en ${ciudadLabel}. Lee reseñas de pacientes reales y elige con confianza.`;
 
-const SITE = import.meta.env.PUBLIC_SITE_URL || "https://findr.it";
+const SITE = import.meta.env.PUBLIC_SITE_URL || "https://www.findr.cl";
 const canonical = `${SITE}/buscar/${especialidad}/${ciudad}`;
 
 const jsonLd = {

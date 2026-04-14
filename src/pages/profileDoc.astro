@@ -60,7 +60,7 @@ const attentionBar = toPercentaje(data.promedio_atencion);
 const recomendationBar = toPercentaje(data.promedio_recomendacion);
 
 /* SEO */
-const SITE = import.meta.env.PUBLIC_SITE_URL || "https://findr.it";
+const SITE = import.meta.env.PUBLIC_SITE_URL || "https://www.findr.cl";
 const canonical = `${SITE}/doctor/${id}`;
 const metaTitle = `${data.full_name}${data.speciality_name ? ` — ${data.speciality_name}` : ""} | findr`;
 const metaDescription = `Perfil de ${data.full_name}${data.speciality_name ? `, especialista en ${data.speciality_name}` : ""}. ${data.total_reviews > 0 ? `${data.total_reviews} reseñas de pacientes, nota ${data.promedio_general?.toFixed(1)}/5.` : ""}`;

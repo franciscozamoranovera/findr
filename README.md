@@ -101,3 +101,60 @@ All commands are run from the root of the project, from a terminal:
 ## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+## SEO — Cambios implementados
+
+### 1. Meta tags globales (`src/layouts/Layout.astro`)
+- Prop `description` opcional con valor por defecto.
+- `<meta name="description">` en todas las páginas.
+- Open Graph tags (`og:title`, `og:description`, `og:type`, `og:image`, `og:locale`).
+- `<slot name="head">` para inyectar contenido por página (JSON-LD, canonical, etc.).
+
+### 2. `public/robots.txt`
+- Permite indexación total.
+- Apunta al sitemap: `https://findr.it/sitemap.xml`.
+
+### 3. Sitemap dinámico (`src/pages/sitemap.xml.ts`)
+- Endpoint SSR que consulta Supabase y genera XML en tiempo real.
+- Incluye URLs estáticas (`/`, `/search`) + todas las páginas de perfil (`/doctor/{id}`).
+- Cache-Control de 24h.
+- Registrar en Google Search Console: `https://findr.it/sitemap.xml`.
+
+### 4. JSON-LD en perfiles de médicos (`src/pages/profileDoc.astro`)
+- Schema `Physician` con `name`, `medicalSpecialty`, `url`.
+- `AggregateRating` cuando el médico tiene reseñas (nota + cantidad).
+- `hospitalAffiliation` cuando tiene centro médico registrado.
+- `<link rel="canonical">` por perfil.
+- `<title>` dinámico: `Nombre — Especialidad | findr`.
+- `<meta description>` dinámico con nombre, especialidad y rating.
+
+### 5. Landing pages pre-renderizadas (`src/pages/buscar/[especialidad]/[ciudad].astro`)
+50 páginas estáticas (10 especialidades × 5 ciudades) para rankear búsquedas del tipo "cardiólogo santiago".
+
+**Especialidades:** Cardiología, Ginecología y Obstetricia, Neurología, Dermatología, Traumatología, Oftalmología, Pediatría, Psiquiatría, Urología, Endocrinología.
+
+**Ciudades:** Santiago, Providencia, Las Condes, Ñuñoa, Vitacura.
+
+URLs generadas:
+```
+/buscar/cardiologia/santiago
+/buscar/neurologia/las-condes
+... (50 en total)
+```
+
+Cada página incluye:
+- `<h1>` con especialidad + ciudad.
+- Lista de médicos ordenados por rating (datos reales de Supabase en build time).
+- Schema `MedicalWebPage` JSON-LD.
+- `<link rel="canonical">`.
+- CTA que lleva a `/search` con filtros pre-aplicados.
+
+Datos de especialidades y ciudades en `src/data/buscarData.ts`.
+
+### 6. Variable de entorno requerida en Vercel
+```
+PUBLIC_SITE_URL=https://findr.it
+```
+Sin esta variable los canonicals y JSON-LD usan `https://findr.it` como fallback.

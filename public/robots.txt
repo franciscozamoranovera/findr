@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://findr.it/sitemap.xml
+Sitemap: https://www.findr.cl/sitemap.xml

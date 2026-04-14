@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { supabase } from "@/components/api/supabase/supabase";
 
-const SITE = "https://findr.it";
+const SITE = "https://www.findr.cl";
 
 const staticUrls = [
     { loc: SITE, priority: "1.0", changefreq: "weekly" },
