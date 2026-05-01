@@ -6,11 +6,13 @@ import Footer from "@/pages/footer.astro";
 interface Props {
     title: string;
     description?: string;
+    canonical?: string;
 }
 
 const {
     title,
     description = "Encuentra médicos de confianza en Chile. Busca por especialidad, comuna o patología y lee reseñas de pacientes reales.",
+    canonical = `${import.meta.env.PUBLIC_SITE_URL || "https://www.findr.cl"}${Astro.url.pathname}`,
 } = Astro.props;
 
 const siteUrl = import.meta.env.PUBLIC_SITE_URL || "https://www.findr.cl";
@@ -31,6 +33,8 @@ const ogImage = `${siteUrl}/img/og-findr.png`;
         <meta name="description" content={description} />
         <meta name="google-site-verification" content="2YhiQURq9L-vlOQka0xXCvm4VhJae-RV5_rsRYJG6NM" />
 
+        <link rel="canonical" href={canonical} />
+
         <!-- Open Graph -->
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
@@ -38,7 +42,7 @@ const ogImage = `${siteUrl}/img/og-findr.png`;
         <meta property="og:image" content={ogImage} />
         <meta property="og:locale" content="es_CL" />
 
-        <!-- Per-page head injection (JSON-LD, canonical, etc.) -->
+        <!-- Per-page head injection (JSON-LD, etc.) -->
         <slot name="head" />
 
         <!-- Google Fonts preconnect -->

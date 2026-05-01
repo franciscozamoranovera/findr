@@ -89,8 +89,7 @@ const jsonLd = {
 };
 ---
 
-<Layout title={metaTitle} description={metaDescription}>
-    <link rel="canonical" href={canonical} slot="head" />
+<Layout title={metaTitle} description={metaDescription} canonical={canonical}>
     <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
     <body class="doc-profile">
         <section class="summary-section">
