@@ -356,7 +356,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                                 <div className="fixed top-0 left-0 right-0 bg-black/50 backdrop-blur-lg z-[100]" style={{ height: 'var(--real-vh)' }}>
                                     <div className="flex justify-end m-4">
                                         <button
-                                            className="bg-black text-white px-4 py-2 rounded-full cursor-pointer text-m hover:text-black hover:bg-[#fafafa] transition-colors duration-200 ease-in-out"
+                                            className="bg-black text-white w-9 h-9 rounded-full cursor-pointer flex items-center justify-center text-lg hover:text-black hover:bg-[#fafafa] transition-colors duration-200 ease-in-out"
                                             onClick={() => setIsSecFiltersOpen(false)}
                                         >
                                             &times;
@@ -437,7 +437,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                 <div className={`fixed top-0 left-0 right-0 bg-black/55 backdrop-blur-2xl z-50 transition-opacity duration-150 ${modalVisible ? 'opacity-100' : 'opacity-0'}`} style={{ height: 'var(--real-vh)' }}>
                     <div className="flex justify-end m-4">
                         <button
-                            className="bg-black text-white px-4 py-2 rounded-full cursor-pointer text-m hover:text-black hover:bg-[#fafafa] transition-colors duration-200 ease-in-out"
+                            className="bg-black text-white w-9 h-9 rounded-full cursor-pointer flex items-center justify-center text-lg hover:text-black hover:bg-[#fafafa] transition-colors duration-200 ease-in-out"
                             onClick={closeModal}
                         >
                             &times;
