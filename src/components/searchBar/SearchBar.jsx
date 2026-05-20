@@ -356,10 +356,12 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                                 <div className="fixed top-0 left-0 right-0 bg-black/50 backdrop-blur-lg z-[100]" style={{ height: 'var(--real-vh)' }}>
                                     <div className="flex justify-end m-4">
                                         <button
-                                            className="bg-black text-white w-9 h-9 rounded-full cursor-pointer flex items-center justify-center text-lg hover:text-black hover:bg-[#fafafa] transition-colors duration-200 ease-in-out"
+                                            className="bg-black text-white w-9 h-9 rounded-full cursor-pointer flex items-center justify-center hover:text-black hover:bg-[#fafafa] transition-colors duration-200 ease-in-out"
                                             onClick={() => setIsSecFiltersOpen(false)}
                                         >
-                                            &times;
+                                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M1 1L12 12M12 1L1 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                                            </svg>
                                         </button>
                                     </div>
                                     <div className="flex flex-col items-center justify-center">
@@ -437,10 +439,12 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                 <div className={`fixed top-0 left-0 right-0 bg-black/55 backdrop-blur-2xl z-50 transition-opacity duration-150 ${modalVisible ? 'opacity-100' : 'opacity-0'}`} style={{ height: 'var(--real-vh)' }}>
                     <div className="flex justify-end m-4">
                         <button
-                            className="bg-black text-white w-9 h-9 rounded-full cursor-pointer flex items-center justify-center text-lg hover:text-black hover:bg-[#fafafa] transition-colors duration-200 ease-in-out"
+                            className="bg-black text-white w-9 h-9 rounded-full cursor-pointer flex items-center justify-center hover:text-black hover:bg-[#fafafa] transition-colors duration-200 ease-in-out"
                             onClick={closeModal}
                         >
-                            &times;
+                            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 1L12 12M12 1L1 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                            </svg>
                         </button>
                     </div>
 
