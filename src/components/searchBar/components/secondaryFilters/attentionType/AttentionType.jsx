@@ -1,9 +1,7 @@
 
 export const AttentionType = ({ attentionType, setAttentionType }) => {
 
-    const handleOnClick = (e) => {
-        e.preventDefault();
-        const value = e.currentTarget.value;
+    const handleOnClick = (value) => {
         setAttentionType(attentionType === value ? null : value);
     }
 
@@ -19,8 +17,8 @@ export const AttentionType = ({ attentionType, setAttentionType }) => {
 
                 {/* Presencial */}
                 <button
-                    onClick={handleOnClick}
-                    value="onsite"
+                    type="button"
+                    onClick={() => handleOnClick('onsite')}
                     className={`${attentionType === 'onsite' ? "bg-black text-white" : "border border-black text-black"} flex flex-col items-center justify-center h-20 w-full sm:w-40 md:w-60 xl:w-80 px-4 border border-black rounded-2xl cursor-pointer hover:bg-black hover:text-white group`}
                 >
                     {/* Building / hospital → Presencial */}
@@ -35,8 +33,8 @@ export const AttentionType = ({ attentionType, setAttentionType }) => {
 
                 {/* Telemedicina */}
                 <button
-                    onClick={handleOnClick}
-                    value="telemedicine"
+                    type="button"
+                    onClick={() => handleOnClick('telemedicine')}
                     className={`${attentionType === 'telemedicine' ? "bg-black text-white" : "border border-black text-black"} flex flex-col items-center justify-center h-20 w-full sm:w-40 md:w-60 xl:w-80 px-4 border border-black rounded-2xl cursor-pointer hover:bg-black hover:text-white group`}
                 >
                     {/* Screen with cross → Telemedicina */}
