@@ -2,7 +2,7 @@
 export const AttentionType = ({ attentionType, setAttentionType }) => {
 
     const handleOnClick = (value) => {
-        setAttentionType(attentionType === value ? null : value);
+        setAttentionType(prev => prev === value ? null : value);
     }
 
 

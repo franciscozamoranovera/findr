@@ -144,10 +144,11 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
     /* Modal control. Avoid reload or scroll, just a fixed view*/
     useEffect(() => {
         if (isOpen || isSecFilterOpen) {
+            document.documentElement.style.overflow = 'hidden';
             document.body.style.overflow = 'hidden';
-
         } else {
-            document.body.style.overflow = 'auto';
+            document.documentElement.style.overflow = '';
+            document.body.style.overflow = '';
         }
     }, [isOpen, isSecFilterOpen]);
 

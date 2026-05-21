@@ -101,7 +101,7 @@ export const SearchResults = () => {
 
   return (
     <>
-      <div className="pr-3 pl-3">
+      <div className="pr-3 pl-3 overflow-x-hidden">
 
         {/* Mensaje de no resultados */}
         {searchResultsData.length === 0 ? (

@@ -24,7 +24,7 @@ export const SearchApp = () => {
         <BrowserRouter>
             <QueryClientProvider client={queryClient}> {/* Involve the entire app */}
                 <SearchBar client:load />
-                <div className="min-h-dvh">
+                <div className="min-h-dvh overflow-x-hidden">
                     <Routes>
                         <Route path="/search" element={<SearchResults />} />
                         <Route path="/doctor/:id" element={<DoctorProfile />} />
