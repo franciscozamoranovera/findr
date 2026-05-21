@@ -568,87 +568,34 @@ export const DoctorProfile = () => {
                                 <h1 className='text-2xl text-start'>Investigación y Proyectos</h1>
                             </div>
                             <div className='flex flex-row flex-1 items-stretch gap-2 w-full overflow-x-scroll overflow-y-hidden hide-scrollbar-desktop horizontal-scroll'>
-                                {/* Investigation & Projects */}
-                                {doctorData.background && doctorData.background.length > 0 ? (
-
-                                    doctorData.background.map((d, index) => (
-                                        <button key={index} className='rounded-3xl p-2 h-full w-[280px] xs:w-[280px] sm:w-[300px] xl:w-[350px] bg-[#2D2D2D] text-white pointer-events-none flex-shrink-0  overflow-hidden'>
+                                {doctorData.investigation_and_projects && doctorData.investigation_and_projects.length > 0 ? (
+                                    doctorData.investigation_and_projects.map((item, index) => (
+                                        <div key={item.id || index} className='rounded-3xl p-2 h-full w-[280px] xs:w-[280px] sm:w-[300px] xl:w-[350px] bg-[#2D2D2D] text-white flex-shrink-0 overflow-hidden'>
                                             <div className='h-full flex flex-col justify-between p-3'>
                                                 <div className='flex items-center justify-between mb-2'>
-                                                    <p className='text-lg font-semibold truncate'>Título del Proyecto</p>
-                                                    <p className='text-sm whitespace-nowrap ml-2'>10-Oct-22</p>
+                                                    <p className='text-lg font-semibold truncate'>{item.title}</p>
+                                                    {item.init_date && (
+                                                        <p className='text-sm whitespace-nowrap ml-2'>
+                                                            {new Date(item.init_date).toLocaleDateString('es-CL', { day: '2-digit', month: 'short', year: '2-digit' })}
+                                                        </p>
+                                                    )}
                                                 </div>
                                                 <div className='flex-1 overflow-hidden'>
-                                                    <p className='text-sm text-left line-clamp-6'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. </p>
+                                                    <p className='text-sm text-left line-clamp-6'>
+                                                        {item.body}
+                                                    </p>
                                                 </div>
-                                                <div className='text-left mt-2'>
-                                                    <span className='text-[8px] xl:text-xs bg-white text-black px-2 py-1 rounded-full'>{d}</span>
+                                                <div className='text-left mt-2 flex flex-wrap gap-1'>
+                                                    {item.type?.map((t, i) => (
+                                                        <span key={i} className='text-[8px] xl:text-xs bg-white text-black px-2 py-1 rounded-full'>{t}</span>
+                                                    ))}
                                                 </div>
                                             </div>
-                                        </button>
+                                        </div>
                                     ))
-
                                 ) : (
                                     <p>Sin información</p>
                                 )}
-
-                                <button className='rounded-3xl p-2 h-auto w-[250px] xs:w-[280px] sm:w-[300px] xl:w-[350px] bg-[#2D2D2D] text-white pointer-events-none flex-shrink-0  overflow-hidden'>
-                                    <div className='h-full flex flex-col justify-between p-3'>
-                                        <div className='flex items-center justify-between mb-2'>
-                                            <p className='text-lg font-semibold truncate'>Título del Proyecto</p>
-                                            <p className='text-sm whitespace-nowrap ml-2'>10-Oct-22</p>
-                                        </div>
-                                        <div className='flex-1 overflow-hidden'>
-                                            <p className='text-sm text-left line-clamp-6'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. </p>
-                                        </div>
-                                        <div className='text-left mt-2'>
-                                            <span className='text-[8px] xl:text-xs bg-white text-black px-2 py-1 rounded-full'>Test</span>
-                                        </div>
-                                    </div>
-                                </button>
-                                <button className='rounded-3xl p-2 h-auto w-[250px] xs:w-[280px] sm:w-[300px] xl:w-[350px] bg-[#2D2D2D] text-white pointer-events-none flex-shrink-0  overflow-hidden'>
-                                    <div className='h-full flex flex-col justify-between p-3'>
-                                        <div className='flex items-center justify-between mb-2'>
-                                            <p className='text-lg font-semibold truncate'>Título del Proyecto</p>
-                                            <p className='text-sm whitespace-nowrap ml-2'>10-Oct-22</p>
-                                        </div>
-                                        <div className='flex-1 overflow-hidden'>
-                                            <p className='text-sm text-left line-clamp-6'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. </p>
-                                        </div>
-                                        <div className='text-left mt-2'>
-                                            <span className='text-[8px] xl:text-xs bg-white text-black px-2 py-1 rounded-full'>Test</span>
-                                        </div>
-                                    </div>
-                                </button>
-                                <button className='rounded-3xl p-2 h-auto w-[250px] xs:w-[280px] sm:w-[300px] xl:w-[350px] bg-[#2D2D2D] text-white pointer-events-none flex-shrink-0  overflow-hidden'>
-                                    <div className='h-full flex flex-col justify-between p-3'>
-                                        <div className='flex items-center justify-between mb-2'>
-                                            <p className='text-lg font-semibold truncate'>Título del Proyecto</p>
-                                            <p className='text-sm whitespace-nowrap ml-2'>10-Oct-22</p>
-                                        </div>
-                                        <div className='flex-1 overflow-hidden'>
-                                            <p className='text-sm text-left line-clamp-6'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. </p>
-                                        </div>
-                                        <div className='text-left mt-2'>
-                                            <span className='text-[8px] xl:text-xs bg-white text-black px-2 py-1 rounded-full'>Test</span>
-                                        </div>
-                                    </div>
-                                </button>
-                                <button className='rounded-3xl p-2 h-auto w-[250px] xs:w-[280px] sm:w-[300px] xl:w-[350px] bg-[#2D2D2D] text-white pointer-events-none flex-shrink-0  overflow-hidden'>
-                                    <div className='h-full flex flex-col justify-between p-3'>
-                                        <div className='flex items-center justify-between mb-2'>
-                                            <p className='text-lg font-semibold truncate'>Título del Proyecto</p>
-                                            <p className='text-sm whitespace-nowrap ml-2'>10-Oct-22</p>
-                                        </div>
-                                        <div className='flex-1 overflow-hidden'>
-                                            <p className='text-sm text-left line-clamp-6'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse laoreet rhoncus malesuada. Aliquam id urna auctor mi tristique elementum. Aenean at ipsum mattis, bibendum quam eu. </p>
-                                        </div>
-                                        <div className='text-left mt-2'>
-                                            <span className='text-[8px] xl:text-xs bg-white text-black px-2 py-1 rounded-full'>Test</span>
-                                        </div>
-                                    </div>
-                                </button>
-
                             </div>
                         </div>
                     </div>
