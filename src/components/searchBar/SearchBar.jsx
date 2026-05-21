@@ -12,7 +12,7 @@ import { supabase } from "../api/supabase/supabase";
 import { RegionComuna } from "./components/dropdown/RegionComuna"
 import { SpecialtyDeseaseDrnameInput } from "./components/input/SpecialtyDeseaseDrnameInput"
 import { SearchButton } from "./components/button/SearchButton"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from 'react-router-dom';
 import { regions } from "@/data/regionsComunas";
 import { PrevisionButtons } from "./components/prevision/PrevisionButtons";
@@ -52,6 +52,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
 
     /* Secondary filter modal */
     const [isSecFilterOpen, setIsSecFiltersOpen] = useState(false);
+
 
     /* Ghost click prevention: disable modal interactions briefly after open */
     const [modalInteractive, setModalInteractive] = useState(false);
@@ -172,7 +173,47 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
         }
     }, [isOpen]);
 
+    const primarySnapshot = useRef(null);
+
+    const openModal = () => {
+        primarySnapshot.current = { inputValue, selectedRegion, selectedComuna, fonasaButton, isapreButton, particularButton };
+        setIsOpen(true);
+    };
+
+    /* Secondary filter modal fade animation state */
+    const [secModalVisible, setSecModalVisible] = useState(false);
+
+    useEffect(() => {
+        if (isSecFilterOpen) {
+            const t = setTimeout(() => setSecModalVisible(true), 10);
+            return () => clearTimeout(t);
+        } else {
+            setSecModalVisible(false);
+        }
+    }, [isSecFilterOpen]);
+
+    const closeSecModal = () => {
+        setSecModalVisible(false);
+        setTimeout(() => setIsSecFiltersOpen(false), 150);
+    };
+
     const closeModal = () => {
+        if (primarySnapshot.current) {
+            const s = primarySnapshot.current;
+            setInputValue(s.inputValue);
+            setSelectedRegion(s.selectedRegion);
+            setSelectedComuna(s.selectedComuna);
+            setFonasaButton(s.fonasaButton);
+            setIsapreButton(s.isapreButton);
+            setParticularButton(s.particularButton);
+            primarySnapshot.current = null;
+        }
+        setModalVisible(false);
+        setTimeout(() => setIsOpen(false), 150);
+    };
+
+    const commitAndClose = () => {
+        primarySnapshot.current = null;
         setModalVisible(false);
         setTimeout(() => setIsOpen(false), 150);
     };
@@ -266,7 +307,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                             setDiseaseList={setDiseaseList}
                         />
                     </div>
-                    <button onClick={() => setIsOpen(true)} className={`bg-[#ffffff] flex-1 min-w-0 ${fullWidthMobile ? 'max-w-full sm:max-w-[350px]' : 'max-w-[350px]'} h-[65px] px-4 rounded-full border border-[#b9b9b9] flex flex-col items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:border-[#2D2D2D] transition-colors duration-200`}>
+                    <button onClick={openModal} className={`bg-[#ffffff] flex-1 min-w-0 ${fullWidthMobile ? 'max-w-full sm:max-w-[350px]' : 'max-w-[350px]'} h-[65px] px-4 rounded-full border border-[#b9b9b9] flex flex-col items-center justify-center shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:border-[#2D2D2D] transition-colors duration-200`}>
 
                         {(inputValue || selectedRegion || selectedComuna || fonasaButton || isapreButton || particularButton) && (
 
@@ -340,31 +381,33 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
 
                             {/* filter button */}
                             <button
-                                className="flex justify-center items-center cursor-pointer transition-colors duration-300 ease-in-out rounded-3xl w-11 h-11 sm:w-20 shrink-0 hover:underline hover:text-blue-700"
+                                className={`relative flex justify-center items-center cursor-pointer transition-colors duration-300 ease-in-out rounded-3xl w-11 h-11 sm:w-20 shrink-0 hover:underline hover:text-blue-700${(attentionType || healthcareCenterValue || diseasesList?.length > 0) ? ' ring-2 ring-blue-500' : ''}`}
                                 onClick={() => setIsSecFiltersOpen(true)}
                             >
-
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M9 5a1 1 0 1 0 0 2a1 1 0 0 0 0-2zM6.17 5a3.001 3.001 0 0 1 5.66 0H19a1 1 0 1 1 0 2h-7.17a3.001 3.001 0 0 1-5.66 0H5a1 1 0 0 1 0-2h1.17zM15 11a1 1 0 1 0 0 2a1 1 0 0 0 0-2zm-2.83 0a3.001 3.001 0 0 1 5.66 0H19a1 1 0 1 1 0 2h-1.17a3.001 3.001 0 0 1-5.66 0H5a1 1 0 1 1 0-2h7.17zM9 17a1 1 0 1 0 0 2a1 1 0 0 0 0-2zm-2.83 0a3.001 3.001 0 0 1 5.66 0H19a1 1 0 1 1 0 2h-7.17a3.001 3.001 0 0 1-5.66 0H5a1 1 0 1 1 0-2h1.17z" /></svg>
-
-                                <p className="hidden  md:block font-medium ml-1">
+                                <p className="hidden md:block font-medium ml-1">
                                     Filtros
                                 </p>
+                                {(attentionType || healthcareCenterValue || diseasesList?.length > 0) && (
+                                    <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-blue-500 rounded-full" />
+                                )}
                             </button>
 
                             {isSecFilterOpen && (
 
-                                <div className="fixed top-0 left-0 right-0 bg-black/50 backdrop-blur-lg z-[100]" style={{ height: 'var(--real-vh)' }}>
+                                <div className={`fixed top-0 left-0 right-0 bg-black/50 backdrop-blur-lg z-[100] transition-opacity duration-150 ${secModalVisible ? 'opacity-100' : 'opacity-0'}`} style={{ height: 'var(--real-vh)' }}>
                                     <div className="flex justify-end m-4">
                                         <button
                                             className="bg-black text-white w-9 h-9 rounded-full cursor-pointer flex items-center justify-center hover:text-black hover:bg-[#fafafa] transition-colors duration-200 ease-in-out"
-                                            onClick={() => setIsSecFiltersOpen(false)}
+                                            onClick={closeSecModal}
                                         >
                                             <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M1 1L12 12M12 1L1 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                                             </svg>
                                         </button>
                                     </div>
-                                    <div className="flex flex-col items-center justify-center">
+                                    <div className="flex flex-col items-center" style={{ height: 'calc(var(--real-vh) - 4.5rem)' }}>
+                                        <div className="flex-1 min-h-0 w-full flex flex-col items-center">
                                         <SecondaryFilters
                                             attentionType={attentionType}
                                             setAttentionType={setAttentionType}
@@ -375,8 +418,9 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                                             diseasesList={diseasesList}
                                             setDiseaseList={setDiseaseList}
                                         />
+                                        </div>
 
-                                        <div className="sticky bottom-0 flex justify-between w-[350px] items-center p-3 mr-4 ml-4 rounded-xl  bg-black/30 backdrop-blur-lg z-10" >
+                                        <div className="flex justify-between w-[400px] max-w-[calc(100vw-2rem)] items-center p-3 mx-4 rounded-xl bg-black/30 backdrop-blur-lg z-10" >
                                             <div>
                                                 {/* botón local*/}
                                                 <button
@@ -384,16 +428,13 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                                                     onClick={(e) => {
                                                         e.preventDefault();
 
-                                                        /* clear filters value */
                                                         setAttentionType(null);
                                                         setHealthcareCenterValue("");
                                                         setDiseaseList([]);
-
-                                                        /* clear URL */
-                                                        searchParams.delete("attentiontype")
-                                                        searchParams.delete("healthcareCenter")
-                                                        searchParams.delete("diseaseSelection")
-                                                        setSearchParams(searchParams)
+                                                        searchParams.delete("attentiontype");
+                                                        searchParams.delete("healthcareCenter");
+                                                        searchParams.delete("diseaseSelection");
+                                                        setSearchParams(searchParams);
 
                                                     }}
                                                 >
@@ -514,7 +555,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                                 <div>
                                     <SearchButton
                                         /* handle modals */
-                                        setIsOpen={closeModal}
+                                        setIsOpen={commitAndClose}
                                         setIsSecFiltersOpen={setIsSecFiltersOpen}
                                         /* prim filters */
                                         inputValue={inputValue}

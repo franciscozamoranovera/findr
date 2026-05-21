@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from 'react-router-dom';
 import { SpecialtyDeseaseDrnameWrapper } from "./SpecialtyDeseaseDrnameWrapper";
 
@@ -8,44 +8,50 @@ export const SpecialtyDeseaseDrnameInput = ({ inputValue, setInputValue }) => {
     const [searchParams] = useSearchParams();
 
     /* HANDLE AUTOCOMPLETE WHEN DATA IS SELECTED */
-    const [dropdownIsVisible, setDropdownIsVisible] = useState(true);
+    const [dropdownIsVisible, setDropdownIsVisible] = useState(false);
     const [spanIsVisible, setSpanIsVisible] = useState(
-        !!searchParams.get("SDDsearch") //if "SDDsearch exist, true. if not, false"
+        !!searchParams.get("SDDsearch")
     );
 
+    const containerRef = useRef(null);
+    const [displayValue, setDisplayValue] = useState(inputValue || '');
 
-    /* HANDLE DROPDOWN WRAPPER WHEN PAGE IS RELOADED */
     useEffect(() => {
-        if (searchParams.get('SDDsearch')) setDropdownIsVisible(false);
+        if (!inputValue) setDisplayValue('');
+    }, [inputValue]);
 
-    }, [searchParams, setDropdownIsVisible]);
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (containerRef.current && !containerRef.current.contains(e.target)) {
+                setDropdownIsVisible(false);
+                setDisplayValue(inputValue || '');
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [inputValue]);
 
 
     /* HELPERS */
     const onInputValue = ({ target }) => {
-        /* value sent to wrapper, for autocomplete */
-        const value = target.value.toLowerCase();
-
-        setInputValue(value);
-        setDropdownIsVisible(true);
-
+        const value = target.value;
+        setDisplayValue(value);
+        setDropdownIsVisible(value.length > 0);
         if (value.length === 0) setSpanIsVisible(false);
     }
 
     const handleValueSelection = (selectedValue) => {
-        /* selectedValue = value of input (comes from autocomplete) */
-        setInputValue(selectedValue); // This will update the input field
-
+        setDisplayValue(selectedValue);
+        setInputValue(selectedValue);
         setDropdownIsVisible(false);
         setSpanIsVisible(true);
     }
 
     const onClickSpan = (e) => {
-        e.preventDefault()
-
-        setInputValue("")
+        e.preventDefault();
+        setDisplayValue('');
+        setInputValue('');
         setSpanIsVisible(false);
-
         searchParams.delete("SDDsearch");
     }
 
@@ -56,6 +62,7 @@ export const SpecialtyDeseaseDrnameInput = ({ inputValue, setInputValue }) => {
                 <div
                     id="autocomplete-speciality-wrapper"
                     className="relative flex flex-col items-center w-auto"
+                    ref={containerRef}
                 >
                     <div className="relative w-[300px]">
                         <input
@@ -63,7 +70,7 @@ export const SpecialtyDeseaseDrnameInput = ({ inputValue, setInputValue }) => {
                             className="bg-[#555555] text-white rounded-lg px-4 py-2 focus:outline-none focus:border-transparent w-full h-[50px] pl-12 pr-[40px] placeholder:italic focus:bg-[#666666] cursor-pointer transition-colors duration-700 ease-in-out border border-transparent hover:border-black focus:border-black"
                             type="text"
                             placeholder="Med. General, Meredith Grey"
-                            value={inputValue}
+                            value={displayValue}
                             onChange={onInputValue}
                             autoComplete="off"
                             autoCorrect="off"
@@ -92,22 +99,16 @@ export const SpecialtyDeseaseDrnameInput = ({ inputValue, setInputValue }) => {
                         </div>
                     </div>
 
-                    {dropdownIsVisible && (
-                        <div className="absolute top-full left-0 w-[300px] mt-2 z-50">
-
-                            <ul className="bg-[#555555] text-white rounded-lg w-full overflow-hidden">
-
-                                <div className="max-h-[320px] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
-                                    <SpecialtyDeseaseDrnameWrapper
-                                        inputValue={inputValue}
-                                        onValueSelected={handleValueSelection}
-                                    />
-                                </div>
-
-                            </ul>
-
-                        </div>
-                    )}
+                    <div className={`absolute top-full left-0 w-[300px] mt-2 z-50 transition-all duration-200 ease-out overflow-hidden ${dropdownIsVisible ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'}`}>
+                        <ul className="bg-[#555555] text-white rounded-lg w-full overflow-hidden">
+                            <div className="max-h-80 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
+                                <SpecialtyDeseaseDrnameWrapper
+                                    inputValue={displayValue}
+                                    onValueSelected={handleValueSelection}
+                                />
+                            </div>
+                        </ul>
+                    </div>
                 </div>
 
                 <div className="relative flex flex-col items-center w-auto mt-2 gap-2">
@@ -121,39 +122,33 @@ export const SpecialtyDeseaseDrnameInput = ({ inputValue, setInputValue }) => {
                         <button className="bg-[#515151] text-white rounded-lg px-4 py-2 focus:outline-none focus:border-transparent w-[250px] h-[50px] pl-4 pr-4 cursor-pointer transition-colors duration-700 ease-in-out border border-transparent hover:border-black focus:border-black hover:bg-[#989898]"
                             onClick={(e) => {
                                 e.preventDefault();
+                                setDisplayValue("Arritmia");
                                 setInputValue("Arritmia");
-
                                 setDropdownIsVisible(false);
                                 setSpanIsVisible(true);
-
-                            }
-                            }
+                            }}
                         >
                             Arritmia
                         </button>
                         <button className="bg-[#515151] text-white rounded-lg px-4 py-2 focus:outline-none focus:border-transparent w-[250px] h-[50px] pl-4 pr-4 cursor-pointer transition-colors duration-700 ease-in-out border border-transparent hover:border-black focus:border-black hover:bg-[#989898]"
                             onClick={(e) => {
                                 e.preventDefault();
+                                setDisplayValue("Cardiología");
                                 setInputValue("Cardiología");
-
                                 setDropdownIsVisible(false);
                                 setSpanIsVisible(true);
-
-                            }
-                            }
+                            }}
                         >
                             Cardiología
                         </button>
                         <button className="bg-[#515151] text-white rounded-lg px-4 py-2 focus:outline-none focus:border-transparent w-[250px] h-[50px] pl-4 pr-4 cursor-pointer transition-colors duration-700 ease-in-out border border-transparent hover:border-black focus:border-black hover:bg-[#989898]"
                             onClick={(e) => {
                                 e.preventDefault();
-                                setInputValue("Dermatología")
-
-                                setDropdownIsVisible(false)
-                                setSpanIsVisible(true)
-
-                            }
-                            }
+                                setDisplayValue("Dermatología");
+                                setInputValue("Dermatología");
+                                setDropdownIsVisible(false);
+                                setSpanIsVisible(true);
+                            }}
                         >
                             Dermatología
                         </button>

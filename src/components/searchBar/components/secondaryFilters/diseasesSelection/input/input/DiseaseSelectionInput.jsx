@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from 'react-router-dom';
 import { DiseaseSelectionWrapper } from "./DiseaseSelectionWrapper";
 import { DiseaseSelectionContainer } from "./DiseaseSelectionContainer";
@@ -9,6 +9,19 @@ export const DiseaseSelectionInput = ({ diseaseSelectionValue, setDiseaseSelecti
 
     /* HANDLE SEARCH PARAMS */
     const [searchParams] = useSearchParams();
+
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (containerRef.current && !containerRef.current.contains(e.target)) {
+                setDropdownIsVisible(false);
+                setDiseaseSelection('');
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     /* HANDLE AUTOCOMPLETE WHEN DATA IS SELECTED */
     const [dropdownIsVisible, setDropdownIsVisible] = useState(true);
@@ -73,7 +86,7 @@ export const DiseaseSelectionInput = ({ diseaseSelectionValue, setDiseaseSelecti
             <div
                 className="relative flex flex-col items-center  p-4"
             >
-                <div className="relative w-full flex flex-col items-center">
+                <div className="relative w-full flex flex-col items-center" ref={containerRef}>
                     <input
                         id="autocomplete-diseaseSelection-input"
                         className="bg-[#555555] text-white rounded-lg px-4 py-2 focus:outline-none focus:border-transparent w-full h-[50px] pl-12 pr-[40px] placeholder:italic focus:bg-[#666666] cursor-pointer transition-colors duration-700 ease-in-out border border-transparent hover:border-black focus:border-black"
@@ -107,36 +120,25 @@ export const DiseaseSelectionInput = ({ diseaseSelectionValue, setDiseaseSelecti
                         </button>
                     </div>
 
-                    {dropdownIsVisible && (
-                        <div className="absolute top-full left-0 w-full mt-2 z-50">
-
-                            <ul className="bg-[#555555] text-white rounded-lg w-full overflow-hidden">
-
-                                <div className="max-h-[320px] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
-
-                                    <DiseaseSelectionWrapper
-                                        diseaseSelectionValue={diseaseSelectionValue}
-                                        setDiseaseSelection={setDiseaseSelection}
-                                        onValueSelected={handleValueSelection}
-                                    />
-
-                                </div>
-
-                            </ul>
-
-                        </div>
-                    )}
+                    <div className={`absolute bottom-full left-0 w-full mb-2 z-50 transition-all duration-200 ease-out overflow-hidden ${dropdownIsVisible ? 'max-h-36 opacity-100' : 'max-h-0 opacity-0'}`}>
+                        <ul className="bg-[#555555] text-white rounded-lg w-full overflow-hidden">
+                            <div className="max-h-36 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
+                                <DiseaseSelectionWrapper
+                                    diseaseSelectionValue={diseaseSelectionValue}
+                                    setDiseaseSelection={setDiseaseSelection}
+                                    onValueSelected={handleValueSelection}
+                                />
+                            </div>
+                        </ul>
+                    </div>
                 </div>
 
-                <div className="p-3">
-                    <div className="bg-[#555555] text-white rounded-lg px-4 py-2 focus:outline-none focus:border-transparent w-auto min-h-10  pl-12 pr-[40px] placeholder:italic focus:bg-[#666666] cursor-pointer transition-colors duration-700 ease-in-out border border-transparent">
-                       
+                <div className={`overflow-hidden transition-all duration-300 ease-in-out w-full ${diseasesList?.length > 0 ? 'max-h-[600px] pt-2' : 'max-h-0'}`}>
+                    <div className="px-1 flex flex-wrap">
                         <DiseaseSelectionContainer
                             diseasesList={diseasesList}
                             setDiseaseList={setDiseaseList}
-
                         />
-
                     </div>
                 </div>
 

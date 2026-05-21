@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from 'react-router-dom';
 import { HeathcareCenterWrapper } from "./HeathCareWrapper";
 
@@ -8,6 +8,29 @@ export const HealthcareCenterInput = ({ healthcareCenterValue, setHealthcareCent
     /* HANDLE SEARCH PARAMS */
     const [searchParams] = useSearchParams();
 
+    /* displayValue = texto visible en el input (solo para autocomplete)
+       healthcareCenterValue (prop) = valor comprometido, solo se actualiza al seleccionar de la lista */
+    const [displayValue, setDisplayValue] = useState(healthcareCenterValue || '');
+
+    /* Sync display when committed value is cleared externally (e.g. "Limpiar filtro") */
+    useEffect(() => {
+        if (!healthcareCenterValue) setDisplayValue('');
+    }, [healthcareCenterValue]);
+
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (containerRef.current && !containerRef.current.contains(e.target)) {
+                setDropdownIsVisible(false);
+                /* Si el usuario cierra sin seleccionar, restaurar el display al valor comprometido */
+                setDisplayValue(healthcareCenterValue || '');
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [healthcareCenterValue]);
+
     /* HANDLE AUTOCOMPLETE WHEN DATA IS SELECTED */
     const [dropdownIsVisible, setDropdownIsVisible] = useState(true);
     const [spanIsVisible, setSpanIsVisible] = useState(
@@ -16,58 +39,49 @@ export const HealthcareCenterInput = ({ healthcareCenterValue, setHealthcareCent
 
     /* HANDLE DROPDOWN WRAPPER WHEN PAGE IS RELOADED */
     useEffect(() => {
-        if (searchParams.get('healthcareCenter')) setDropdownIsVisible(false)
-
+        if (searchParams.get('healthcareCenter')) setDropdownIsVisible(false);
     }, [searchParams, setDropdownIsVisible]);
 
     /* HELPERS */
     const onInputValue = ({ target }) => {
-        /* value sent to wrapper, for autocomplete */
-        const value = target.value.toLowerCase();
-
-        setHealthcareCenterValue(value);
+        const value = target.value;
+        setDisplayValue(value);
         setDropdownIsVisible(true);
-
         if (value.length === 0) setSpanIsVisible(false);
-    }
+        /* NO actualizar healthcareCenterValue aquí — solo al seleccionar de la lista */
+    };
 
     const handleValueSelection = (selectedValue) => {
-        /* selectedValue = value of input (comes from autocomplete) */
-        setHealthcareCenterValue(selectedValue); // This will update the input field
-
+        setDisplayValue(selectedValue);
+        setHealthcareCenterValue(selectedValue);
         setDropdownIsVisible(false);
         setSpanIsVisible(true);
-    }
+    };
 
     const onClickSpan = (e) => {
-        e.preventDefault()
-
-        setHealthcareCenterValue("")
+        e.preventDefault();
+        setDisplayValue('');
+        setHealthcareCenterValue('');
         setSpanIsVisible(false);
-
         searchParams.delete("healthcareCenter");
-    }
+    };
 
     return (
         <>
-            <div
-                className="flex flex-col justify-center items-center p-4"
-            >
-
-                <div className="relative w-full flex flex-col items-center">
+            <div className="flex flex-col justify-center items-center p-4">
+                <div className="relative w-full flex flex-col items-center" ref={containerRef}>
                     <input
                         id="autocomplete-healthcareCenter-input"
                         className="bg-[#555555] text-white rounded-lg px-4 py-2 focus:outline-none focus:border-transparent w-full h-[50px] pl-12 pr-[40px] placeholder:italic focus:bg-[#666666] cursor-pointer transition-colors duration-700 ease-in-out border border-transparent hover:border-black focus:border-black"
                         type="text"
                         placeholder="Red Salud, UC Christus..."
-                        value={healthcareCenterValue}
+                        value={displayValue}
                         onChange={onInputValue}
                         autoComplete="off"
                         autoCorrect="off"
                         autoCapitalize="off"
                         spellCheck="false"
                         name="search"
-
                     />
                     <span className="absolute left-4 top-1/2 transform -translate-y-1/2 w-3">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48" id="magnifier">
@@ -77,10 +91,8 @@ export const HealthcareCenterInput = ({ healthcareCenterValue, setHealthcareCent
                     </span>
 
                     <div className={`transition-opacity duration-1000 ease-in-out ${spanIsVisible ? 'opacity-100' : 'opacity-0'}`}>
-                        <button className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                            onClick={onClickSpan}
-                        >
-                            <span className="cursor-pointer relative w-[22px] h-[22px] hover:bg-black bg-[#6e6e6e] transition-colors duration-700 ease-in-out rounded-full flex items-center justify-center group"  >
+                        <button className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer" onClick={onClickSpan}>
+                            <span className="cursor-pointer relative w-[22px] h-[22px] hover:bg-black bg-[#6e6e6e] transition-colors duration-700 ease-in-out rounded-full flex items-center justify-center group">
                                 <svg className="fill-white p-[1px] cursor-pointer flex items-center justify-center" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="12" height="12" viewBox="0 0 30 30">
                                     <path d="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z"></path>
                                 </svg>
@@ -88,29 +100,18 @@ export const HealthcareCenterInput = ({ healthcareCenterValue, setHealthcareCent
                         </button>
                     </div>
 
-                    {dropdownIsVisible && (
-                        <div className="absolute top-full left-0 w-full mt-2 z-50">
-                            <ul className="bg-[#555555] text-white rounded-lg w-full overflow-hidden">
-
-                                <div className="max-h-[320px] overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
-
-                                    <HeathcareCenterWrapper
-                                        healthcareCenterValue={healthcareCenterValue}
-                                        healthcareCenterValueSelected={handleValueSelection}
-                                    />
-
-                                </div>
-
-                            </ul>
-
-                        </div>
-                    )}
+                    <div className={`absolute bottom-full left-0 w-full mb-2 z-50 transition-all duration-200 ease-out overflow-hidden ${dropdownIsVisible ? 'max-h-36 opacity-100' : 'max-h-0 opacity-0'}`}>
+                        <ul className="bg-[#555555] text-white rounded-lg w-full overflow-hidden">
+                            <div className="max-h-36 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
+                                <HeathcareCenterWrapper
+                                    healthcareCenterValue={displayValue}
+                                    healthcareCenterValueSelected={handleValueSelection}
+                                />
+                            </div>
+                        </ul>
+                    </div>
                 </div>
             </div>
-
-
-
         </>
     )
 }
-

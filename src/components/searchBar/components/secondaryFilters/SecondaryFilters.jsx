@@ -10,7 +10,7 @@ export const SecondaryFilters = ({attentionType, setAttentionType, healthcareCen
 
     return (
         <>
-            <div className="bg-[#a7a7a7] rounded-2xl w-[90%] max-w-3xl mx-auto px-6 pb-3 max-h-80vh overflow-y-auto [&::-webkit-scrollbar]:hidden">
+            <div className="bg-[#a7a7a7] rounded-2xl w-[400px] max-w-[calc(100vw-2rem)] mx-auto px-6 pb-3 max-h-full overflow-y-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black/30 [&::-webkit-scrollbar-thumb]:rounded-full">
                 <div className="flex justify-center sticky top-0 bg-[#a7a7a7] p-2">
                     <h1 className="text-xl font-semibold text-gray-800">
                         Filtros secundarios
