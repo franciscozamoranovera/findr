@@ -100,7 +100,7 @@ export const HealthcareCenterInput = ({ healthcareCenterValue, setHealthcareCent
                         </button>
                     </div>
 
-                    <div className={`absolute top-full left-0 w-full mt-2 z-50 transition-all duration-200 ease-out overflow-hidden ${dropdownIsVisible ? 'max-h-36 opacity-100' : 'max-h-0 opacity-0'}`}>
+                    <div className={`absolute bottom-full left-0 w-full mb-2 z-50 transition-all duration-200 ease-out overflow-hidden ${dropdownIsVisible ? 'max-h-36 opacity-100' : 'max-h-0 opacity-0'}`}>
                         <ul className="bg-[#555555] text-white rounded-lg w-full overflow-hidden">
                             <div className="max-h-36 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-black [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:rounded-full">
                                 <HeathcareCenterWrapper
