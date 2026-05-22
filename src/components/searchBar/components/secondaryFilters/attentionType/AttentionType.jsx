@@ -18,8 +18,8 @@ export const AttentionType = ({ attentionType, setAttentionType }) => {
                 {/* Presencial */}
                 <button
                     type="button"
-                    onClick={() => handleOnClick('onsite')}
-                    className={`${attentionType === 'onsite' ? "bg-black text-white" : "border border-black text-black"} flex flex-col items-center justify-center h-20 w-full sm:w-40 md:w-60 xl:w-80 px-4 border border-black rounded-2xl cursor-pointer hover:bg-black hover:text-white group`}
+                    onPointerDown={(e) => { e.preventDefault(); handleOnClick('onsite'); }}
+                    className={`${attentionType === 'onsite' ? "bg-black text-white" : "border border-black text-black"} flex flex-col items-center justify-center h-20 w-full sm:w-40 md:w-60 xl:w-80 px-4 border border-black rounded-2xl cursor-pointer hover:bg-black hover:text-white group touch-manipulation select-none`}
                 >
                     {/* Building / hospital → Presencial */}
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 16 16" className="group-hover:text-white transition-colors duration-200 pointer-events-none">
@@ -34,8 +34,8 @@ export const AttentionType = ({ attentionType, setAttentionType }) => {
                 {/* Telemedicina */}
                 <button
                     type="button"
-                    onClick={() => handleOnClick('telemedicine')}
-                    className={`${attentionType === 'telemedicine' ? "bg-black text-white" : "border border-black text-black"} flex flex-col items-center justify-center h-20 w-full sm:w-40 md:w-60 xl:w-80 px-4 border border-black rounded-2xl cursor-pointer hover:bg-black hover:text-white group`}
+                    onPointerDown={(e) => { e.preventDefault(); handleOnClick('telemedicine'); }}
+                    className={`${attentionType === 'telemedicine' ? "bg-black text-white" : "border border-black text-black"} flex flex-col items-center justify-center h-20 w-full sm:w-40 md:w-60 xl:w-80 px-4 border border-black rounded-2xl cursor-pointer hover:bg-black hover:text-white group touch-manipulation select-none`}
                 >
                     {/* Screen with cross → Telemedicina */}
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 14 14" className="group-hover:text-white transition-colors duration-200 pointer-events-none">
