@@ -416,8 +416,8 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
 
                             {isSecFilterOpen && (
 
-                                <div className={`fixed top-0 left-0 right-0 bg-black/50 backdrop-blur-lg z-[100] transition-opacity duration-150 ${secModalVisible ? 'opacity-100' : 'opacity-0'}`} style={{ height: 'var(--real-vh)' }}>
-                                    <div className="flex justify-end m-4">
+                                <div className={`fixed top-0 left-0 right-0 bg-black/50 backdrop-blur-lg z-[100] flex flex-col transition-opacity duration-150 ${secModalVisible ? 'opacity-100' : 'opacity-0'}`} style={{ height: 'var(--real-vh)' }}>
+                                    <div className="flex justify-end m-4 shrink-0">
                                         <button
                                             className="bg-black text-white w-9 h-9 rounded-full cursor-pointer flex items-center justify-center hover:text-black hover:bg-[#fafafa] transition-colors duration-200 ease-in-out"
                                             onClick={closeSecModal}
@@ -427,8 +427,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                                             </svg>
                                         </button>
                                     </div>
-                                    <div className="flex flex-col items-center" style={{ height: 'calc(var(--real-vh) - 4.5rem)' }}>
-                                        <div className="flex-1 min-h-0 w-full flex flex-col items-center">
+                                    <div className="flex-1 min-h-0 flex flex-col items-center justify-center overflow-y-auto gap-3 py-4">
                                         <SecondaryFilters
                                             attentionType={attentionType}
                                             setAttentionType={setAttentionType}
@@ -439,9 +438,8 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                                             diseasesList={diseasesList}
                                             setDiseaseList={setDiseaseList}
                                         />
-                                        </div>
 
-                                        <div className="flex justify-between w-[400px] max-w-[calc(100vw-2rem)] items-center p-3 mx-4 rounded-xl bg-black/30 backdrop-blur-lg z-10" >
+                                        <div className="shrink-0 flex justify-between w-[400px] max-w-[calc(100vw-2rem)] items-center p-3 mx-4 rounded-xl bg-black/30 backdrop-blur-lg z-10" >
                                             <div>
                                                 {/* botón local*/}
                                                 <button
