@@ -193,7 +193,27 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
         }
     }, [isSecFilterOpen]);
 
+    const secondarySnapshot = useRef(null);
+
+    const openSecModal = () => {
+        secondarySnapshot.current = { attentionType, healthcareCenterValue, diseasesList: [...diseasesList] };
+        setIsSecFiltersOpen(true);
+    };
+
     const closeSecModal = () => {
+        if (secondarySnapshot.current) {
+            const s = secondarySnapshot.current;
+            setAttentionType(s.attentionType);
+            setHealthcareCenterValue(s.healthcareCenterValue);
+            setDiseaseList(s.diseasesList);
+            secondarySnapshot.current = null;
+        }
+        setSecModalVisible(false);
+        setTimeout(() => setIsSecFiltersOpen(false), 150);
+    };
+
+    const commitAndCloseSecModal = () => {
+        secondarySnapshot.current = null;
         setSecModalVisible(false);
         setTimeout(() => setIsSecFiltersOpen(false), 150);
     };
@@ -383,7 +403,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                             {/* filter button */}
                             <button
                                 className={`relative flex justify-center items-center cursor-pointer transition-colors duration-300 ease-in-out rounded-3xl w-11 h-11 sm:w-20 shrink-0 hover:underline hover:text-blue-700${(attentionType || healthcareCenterValue || diseasesList?.length > 0) ? ' ring-2 ring-blue-500' : ''}`}
-                                onClick={() => setIsSecFiltersOpen(true)}
+                                onClick={openSecModal}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M9 5a1 1 0 1 0 0 2a1 1 0 0 0 0-2zM6.17 5a3.001 3.001 0 0 1 5.66 0H19a1 1 0 1 1 0 2h-7.17a3.001 3.001 0 0 1-5.66 0H5a1 1 0 0 1 0-2h1.17zM15 11a1 1 0 1 0 0 2a1 1 0 0 0 0-2zm-2.83 0a3.001 3.001 0 0 1 5.66 0H19a1 1 0 1 1 0 2h-1.17a3.001 3.001 0 0 1-5.66 0H5a1 1 0 1 1 0-2h7.17zM9 17a1 1 0 1 0 0 2a1 1 0 0 0 0-2zm-2.83 0a3.001 3.001 0 0 1 5.66 0H19a1 1 0 1 1 0 2h-7.17a3.001 3.001 0 0 1-5.66 0H5a1 1 0 1 1 0-2h1.17z" /></svg>
                                 <p className="hidden md:block font-medium ml-1">
@@ -447,7 +467,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                                                 <SearchButton
                                                     /* handle modals */
                                                     setIsOpen={setIsOpen}
-                                                    setIsSecFiltersOpen={setIsSecFiltersOpen}
+                                                    setIsSecFiltersOpen={commitAndCloseSecModal}
                                                     /* prim filters */
                                                     inputValue={inputValue}
                                                     selectedRegion={selectedRegion}
