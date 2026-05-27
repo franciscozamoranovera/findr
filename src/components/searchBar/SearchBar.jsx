@@ -511,7 +511,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                     </div>
 
                     {/* Filter Container */}
-                    <div className={`flex-1 min-h-0 flex flex-col items-center ${!modalInteractive ? 'pointer-events-none' : ''}`}>
+                    <div className={`flex-1 min-h-0 flex flex-col items-center justify-center overflow-y-auto ${!modalInteractive ? 'pointer-events-none' : ''}`}>
 
                         <div className="shrink-0">
                             <PrevisionButtons
@@ -524,9 +524,9 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                             />
                         </div>
 
-                        <form className="flex-1 min-h-0 flex flex-col gap-1 items-center w-full">
+                        <form className="flex flex-col gap-1 items-center w-full">
 
-                            <div className="flex-1 min-h-0 overflow-y-auto [&::-webkit-scrollbar]:hidden w-full flex flex-col items-center">
+                            <div className="overflow-y-auto [&::-webkit-scrollbar]:hidden w-full flex flex-col items-center">
 
                                 <div className="rounded-2xl  bg-[#7f7f7f] px-3 py-3 ">
 
