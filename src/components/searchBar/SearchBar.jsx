@@ -498,8 +498,8 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                 // MODAL PRIMARY FILTER
 
                 /* main background */
-                <div className={`fixed top-0 left-0 right-0 bg-black/55 backdrop-blur-2xl z-50 transition-opacity duration-150 ${modalVisible ? 'opacity-100' : 'opacity-0'}`} style={{ height: 'var(--real-vh)' }}>
-                    <div className="flex justify-end m-4">
+                <div className={`fixed top-0 left-0 right-0 bg-black/55 backdrop-blur-2xl z-50 flex flex-col transition-opacity duration-150 ${modalVisible ? 'opacity-100' : 'opacity-0'}`} style={{ height: 'var(--real-vh)' }}>
+                    <div className="flex justify-end m-4 shrink-0">
                         <button
                             className="bg-black text-white w-9 h-9 rounded-full cursor-pointer flex items-center justify-center hover:text-black hover:bg-[#fafafa] transition-colors duration-200 ease-in-out"
                             onClick={closeModal}
@@ -511,20 +511,22 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
                     </div>
 
                     {/* Filter Container */}
-                    <div className={`flex flex-col items-center ${!modalInteractive ? 'pointer-events-none' : ''}`}>
+                    <div className={`flex-1 min-h-0 flex flex-col items-center ${!modalInteractive ? 'pointer-events-none' : ''}`}>
 
-                        <PrevisionButtons
-                            fonasaButton={fonasaButton}
-                            setFonasaButton={setFonasaButton}
-                            isapreButton={isapreButton}
-                            setIsapreButton={setIsapreButton}
-                            particularButton={particularButton}
-                            setParticularButton={setParticularButton}
-                        />
+                        <div className="shrink-0">
+                            <PrevisionButtons
+                                fonasaButton={fonasaButton}
+                                setFonasaButton={setFonasaButton}
+                                isapreButton={isapreButton}
+                                setIsapreButton={setIsapreButton}
+                                particularButton={particularButton}
+                                setParticularButton={setParticularButton}
+                            />
+                        </div>
 
-                        <form className="flex flex-col gap-1 items-center justify-center">
+                        <form className="flex-1 min-h-0 flex flex-col gap-1 items-center w-full">
 
-                            <div className="max-h-[calc(80vh-140px)] overflow-y-auto [&::-webkit-scrollbar]:hidden">
+                            <div className="flex-1 min-h-0 overflow-y-auto [&::-webkit-scrollbar]:hidden w-full flex flex-col items-center">
 
                                 <div className="rounded-2xl  bg-[#7f7f7f] px-3 py-3 ">
 
@@ -555,7 +557,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
 
                             </div>
 
-                            <div className="sticky bottom-0 flex justify-between w-[325px] items-center p-3 mr-4 ml-4 rounded-xl bg-[#959595] backdrop-blur-xl z-10" >
+                            <div className="shrink-0 flex justify-between w-[325px] items-center p-3 mr-4 ml-4 rounded-xl bg-[#959595] backdrop-blur-xl z-10" >
                                 <div>
                                     {/* Clear everything (prim. and sec.) from primary filter */}
                                     <ClearButtonModal
