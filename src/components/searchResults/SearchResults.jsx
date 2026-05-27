@@ -138,14 +138,14 @@ export const SearchResults = () => {
                     style={{ color: "#fff", minHeight: "420px" }}
                   >
                     {/* Card Info */}
-                    <div className='border-[5px] border-none w-full h-[536px] flex flex-col'>
+                    <div className='border-[5px] border-none w-full h-[480px] sm:h-[536px] flex flex-col'>
 
                       {/* Photo profile */}
                       <div className='flex-1 '>
                         {
                           /* profile_photo here */
                           <img
-                            className='rounded-[25px] w-full h-80 object-cover object-top'
+                            className='rounded-[25px] w-full h-60 sm:h-80 object-cover object-top'
                             src={
                               r.profile_photo ||
                               (r.gender === 1
