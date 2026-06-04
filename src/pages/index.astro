@@ -49,6 +49,115 @@ import { IndexSearchBar } from "@/components/searchBar/IndexSearchBar";
 		</div>
 
 	</div>
+
+	{/* ------------------- Doctor Rating Banner ------------------- */}
+	<section class="flex flex-col items-center justify-center py-20 px-4">
+		<h2 class="text-3xl font-normal text-center mb-2">Calificaciones reales de pacientes reales</h2>
+		<p class="text-gray-500 text-center mb-10">Así se ve el perfil de un médico en findr</p>
+
+		<div class="w-full max-w-3xl">
+			{/* Doctor Summary Info */}
+			<div class="text-center pt-4 pb-2">
+				<p class="text-3xl pb-2">👨🏻‍⚕️</p>
+				<h1 class="text-black text-3xl pb-1">Dr. Ricardo Martínez Soto</h1>
+				<h2 class="text-black font-light text-md">Medicina Interna</h2>
+				<h3 class="text-black pt-1 text-xl font-medium">Cardiología</h3>
+			</div>
+
+			<div class="grid grid-cols-[1fr_135px_1fr] mb-[25px] mt-[25px]">
+				<div class="flex justify-end">
+					<img
+						class="h-[150px] drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]"
+						src="/img/doctor-profile/left-laurel-findr-it-rating.png"
+					/>
+				</div>
+				<div class="flex items-center justify-center">
+					<h1 class="text-8xl">4.7</h1>
+				</div>
+				<div class="flex justify-start">
+					<img
+						class="h-[150px] drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]"
+						src="/img/doctor-profile/right-laurel-findr-it-rating.png"
+					/>
+				</div>
+			</div>
+
+			<div class="flex flex-col justify-center items-center gap-2 text-center">
+				<p class="text-xl w-2/3">Favorito entre Cardiólogos en la Región Metropolitana</p>
+				<p class="text-xl w-2/3"><strong>Dr. Martínez</strong> está dentro del 20% de los cardiólogos mejor valorados en <strong>Red Salud Quilicura</strong></p>
+			</div>
+
+			{/* Calification by Category */}
+			<div class="gap-5 flex flex-row flex-wrap justify-center items-center mt-16 mb-12">
+
+				<div>
+					<div class="w-10">
+						<img class="w-8 h-8 object-contain" src="/img/doctor-profile/calification-icons/problem-solved.png" />
+					</div>
+					<div class="pt-2"><p>Continuaría Atendiendose</p></div>
+					<div>
+						<div class="relative rounded border-2 border-black w-[200px] h-[9px] bg-white overflow-hidden">
+							<div class="absolute left-0 top-0 bottom-0 bg-black" style="width: 96%"></div>
+						</div>
+					</div>
+					<div><h2 class="text-center text-3xl">4.8</h2></div>
+				</div>
+
+				<div>
+					<div class="w-10">
+						<img class="w-8 h-8 object-contain" src="/img/doctor-profile/calification-icons/comunication.png" />
+					</div>
+					<div class="pt-2"><p>Comunicación Clara</p></div>
+					<div>
+						<div class="relative rounded border-2 border-black w-[200px] h-[9px] bg-white overflow-hidden">
+							<div class="absolute left-0 top-0 bottom-0 bg-black" style="width: 92%"></div>
+						</div>
+					</div>
+					<div><h2 class="text-center text-3xl">4.6</h2></div>
+				</div>
+
+				<div>
+					<div class="w-10">
+						<img class="w-8 h-8 object-contain" src="/img/doctor-profile/calification-icons/attention-profesionalism.png" />
+					</div>
+					<div class="pt-2"><p>Atención y Ptofesionalismo</p></div>
+					<div>
+						<div class="relative rounded border-2 border-black w-[200px] h-[9px] bg-white overflow-hidden">
+							<div class="absolute left-0 top-0 bottom-0 bg-black" style="width: 100%"></div>
+						</div>
+					</div>
+					<div><h2 class="text-center text-3xl">5.0</h2></div>
+				</div>
+
+				<div>
+					<div class="w-10">
+						<img class="w-8 h-8 object-contain" src="/img/doctor-profile/calification-icons/knoledge-domain.png" />
+					</div>
+					<div class="pt-2"><p>Dominio Conocimientos</p></div>
+					<div>
+						<div class="relative rounded border-2 border-black w-[200px] h-[9px] bg-white overflow-hidden">
+							<div class="absolute left-0 top-0 bottom-0 bg-black" style="width: 94%"></div>
+						</div>
+					</div>
+					<div><h2 class="text-center text-3xl">4.7</h2></div>
+				</div>
+
+				<div>
+					<div class="w-10">
+						<img class="w-8 h-8 object-contain" src="/img/doctor-profile/calification-icons/recomendation.png" />
+					</div>
+					<div class="pt-2"><p>Recomendaría a Familiar</p></div>
+					<div>
+						<div class="relative rounded border-2 border-black w-[200px] h-[9px] bg-white overflow-hidden">
+							<div class="absolute left-0 top-0 bottom-0 bg-black" style="width: 88%"></div>
+						</div>
+					</div>
+					<div><h2 class="text-center text-3xl">4.4</h2></div>
+				</div>
+
+			</div>
+		</div>
+	</section>
 </Layout>
 
 <style>
