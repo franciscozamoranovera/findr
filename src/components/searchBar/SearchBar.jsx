@@ -367,7 +367,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
 
                                     <div className="flex-1 min-w-0 truncate">
                                         {selectedComuna ? (
-                                            <p className="text-[#2e3ffc] text-sm font-semibold truncate text-left">{selectedComuna}</p>
+                                            <p className="text-[#2e3ffc] text-sm font-semibold truncate">{selectedComuna}</p>
                                         ) : (
                                             <p className="text-[#505050] text-sm font-semibold truncate">¿Tu comuna?</p>
                                         )}
