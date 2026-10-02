@@ -355,7 +355,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
 
                                 <div className="flex flex-row gap-1 justify-center mt-1">
 
-                                    <div className="flex-1 min-w-0 truncate">
+                                    <div className="shrink-0 truncate">
                                         {selectedRegion ? (
                                             <p className="text-[#2e3ffc] text-sm font-semibold truncate">{selectedRegion}</p>
                                         ) : (
@@ -365,7 +365,7 @@ export const SearchBar = ({ hideNavBar = false, fullWidthMobile = false }) => {
 
                                     <div className="text-[#505050] text-sm font-bold shrink-0">•</div>
 
-                                    <div className="flex-1 min-w-0 truncate">
+                                    <div className="shrink-0 truncate">
                                         {selectedComuna ? (
                                             <p className="text-[#2e3ffc] text-sm font-semibold truncate">{selectedComuna}</p>
                                         ) : (
